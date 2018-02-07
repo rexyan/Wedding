@@ -11,10 +11,25 @@ class AdminIndexHandler(BaseHandler):
     def get(self):
         self.render('admin_login.html')
 
+
 class AdminGoodsHandler(BaseHandler):
     def get(self):
         self.render('admin_goods.html')
 
+
 class AdminUserHandler(BaseHandler):
     def get(self):
         self.render('admin_user.html')
+
+        
+class AdminLayoutHandler(BaseHandler):
+    def get(self):
+        self.render('admin_layout.html')
+
+
+class AdminGoodsAddHandler(BaseHandler):
+    def get(self):
+        self.render('admin_goods_add.html')
+
+        
+        

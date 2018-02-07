@@ -7,6 +7,8 @@ url = [
         (r"/admin", admin_login.AdminIndexHandler),
         (r"/admin/index", admin_login.AdminIndexHandler),
         (r"/admin/goods", admin_login.AdminGoodsHandler),
+        (r"/admin/goods/add", admin_login.AdminGoodsAddHandler),
+        (r"/admin/layout", admin_login.AdminLayoutHandler),
         (r"/admin/user", admin_login.AdminGoodsHandler)
         
         # 网站前台路由
