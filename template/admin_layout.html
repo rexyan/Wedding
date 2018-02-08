@@ -36,6 +36,7 @@
 		<!-- 若子模版中需要引入新的css，需使用此block -->
 		{% block css %}
 		{% end %}
+		
 	</head>
 
 	<body class="no-skin">
@@ -116,7 +117,7 @@
 						
 					</ul>
 				</div>
-			</div><!-- /.navbar-container -->
+			</div>
 		</div>
 
 		<div class="main-container ace-save-state" id="main-container">
@@ -157,14 +158,14 @@
 
 						<span class="btn btn-danger"></span>
 					</div>
-				</div><!-- /.sidebar-shortcuts -->
+				</div>
 				
 				{% block left_menu %}
 				<ul class="nav nav-list">
 					<li class="active open">
 						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa fa-diamond"></i>
-							<span class="menu-text"> 商品 </span>
+							<i class="menu-icon fa fa-hand-o-right"></i>
+							<span class="menu-text"> 商品类型 </span>
 
 							<b class="arrow fa fa-angle-down"></b>
 						</a>
@@ -172,10 +173,40 @@
 						<b class="arrow"></b>
 
 						<ul class="submenu">
-							<li class="active">
+							<li class="">
+								<a href="order.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									类型列表
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							<li class="">
+								<a href="order_unfinished.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									添加类型
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+				
+					<li class="active open">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-diamond"></i>
+							<span class="menu-text" > 商品 </span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
 								<a href="/admin/goods">
 									<i class="menu-icon fa fa-caret-right"></i>
-									查看商品
+									商品列表
 								</a>
 
 								<b class="arrow"></b>
@@ -192,9 +223,9 @@
 						</ul>
 					</li>
 
-					<li class="">
+					<li class="active open">
 						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa fa-pencil-square-o"></i>
+							<i class="menu-icon fa fa-newspaper-o"></i>
 							<span class="menu-text"> 订单 </span>
 
 							<b class="arrow fa fa-angle-down"></b>
@@ -215,6 +246,80 @@
 								<a href="order_unfinished.html">
 									<i class="menu-icon fa fa-caret-right"></i>
 									未处理订单
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+					
+					<li class="active open">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-meh-o"></i>
+							<span class="menu-text"> 用户 </span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="">
+									<i class="menu-icon fa fa-caret-right"></i>
+									新增用户
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							<li class="">
+								<a href="/admin/user/select/all/">
+									<i class="menu-icon fa fa-caret-right"></i>
+									用户列表
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+					
+					<li class="active open">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-pencil"></i>
+							<span class="menu-text"> 评论 </span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="order.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									评论列表
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+					
+					<li class="active open">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-cogs"></i>
+							<span class="menu-text"> 设置 </span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="order.html">
+									<i class="menu-icon fa fa-caret-right"></i>
+									网站设置
 								</a>
 
 								<b class="arrow"></b>
@@ -254,10 +359,12 @@
 							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
 								<i class="ace-icon fa fa-cog bigger-130"></i>
 							</div>
-
+							
 							<div class="ace-settings-box clearfix" id="ace-settings-box">
-								
-							<!-- 	<div class="pull-left width-50">
+							
+							<!-- 设置按钮 -->
+							
+							<div class="pull-left width-50">
 									<div class="ace-settings-item">
 										<div class="pull-left">
 											<select id="skin-colorpicker" class="hide">
@@ -277,9 +384,9 @@
 											<b>.container</b>
 										</label>
 									</div>
-								</div> -->
+								</div>
 
-								<!-- <div class="pull-left width-50">
+								<div class="pull-left width-50">
 									<div class="ace-settings-item">
 										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" autocomplete="off" />
 										<label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
@@ -290,7 +397,7 @@
 										<label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
 									</div>
 
-								</div> -->
+								</div>
 							</div>
 						</div>
 						

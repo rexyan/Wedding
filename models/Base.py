@@ -1,28 +1,10 @@
-import mongoengine as models
-import json
-from tornado.util import ObjectDict
-import datetime
+# --*-- coding:utf-8--*--
 
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import *
+from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy import create_engine
 
-class BaseDoc(object):
-    @property
-    def oid(self):
-        return str(self.id)
+engine = create_engine("mysql://root:root@127.0.0.1:3306/test1?charset=utf8", max_overflow=5) #创建引擎，还可以加上echo=True，加上后会显示创建sql的命令
 
-    def to_dict(self):
-        d = json.loads(self.to_json())
-        d['id'] = self.oid
-        d.pop('_id')
-        return ObjectDict(d)
-
-    def to_json(self):
-        d = json.loads(self.to_json())
-        d['id'] = self.oid
-        d.pop('_id')
-        return d
-
-    def __unicode__(self):
-        try:
-            return self.name
-        except AttributeError:
-            return self.oid
+Base = declarative_base() #创建基类
