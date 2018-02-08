@@ -4,7 +4,64 @@
 {% block js %}
 <script type="text/javascript">
 	function create_user(){
-		alert(111)
+        json_data = {}
+        if ($("#username").val()){
+            json_data.username = $("#username").val()
+        }
+        if ($("#password").val()){
+            json_data.password = $("#password").val()
+        }
+        if ($("#repassword").val()){
+            json_data.repassword = $("#repassword").val()
+        }
+        if ($("#user_realname").val()){
+            json_data.user_realname = $("#user_realname").val()
+        }
+        if ($("#user_email").val()){
+            json_data.user_email = $("#user_email").val()
+        }
+        if ($("#sex").val()){
+            json_data.sex = $("#sex").val()
+        }
+        if ($("#age").val()){
+            json_data.age = $("#age").val()
+        }
+        if ($("#init_point").val()){
+            json_data.init_point = $("#init_point").val()
+        }
+        if ($("#vip").val()){
+            json_data.vip = $("#vip").val()
+        }
+        {#用户名、密码、邮箱为必填项#}
+
+        {#校验密码#}
+        if ($("#password").val()!=$("#repassword").val()){
+            alert('密码不一致')
+            return false
+        }else if($("#password").val().length<6){
+            alert('changdu')
+            return false
+        }
+        {#校验邮箱#}
+        var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+        if (!reg.test($("#user_email").val())) {
+            alert('youxiangbuzhengque')
+            return false
+        }else{
+            //校验邮箱是否存在
+            //$.ajax({ url: "/admin/check_email_is_exists/", data: document.body, success: function(){
+
+            //}});
+        }
+        //保存
+        alert('send')
+        $.ajax({
+            url: "/admin/user/create/",
+            data:json_data,
+            type:'post',
+            dtype:'json',
+            success: function(){
+        }});
 	}
 </script>
 {% end %}
@@ -86,7 +143,7 @@
 						<label class="col-sm-3 control-label no-padding-right">用户名</label>
 
 						<div class="col-sm-9">
-							<input type="text" name="username" placeholder="张三" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="text" id="username" value="" placeholder="张三" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -94,7 +151,7 @@
 						<label class="col-sm-3 control-label no-padding-right">用户密码</label>
 
 						<div class="col-sm-9">
-							<input type="text" name="password" placeholder="请输入密码" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="password" id="password" placeholder="请输入密码" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -102,7 +159,7 @@
 						<label class="col-sm-3 control-label no-padding-right">重复密码</label>
 
 						<div class="col-sm-9">
-							<input type="text" name="repassword" placeholder="请重复输入密码" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="password" id="repassword" placeholder="请重复输入密码" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -110,7 +167,7 @@
 						<label class="col-sm-3 control-label no-padding-right">用户姓名</label>
 
 						<div class="col-sm-9">
-							<input type="text" name="user_realname" placeholder="请输入您的姓名" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="text" id="user_realname" placeholder="请输入您的姓名" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -118,7 +175,7 @@
 						<label class="col-sm-3 control-label no-padding-right">用户邮箱</label>
 
 						<div class="col-sm-9">
-							<input type="text" name="user_email" placeholder="请输入您的邮箱地址" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="email" id="user_email" placeholder="请输入您的邮箱地址" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -126,7 +183,7 @@
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-right">用户性别</label>
 						<div class="col-sm-9">
-							<select name="sex" class="form-control" style="max-width: 305px;">
+							<select id="sex" class="form-control" style="max-width: 305px;">
 								<option value="1">男</option>
 								<option value="2">女</option>
 							</select>
@@ -137,7 +194,7 @@
 						<label class="col-sm-3 control-label no-padding-right">用户年龄</label>
 
 						<div class="col-sm-9">
-							<input type="text" placeholder="请输入您的年龄" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="text" id="age" placeholder="请输入您的年龄" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -145,14 +202,14 @@
 						<label class="col-sm-3 control-label no-padding-right">用户积分</label>
 
 						<div class="col-sm-9">
-							<input type="text" name="init_point" placeholder="请设置用户的初始积分" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="text" id="init_point" placeholder="请设置用户的初始积分" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 	
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-right">设置用户VIP等级</label>
 						<div class="col-sm-9">
-							<select name="vip" class="form-control" style="max-width: 305px;">
+							<select id="vip" class="form-control" style="max-width: 305px;">
 								<option value="1">VIP  1</option>
 								<option value="2">VIP  2</option>
 								<option value="3">VIP  3</option>

@@ -1,12 +1,7 @@
 # --coding:utf-8--
 
-import tornado
 from views.base import BaseHandler
-import settings
-import os
-import time
-import io
-from click.decorators import argument
+from models.Base import session
 
 # 后台首页
 class AdminIndexHandler(BaseHandler):
@@ -40,7 +35,7 @@ class AdminGoodsHandler(BaseHandler):
 class AdminUserIndexHandler(BaseHandler):
     def get(self):
         self.render('admin_user.html')
-        
+
 class AdminUserAddHandler(BaseHandler):
     def get(self):
         self.render('admin_user_add.html')
@@ -50,8 +45,19 @@ class AdminUserHandler(BaseHandler):
         pass
         
     def post(self):
-        pass
-    
+        data = {}
+        data['username'] = self.get_argument('username', None)
+        data['password'] = self.get_argument('password', None)
+        data['user_realname'] = self.get_argument('user_realname', None)
+        data['user_email'] = self.get_argument('user_email', None)
+        data['sex'] = self.get_argument('sex', None)
+        data['age'] = self.get_argument('age', None)
+        data['init_point'] = self.get_argument('init_point', '0')
+        data['vip'] = self.get_argument('vip', '1')
+        session.execute("")
+        session.commit()
+
+
     def delete(self):
         pass
     
@@ -63,4 +69,7 @@ class AdminLayoutHandler(BaseHandler):
     def get(self):
         self.render('admin_layout.html')
 
-        
+# 工具
+class UtilsHandler(BaseHandler):
+    def get(self):
+        pass

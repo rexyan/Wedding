@@ -5,12 +5,12 @@ from Base import *
 class Users(Base):
     __tablename__ = 'users'   #表名
     UserID = Column(Integer, primary_key=True) # primary_key, 主键。必须要有主键，且主键是自增的， Integer int类型
-    UserName = Column(String(100), unique=True)# unique 设置为True后此字段的值唯一 ，String  varchar类型
+    UserName = Column(String(100), index=True) # String  varchar类型
     UserPwd = Column(String(100))
     UserRealName = Column(String(100), nullable=True) # nullable 表示此列可以为空
     UserSex = Column(Integer, nullable=True)
     UserAge = Column(Integer, nullable=True)
-    UserEmail = Column(String(100), unique=True)
+    UserEmail = Column(String(100), unique=True, index=True) # unique 设置为True后此字段的值唯一
     UserVip = Column(Integer, nullable=True)
     UserPoint = Column(Integer, nullable=True)
     UserCreatTime = Column(Time, nullable=True) # Time， time类型

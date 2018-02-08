@@ -14,16 +14,6 @@ REDIS_PORT = 6379
 REDIS_DB = 1
 DOMAIN_NAME = 'http://127.0.0.1:3344'
 
-
-def connect_db(db_name=MONGODB_DBNAME):
-    global DB_CONNECTED
-    from mongoengine.connection import connect, register_connection
-    register_connection('default', db_name, host=MONGODB_ADDRESS, port=MONGODB_PORT, is_slave=False, slaves=None)
-    connect(db_name, host=MONGODB_ADDRESS, port=MONGODB_PORT)
-    DB_CONNECTED = True
-connect_db()
-
-
 project_setting = dict(
     debug=True,
     template_path='template',
@@ -68,3 +58,5 @@ SMTP_PASS = '18525350524Yrs'
 # 推送设置
 EMAIL_PUSH_SUBJECT = u'Kindle15电子书推送'
 EMAIL_PUSH_SENDER = [u"kinlde15推送", u'push@kindle15.com']
+
+DEBUG = True

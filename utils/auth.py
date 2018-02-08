@@ -7,15 +7,6 @@ import re
 import os
 from tornado.web import HTTPError
 import functools
-from bson import ObjectId
-
-
-def get_user(user_id):
-    try:
-        return User.objects.get(id=ObjectId(user_id))
-    except User.DoesNotExist:
-        return None
-
 
 def authenticated(method):
     '''

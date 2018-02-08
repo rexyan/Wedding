@@ -4,12 +4,9 @@ import tornado.web
 import settings
 import sys
 import urls
-from common.log_utils import getLogger
 from tornado.netutil import bind_sockets
 from tornado.httpserver import HTTPServer
 
-
-log = getLogger('main.py')
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -21,5 +18,4 @@ if __name__ == "__main__":
     server = HTTPServer(app, xheaders=True)
     server.add_sockets(sockets)
     print ('Tornado server started on port %s.' % MAIN_SITE_PORT)
-    log.debug('Tornado server started on port %s.' % MAIN_SITE_PORT)
     tornado.ioloop.IOLoop.instance().start()
