@@ -1,6 +1,97 @@
 {% extends 'admin_layout.html' %}
-{% block title %}添加用户{% end %}
+{% block title %}用户列表{% end %}
 <!-- 面包屑导航块 -->
+
+{% block js %}
+<script>
+    function modify_user_info(id){
+        {#发起请求，获得编辑的用户的信息#}
+        $.ajax({
+            url: "/admin/user/select/"+id+"/",
+            data:"",
+            type:'get',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                console.log(coll_back_data.data)
+                $('#UserID').val(coll_back_data.data.UserID)
+                $('#UserName').val(coll_back_data.data.UserName)
+                $('#UserSex').val(coll_back_data.data.UserSex)
+                $('#UserAge').val(coll_back_data.data.UserAge)
+                $('#UserEmail').val(coll_back_data.data.UserEmail)
+                $('#UserVip').val(coll_back_data.data.UserVip)
+                $('#UserPoint').val(coll_back_data.data.UserPoint)
+        }});
+    }
+    
+    function update_user_info() {
+        //功能： 更新用户信息
+        //获取要更新的用户的ID
+        var UserID = $('#UserID').val()
+        json_data = {}
+
+        if ($('#UserName').val()){
+            json_data.UserName = $('#UserName').val()
+        }
+        if ($('#UserSex').val()){
+            json_data.UserSex = $('#UserSex').val()
+        }
+        if ($('#UserAge').val()){
+            json_data.UserAge = $('#UserAge').val()
+        }
+        if ($('#UserEmail').val()){
+            json_data.UserEmail = $('#UserEmail').val()
+        }
+        if ($('#UserVip').val()){
+            json_data.UserVip = $('#UserVip').val()
+        }
+        if ($('#UserPoint').val()){
+            json_data.UserPoint = $('#UserPoint').val()
+        }
+        $.ajax({
+            url: "/admin/user/update/"+UserID+"/",
+            data:{ data: JSON.stringify(json_data) },
+            type:'patch',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    layer.confirm('更新成功', {
+                      btn: ['确定'] //按钮
+                    }, function(){
+                     location.reload()
+                    });
+                    //layer.msg('更新成功！', {icon: 1});
+
+                }else{
+                    layer.msg('更新失败！', {icon: 5});
+                }
+        }});
+    }
+    
+    function delete_user(id) {
+        layer.confirm('您确认删除ID为'+id+'的用户吗？', {
+          btn: ['确认','取消'] //按钮
+        }, function(){
+          $.ajax({
+            url: "/admin/user/delete/"+id+"/",
+            data:{ data: "" },
+            type:'delete',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    location.reload()
+                }else{
+                    layer.msg('删除失败！', {icon: 5});
+                }
+        }});
+        });
+    }
+    
+</script>
+{% end %}
+
 {% block bread_crumbs %}
 <ul class="breadcrumb">
 	<li>
@@ -13,7 +104,7 @@
 	</li>
 	<li class="active"> &amp; user</li>
 </ul>
-{% end %}】
+{% end %}
 
 <!-- 面包屑下的表的名称 -->
 {% block bread_crumbs_table_name %}
@@ -34,118 +125,63 @@
 				<table id="simple-table" class="table  table-bordered table-hover">
 					<thead>
 						<tr>
-							<th class="center col-md-1">编号</th>
-							<th class="detail-col center col-md-1">图片</th>
-							<th class="center col-md-2">名称</th>
-							<th class="center col-md-1">系列</th>
-							<th class="center col-md-1">类型</th>
-							<th class="center col-md-1">价格</th>
-							<th class="center col-md-1">库存</th>
-							<th class="center col-md-3">简介</th>
-							<th class="center col-md-1">功能</th>
+							<th class="center col-md-1">会员ID</th>
+{#							<th class="detail-col center col-md-1">图片</th>#}
+							<th class="center col-md-1">名称</th>
+							<th class="center col-md-1">性别</th>
+							<th class="center col-md-1">年龄</th>
+							<th class="center col-md-1">邮箱</th>
+							<th class="center col-md-1">VIP等级</th>
+							<th class="center col-md-1">积分</th>
+                            <th class="center col-md-1">注册时间</th>
+                            <th class="center col-md-1">登录时间</th>
+                            <th class="center col-md-1">登录IP</th>
+                            <th class="center col-md-1">操作</th>
+
 						</tr>
 					</thead>
 
 					<tbody>
+                        {% for user in user_data %}
 						<tr>
-							<td class="center"> 1 </td>
-							<td class="center">
-								<div class="action-buttons">
-									<a href="#" class="green bigger-140 show-details-btn" title="Show Details">
-										<i class="ace-icon fa fa-angle-double-down"></i>
-									</a>
-								</div>
-							</td>
-							<td class="center">mylove系列</td>
-							<td class="center">$45</td>
-							<td class="hidden-480 center">3,330</td>
-							<td class="center">Feb 12</td>
-							<td class="hidden-480 center"> 500 </td>
-							<td class="center">钟爱一生</td>
+{#							<td class="center"> 1 </td>#}
+{#							<td class="center">#}
+{#								<div class="action-buttons">#}
+{#									<a href="#" class="green bigger-140 show-details-btn" title="Show Details">#}
+{#										<i class="ace-icon fa fa-angle-double-down"></i>#}
+{#									</a>#}
+{#								</div>#}
+{#							</td>#}
+
+                            <td class="center">{{ user.UserID }}</td>
+							<td class="center">{{ user.UserName }}</td>
+                            {% if user.UserSex == 1 %}
+                                <td class="center">男</td>
+                            {% end %}
+
+                            {% if user.UserSex != 1 %}
+                                <td class="center">女</td>
+                            {% end %}
+                            <td class="hidden-480 center">{{ user.UserAge }}</td>
+							<td class="center">{{ user.UserEmail }}</td>
+							<td class="hidden-480 center">VIP {{ user.UserVip }} </td>
+							<td class="center">{{ user.UserPoint }}</td>
+                            <td class="center">{{ user.UserCreatTime }}</td>
+                            <td class="center">{{ user.UserLastVisitTime }}</td>
+                            <td class="center">{{ user.UserLastVisitIP }}</td>
 							<td class="center">
 								<div class="hidden-sm hidden-xs">
-									<button class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-table">
+									<button onclick="modify_user_info('{{ user.UserID }}')" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-table">
 										<i class="ace-icon fa fa-pencil bigger-120"></i>
 									</button>
-									<button class="btn btn-xs btn-danger">
+									<button onclick="delete_user('{{ user.UserID }}')" class="btn btn-xs btn-danger">
 										<i class="ace-icon fa fa-trash-o bigger-120"></i>
 									</button>
 								</div>
 								</div>
 							</td>
 						</tr>
-
-						<tr class="detail-row">
-							<td colspan="9">
-								<div class="table-detail">
-									<div class="row">
-										<div class="col-xs-12 col-sm-2 col-md-3">
-											<div class="text-center">
-												<img height="150" class="thumbnail inline no-margin-bottom" alt="Domain Owner's Avatar" src="{{static_url('images/avatars/profile-pic.jpg')}}" />
-												<br />
-												<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
-													<div class="inline position-relative">
-														<a class="user-title-label" href="#">
-															<i class="ace-icon fa fa-circle light-green"></i>
-															&nbsp;
-															<span class="white">图一</span>
-														</a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xs-12 col-sm-2 col-md-3">
-											<div class="text-center">
-												<img height="150" class="thumbnail inline no-margin-bottom" alt="Domain Owner's Avatar" src="{{static_url('images/avatars/profile-pic.jpg')}}" />
-												<br />
-												<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
-													<div class="inline position-relative">
-														<a class="user-title-label" href="#">
-															<i class="ace-icon fa fa-circle light-green"></i>
-															&nbsp;
-															<span class="white">图二</span>
-														</a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xs-12 col-sm-2 col-md-3">
-											<div class="text-center">
-												<img height="150" class="thumbnail inline no-margin-bottom" alt="Domain Owner's Avatar" src="{{static_url('images/avatars/profile-pic.jpg')}}" />
-												<br />
-												<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
-													<div class="inline position-relative">
-														<a class="user-title-label" href="#">
-															<i class="ace-icon fa fa-circle light-green"></i>
-															&nbsp;
-															<span class="white">图三</span>
-														</a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xs-12 col-sm-2 col-md-3">
-											<div class="text-center">
-												<img height="150" class="thumbnail inline no-margin-bottom" alt="Domain Owner's Avatar" src="{{static_url('images/avatars/profile-pic.jpg')}}" />
-												<br />
-												<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
-													<div class="inline position-relative">
-														<a class="user-title-label" href="#">
-															<i class="ace-icon fa fa-circle light-green"></i>
-															&nbsp;
-															<span class="white">图四</span>
-														</a>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xs-12 col-sm-7">
-											<div class="space visible-xs"></div>
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
+                        {% end %}
 					</tbody>
 				</table>
 			</div>
@@ -153,6 +189,92 @@
 	</div>
 </div>
 {% end %}
+
+
+	{% block modify_alert %}
+			<!-- 修改弹窗块 -->
+			<div id="modal-table" class="modal fade" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header no-padding">
+							<div class="table-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+									<span class="white">&times;</span>
+								</button>
+								修改用户信息
+							</div>
+						</div>
+
+						<div class="modal-body no-padding">
+							<form action="" class="form-horizontal">
+								<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">会员ID</label>
+										<div class="col-sm-9">
+											<input type="text" id="UserID" value="" class="col-xs-10 col-sm-5" readonly/>
+										</div>
+                                </div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">名称</label>
+
+									<div class="col-sm-9">
+										<input type="text" id="UserName" value="" class="col-xs-10 col-sm-5"/>
+									</div>
+								</div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">用户性别</label>
+                                    <div class="col-sm-9">
+                                        <select id="UserSex" class="form-control" style="max-width: 183px;">
+                                            <option value="1">男</option>
+                                            <option value="2">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">年龄</label>
+
+									<div class="col-sm-9">
+										<input type="text" id="UserAge" value="" class="col-xs-10 col-sm-5"/>
+									</div>
+								</div>
+                                <div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">邮箱</label>
+
+									<div class="col-sm-9">
+										<input type="text" id="UserEmail"  class="col-xs-10 col-sm-5"/>
+									</div>
+								</div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">VIP等级</label>
+                                    <div class="col-sm-9">
+                                        <select id="UserVip" class="form-control" style="max-width: 183px;">
+                                            <option value="1">VIP  1</option>
+                                            <option value="2">VIP  2</option>
+                                            <option value="3">VIP  3</option>
+                                            <option value="4">VIP  4</option>
+                                            <option value="5">VIP  5</option>
+                                            <option value="6">VIP  6</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">积分</label>
+									<div class="col-sm-9">
+										<input type="text" id="UserPoint" value="" class="col-xs-10 col-sm-5" />
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<div class="modal-footer no-margin-top">
+							<button onclick="update_user_info()" class="btn btn-sm btn-success pull-right" >
+								提交
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% end %}
 
 
 <!-- 分页模块 -->

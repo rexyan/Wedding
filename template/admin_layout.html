@@ -6,6 +6,14 @@
 		<title>{% block title %}{% end %}</title>
 		
 		<!-- 基本样式以及css -->
+        <!-- basic scripts -->
+		<!--[if !IE]> -->
+		<script src="{{static_url('js/jquery-2.1.4.min.js')}}"></script>
+		<!-- <![endif]-->
+		<!--[if IE]>
+		<script src="{{static_url('js/jquery-1.11.3.min.js')}}"></script>
+		<![endif]-->
+
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="{{static_url('css/bootstrap.min.css')}}" />
 		<link rel="stylesheet" href="{{static_url('font-awesome/4.5.0/css/font-awesome.min.css')}}" />
@@ -29,8 +37,17 @@
 		<script src="{{static_url('js/html5shiv.min.js')}}"></script>
 		<script src="{{static_url('js/respond.min.js')}}"></script>
 		<![endif]-->
-		
+        <!-- layer -->
+		<script src="{{static_url('layer/layer.js')}}"></script>
+
 		<!-- 若子模版中需要引入新的js，需使用此block -->
+
+        <script>
+            function sleep(d){
+              for(var t = Date.now();Date.now() - t <= d;);
+            }
+        </script>
+
 		{% block js %}
 		{% end %}
 		<!-- 若子模版中需要引入新的css，需使用此block -->
@@ -166,7 +183,6 @@
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-hand-o-right"></i>
 							<span class="menu-text"> 商品类型 </span>
-
 							<b class="arrow fa fa-angle-down"></b>
 						</a>
 
@@ -174,7 +190,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="order.html">
+								<a href="/admin/goods_type/index/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									类型列表
 								</a>
@@ -182,7 +198,7 @@
 								<b class="arrow"></b>
 							</li>
 							<li class="">
-								<a href="order_unfinished.html">
+								<a href="/admin/goods_type/add/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									添加类型
 								</a>
@@ -265,7 +281,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="">
+								<a href="/admin/user/add/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									新增用户
 								</a>
@@ -273,7 +289,7 @@
 								<b class="arrow"></b>
 							</li>
 							<li class="">
-								<a href="/admin/user/select/all/">
+								<a href="/admin/user/index/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									用户列表
 								</a>
@@ -657,13 +673,7 @@
 			
 		</div>
 		{% block footer_js %}
-		<!-- basic scripts -->
-		<!--[if !IE]> -->
-		<script src="{{static_url('js/jquery-2.1.4.min.js')}}"></script>
-		<!-- <![endif]-->
-		<!--[if IE]>
-		<script src="{{static_url('js/jquery-1.11.3.min.js')}}"></script>
-		<![endif]-->
+
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='{{static_url('js/jquery.mobile.custom.min.js')}}'>"+"<"+"/script>");
 		</script>

@@ -1,66 +1,70 @@
 {% extends 'admin_layout.html' %}
-
+{% block title %}添加用户{% end %}
 <!-- js -->
 {% block js %}
 <script type="text/javascript">
 	function create_user(){
         json_data = {}
-        if ($("#username").val()){
-            json_data.username = $("#username").val()
+        if ($("#username").val()) {
+            json_data.UserName = $("#username").val()
         }
         if ($("#password").val()){
-            json_data.password = $("#password").val()
-        }
-        if ($("#repassword").val()){
-            json_data.repassword = $("#repassword").val()
+            json_data.UserPwd = $("#password").val()
         }
         if ($("#user_realname").val()){
-            json_data.user_realname = $("#user_realname").val()
+            json_data.UserRealName = $("#user_realname").val()
         }
         if ($("#user_email").val()){
-            json_data.user_email = $("#user_email").val()
+            json_data.UserEmail = $("#user_email").val()
         }
         if ($("#sex").val()){
-            json_data.sex = $("#sex").val()
+            json_data.UserSex = $("#sex").val()
         }
         if ($("#age").val()){
-            json_data.age = $("#age").val()
+            json_data.UserAge = $("#age").val()
         }
         if ($("#init_point").val()){
-            json_data.init_point = $("#init_point").val()
+            json_data.UserPoint = $("#init_point").val()
         }
         if ($("#vip").val()){
-            json_data.vip = $("#vip").val()
+            json_data.UserVip = $("#vip").val()
         }
         {#用户名、密码、邮箱为必填项#}
 
         {#校验密码#}
         if ($("#password").val()!=$("#repassword").val()){
-            alert('密码不一致')
+            layer.msg('两次密码不一致');
             return false
         }else if($("#password").val().length<6){
-            alert('changdu')
+            layer.msg('密码长度需大于5！');
             return false
         }
         {#校验邮箱#}
         var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
         if (!reg.test($("#user_email").val())) {
-            alert('youxiangbuzhengque')
+             layer.msg('邮箱格式不正确！');
             return false
         }else{
             //校验邮箱是否存在
             //$.ajax({ url: "/admin/check_email_is_exists/", data: document.body, success: function(){
 
             //}});
+
+            //检查用户名
         }
         //保存
-        alert('send')
         $.ajax({
             url: "/admin/user/create/",
-            data:json_data,
+            data:{ data: JSON.stringify(json_data) },
             type:'post',
-            dtype:'json',
-            success: function(){
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    layer.msg('保存成功！', {icon: 1});
+                }else{
+                    layer.msg('保存失败！', {icon: 5});
+                }
         }});
 	}
 </script>
@@ -143,7 +147,7 @@
 						<label class="col-sm-3 control-label no-padding-right">用户名</label>
 
 						<div class="col-sm-9">
-							<input type="text" id="username" value="" placeholder="张三" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="text" id="username" value="" placeholder="张三（必填）" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -151,7 +155,7 @@
 						<label class="col-sm-3 control-label no-padding-right">用户密码</label>
 
 						<div class="col-sm-9">
-							<input type="password" id="password" placeholder="请输入密码" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="password" id="password" placeholder="请输入密码（必填 长度>5）" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
 					
@@ -159,10 +163,17 @@
 						<label class="col-sm-3 control-label no-padding-right">重复密码</label>
 
 						<div class="col-sm-9">
-							<input type="password" id="repassword" placeholder="请重复输入密码" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+							<input type="password" id="repassword" placeholder="请重复输入密码（必填）" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
-					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">用户邮箱</label>
+
+						<div class="col-sm-9">
+							<input type="email" id="user_email" placeholder="请输入邮箱地址（必填、唯一）" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
+						</div>
+					</div>
+
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-right">用户姓名</label>
 
@@ -170,16 +181,7 @@
 							<input type="text" id="user_realname" placeholder="请输入您的姓名" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
 						</div>
 					</div>
-					
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right">用户邮箱</label>
 
-						<div class="col-sm-9">
-							<input type="email" id="user_email" placeholder="请输入您的邮箱地址" class="col-xs-9 col-sm-3" style="max-width: 360px;"/>
-						</div>
-					</div>
-					
-					
 					<div class="form-group">
 						<label class="col-sm-3 control-label no-padding-right">用户性别</label>
 						<div class="col-sm-9">
@@ -235,3 +237,6 @@
 	</div>
 {% end %}
 
+
+{% block page %}
+{% end %}

@@ -16,7 +16,6 @@ url = [
         (r"/admin/goods/select/(\w+)/", admin_view.AdminGoodsHandler),
         (r"/admin/goods/create/", admin_view.AdminGoodsHandler),
         (r"/admin/goods/update/(\w+)/", admin_view.AdminGoodsHandler),
-        (r"/admin/goods/modify/(\w+)/", admin_view.AdminGoodsHandler),
         (r"/admin/goods/delete/(\w+)/", admin_view.AdminGoodsHandler),
         
         # 用户
@@ -25,8 +24,15 @@ url = [
         (r"/admin/user/select/(\w+)/", admin_view.AdminUserHandler),
         (r"/admin/user/create/", admin_view.AdminUserHandler),
         (r"/admin/user/update/(\w+)/", admin_view.AdminUserHandler),
-        (r"/admin/user/modify/(\w+)/", admin_view.AdminUserHandler),
         (r"/admin/user/delete/(\w+)/", admin_view.AdminUserHandler),
+
+        # 商品类型
+        (r"/admin/goods_type/index/", admin_view.AdminGoodsTypeIndexHandler),
+        (r"/admin/goods_type/add/", admin_view.AdminGoodsTypeAddHandler),
+        (r"/admin/goods_type/select/(\w+)/", admin_view.AdminGoodsTypeHandler),
+        (r"/admin/goods_type/create/", admin_view.AdminGoodsTypeHandler),
+        (r"/admin/goods_type/update/(\w+)/", admin_view.AdminGoodsTypeHandler),
+        (r"/admin/goods_type/delete/(\w+)/", admin_view.AdminGoodsTypeHandler),
 
         # 工具接口
         (r"/admin/check_email_is_exists/", admin_view.UtilsHandler),

@@ -1,0 +1,129 @@
+{% extends 'admin_layout.html' %}
+{% block title %}商量类型列表{% end %}
+
+{% block js %}
+<script>
+    function commit_product_type(){
+        var ProductTypeName = $('#ProductTypeName').val()
+        if(ProductTypeName!=""){
+            json_data = {}
+            json_data.ProductTypeName = ProductTypeName
+            console.log(json_data)
+            //保存
+            $.ajax({
+                url: "/admin/goods_type/create/",
+                data:{ data: JSON.stringify(json_data) },
+                type:'post',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    if ((coll_back_data['code']) == 1){
+                        layer.msg('保存成功！', {icon: 1});
+                    }else{
+                        layer.msg('保存失败！', {icon: 5});
+                    }
+            }});
+        }else{
+                layer.msg('请输入商品类型名称！', {icon: 5});
+        }
+    }
+</script>
+{% end %}
+
+{% block bread_crumbs %}
+<ul class="breadcrumb">
+	<li>
+		<i class="ace-icon fa fa-home home-icon"></i>
+		<a href="javascript:void(0);">首页</a>
+	</li>
+
+	<li>
+		<a href="javascript:void(0);">商品类型</a>
+	</li>
+	<li class="active"> &amp; Product Type</li>
+</ul>
+{% end %}
+
+{% block bread_crumbs_table_name %}
+    <div class="page-header">
+        <h1>
+            商品类型&nbsp;&nbsp;<span style="font-size: 14px;color: red;">&amp;添加</span>
+        </h1>
+    </div>
+{% end %}
+
+<!-- 内容模块	 -->
+{% block table_content %}
+<div class="page-content">
+    <div class="ace-settings-container" id="ace-settings-container">
+        <div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+            <i class="ace-icon fa fa-cog bigger-130"></i>
+        </div>
+
+        <div class="ace-settings-box clearfix" id="ace-settings-box">
+            <div class="pull-left width-50">
+                <div class="ace-settings-item">
+                    <div class="pull-left">
+                        <select id="skin-colorpicker" class="hide">
+                            <option data-skin="no-skin" value="#438EB9">#438EB9</option>
+                            <option data-skin="skin-1" value="#222A2D">#222A2D</option>
+                            <option data-skin="skin-2" value="#C6487E">#C6487E</option>
+                            <option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+                        </select>
+                    </div>
+                    <span>&nbsp; Choose Skin</span>
+                </div>
+
+                <div class="ace-settings-item">
+                    <input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-add-container" autocomplete="off" />
+                    <label class="lbl" for="ace-settings-add-container">
+                        Inside
+                        <b>.container</b>
+                    </label>
+                </div>
+            </div><!-- /.pull-left -->
+
+            <div class="pull-left width-50">
+                <div class="ace-settings-item">
+                    <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" autocomplete="off" />
+                    <label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
+                </div>
+
+                <div class="ace-settings-item">
+                    <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact" autocomplete="off" />
+                    <label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
+                </div>
+
+            </div><!-- /.pull-left -->
+        </div><!-- /.ace-settings-box -->
+    </div><!-- /.ace-settings-container -->
+    <div class="row">
+        <div class="col-xs-12">
+            <div action="" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">类型名称</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" id="ProductTypeName" placeholder="请输入商品类型名称" class="col-xs-10 col-sm-5" style="max-width: 280px;"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-9 col-md-offset-2" >
+                        <div class="center">
+                            <button type="submit" onclick="commit_product_type()" class="btn btn-sm btn-success">
+                                提交
+                                <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+
+
+{% block page %}
+{% end %}

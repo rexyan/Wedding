@@ -87,4 +87,4 @@ def upload_file(file, path):
 
 
 if __name__ == '__main__':
-    print randomstring(40)
+    print sec_pass("1111")

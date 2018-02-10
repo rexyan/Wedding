@@ -1,0 +1,64 @@
+{% extends 'admin_layout.html' %}
+{% block title %}商量类型列表{% end %}
+
+{% block bread_crumbs %}
+<ul class="breadcrumb">
+	<li>
+		<i class="ace-icon fa fa-home home-icon"></i>
+		<a href="javascript:void(0);">首页</a>
+	</li>
+
+	<li>
+		<a href="javascript:void(0);">商品类型</a>
+	</li>
+	<li class="active"> &amp; Product Type</li>
+</ul>
+{% end %}
+
+<!-- 面包屑下的表的名称 -->
+{% block bread_crumbs_table_name %}
+<div class="page-header">
+	<h1>
+		商品类型&nbsp;&nbsp;<span style="font-size: 14px;color: red;">&amp;查看</span>
+	</h1>
+</div>
+{% end %}
+
+<!-- 表的内容 -->
+{% block table_content %}
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		<div class="row">
+			<div class="col-xs-12">
+				<table id="simple-table" class="table  table-bordered table-hover">
+					<thead>
+						<tr>
+							<th class="center col-md-5">商品类型ID</th>
+							<th class="center col-md-5">商品类型名称</th>
+                            <th class="center">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+                            <td class="center">1</td>
+                            <td class="center">虎</td>
+							<td class="center">
+								<div class="hidden-sm hidden-xs">
+									<button  class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-table">
+										<i class="ace-icon fa fa-pencil bigger-120"></i>
+									</button>
+									<button  class="btn btn-xs btn-danger">
+										<i class="ace-icon fa fa-trash-o bigger-120"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% end %}
