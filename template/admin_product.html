@@ -1,0 +1,442 @@
+{% extends 'admin_layout.html' %}
+
+{% block js %}
+<script>
+     $(function () {
+         {# 发起请求，获取商品类型 #}
+         $.ajax({
+                url: "/admin/product/select/"+"All"+"/",
+                data:"",
+                type:'get',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    for (x in coll_back_data.data){
+                        console.log(coll_back_data.data[x])
+                        $("#ProductType").append("<option value='"+coll_back_data.data[x].ProductTypeID+"'>"+coll_back_data.data[x].ProductTypeName+"</option>");
+                    }
+                }});
+     });
+
+    function delete_product(id){
+        layer.confirm('您确认删除ID为'+id+'的商品类型吗？', {
+          btn: ['确认','取消'] //按钮
+        }, function(){
+          $.ajax({
+            url: "/admin/product/delete/"+id.trim()+"/",
+            data:{ data: "" },
+            type:'delete',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    location.reload()
+                }else{
+                    layer.msg('删除失败！', {icon: 5});
+                }
+        }});
+        });
+    }
+    
+    function modify_product(id) {
+         {# 发起请求，获取商品信息 #}
+        $.ajax({
+            url: "/admin/product/select/"+id.trim()+"/",
+            data:"",
+            type:'get',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                console.log(coll_back_data.data)
+                $('#ProductID').val(coll_back_data.data.ProductID)
+                $('#ProductName').val(coll_back_data.data.ProductName)
+                $('#ProductBrand').val(coll_back_data.data.ProductBrand)
+                $('#ProductType').val(coll_back_data.data.ProductType)
+                $('#ProductKeywords').val(coll_back_data.data.ProductKeywords)
+                $('#ProductMarketPrice').val(coll_back_data.data.ProductMarketPrice)
+                $('#ProductFavorablePrice').val(coll_back_data.data.ProductFavorablePrice)
+                $('#ProductVipPrice').val(coll_back_data.data.ProductVipPrice)
+                $('#ProductPoint').val(coll_back_data.data.ProductPoint)
+                $('#ProductCount').val(coll_back_data.data.ProductCount)
+                if (coll_back_data.data.IsHot){
+                    $('#IsHot').val("1")
+                }else{
+                    $('#IsHot').val("0")
+                }
+                if(coll_back_data.data.IsNew){
+                    $('#IsNew').val("1")
+                }else{
+                    $('#IsNew').val("0")
+                }
+                $('#ProductOnTime').val(coll_back_data.data.ProductOnTime)
+                $('#ProductIntroduce').val(coll_back_data.data.ProductIntroduce)
+                $('#ProductDescribe').val(coll_back_data.data.ProductDescribe)
+        }});
+    }
+    
+    function save_product() {
+        json_data = {}
+        var ProductID = $('#ProductID').val()
+        if ($('#ProductName').val()){
+            json_data.ProductName = $('#ProductName').val()
+        }else{
+            layer.msg('商品名称不能为空');
+            return false;
+        }
+        if ($('#ProductBrand').val()){
+            json_data.ProductBrand = $('#ProductBrand').val()
+        }
+        if ($('#ProductKeywords').val()){
+            json_data.ProductKeywords = $('#ProductKeywords').val()
+        }
+        if ($('#ProductMarketPrice').val()){
+            json_data.ProductMarketPrice = $('#ProductMarketPrice').val()
+        }else{
+            layer.msg('商品市场价格不能为空');
+            return false;
+        }
+        if ($('#ProductFavorablePrice').val()){
+            json_data.ProductFavorablePrice = $('#ProductFavorablePrice').val()
+        }
+        if ($('#ProductVipPrice').val()){
+            json_data.ProductVipPrice = $('#ProductVipPrice').val()
+        }
+        if ($('#ProductPoint').val()){
+            json_data.ProductPoint = $('#ProductPoint').val()
+        }
+        if ($('#ProductCount').val()){
+            json_data.ProductCount = $('#ProductCount').val()
+        }else{
+            layer.msg('商品库存不能为空');
+            return false;
+        }
+        if ($('#IsHot').val()){
+            json_data.IsHot = $('#IsHot').val()
+        }
+        if ($('#IsNew').val()){
+            json_data.IsNew = $('#IsNew').val()
+        }
+        if ($('#ProductType').val()){
+            json_data.ProductType = $('#ProductType').val()
+        }
+        if ($('#ProductIntroduce').val()){
+            json_data.ProductIntroduce = $('#ProductIntroduce').val()
+        }
+        if ($('#ProductDescribe').val()){
+            json_data.ProductDescribe = $('#ProductDescribe').val()
+        }
+        if ($('#ProductOnTime').val()){
+            json_data.ProductOnTime = $('#ProductOnTime').val()
+        }
+
+        console.log(json_data)
+        $.ajax({
+            url: "/admin/goods/update/"+ProductID+"/",
+            data:{ data: JSON.stringify(json_data) },
+            type:'patch',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    layer.confirm('更新成功', {
+                      btn: ['确定'] //按钮
+                    }, function(){
+                     location.reload()
+                    });
+                    //layer.msg('更新成功！', {icon: 1});
+
+                }else{
+                    layer.msg('更新失败！', {icon: 5});
+                }
+        }});
+    }
+
+</script>
+{% end %}
+
+<!-- 表的内容 -->
+{% block table_content %}
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        <div class="row">
+            <div class="col-xs-12">
+                <table id="simple-table" class="table  table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="center col-md-1">编号</th>
+                            <th class="detail-col center col-md-1">图片</th>
+                            <th class="center col-md-1">名称</th>
+                            <th class="center col-md-1">类型</th>
+                            <th class="center col-md-1">品牌</th>
+                            <th class="center col-md-1">市场价</th>
+                            <th class="center col-md-1">优惠价</th>
+                            <th class="center col-md-1">会员价</th>
+                            <th class="center col-md-1">积分</th>
+                            <th class="center col-md-1">库存</th>
+                            <th class="center col-md-1">热门</th>
+                            <th class="center col-md-1">新品</th>
+                            <th class="center col-md-1"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for product in Product_list %}
+                        <tr>
+                            <td class="center"> {{ product.ProductID }} </td>
+                            <td class="center">
+                                <div class="action-buttons">
+                                    <a href="#" class="green bigger-140 show-details-btn" title="查看图片（红色表示本地存储，绿色表示云存储）">
+                                        <i class="ace-icon fa fa-angle-double-down"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="center"> {{ product.ProductName }}</td>
+                            <td class="center"> {{ product.ProductType }}</td>
+                            <td class="center"> {{ product.ProductBrand }}</td>
+                            <td class="center"> {{ product.ProductMarketPrice }}</td>
+                            <td class="center"> {{ product.ProductFavorablePrice }} </td>
+                            <td class="center"> {{ product.ProductVipPrice }}</td>
+                            <td class="center"> {{ product.ProductPoint }}</td>
+                            <td class="center"> {{ product.ProductCount }}</td>
+                            {% if product.IsHot==True %}
+                                <td class="center">是</td>
+                            {% else %}
+                                <td class="center">否</td>
+                            {% end %}
+
+                            {% if product.IsNew==True %}
+                                <td class="center">是</td>
+                            {% else %}
+                                <td class="center">否</td>
+                            {% end %}
+
+                            <td class="center">
+                                <div class="hidden-sm hidden-xs">
+                                    <button onclick="modify_product('{{ product.ProductID }} ')" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-table">
+                                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                    </button>
+                                    <button onclick="delete_product('{{ product.ProductID }} ')" class="btn btn-xs btn-danger">
+                                        <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                    </button>
+                                </div>
+                                </div>
+                            </td>
+                        </tr>
+
+
+                        <tr class="detail-row">
+                            <td colspan="9">
+                                <div class="table-detail">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-2 col-md-3">
+                                            <div class="text-center">
+                                                {#判断图片在本地还是云存储中#}
+                                                {% if product.SmallPictureUpType==1 %}
+                                                    <img height="150" width="140" class="thumbnail inline no-margin-bottom" alt="本地" src="/static/images/upload/{{ product.ProductSmallPicture }}" />
+                                                {% else %}
+                                                    <img height="150" width="140" class="thumbnail inline no-margin-bottom" alt="云存储" src="http://ovsf3r7sm.bkt.clouddn.com/{{ product.ProductSmallPicture }}"  />
+                                                {% end %}
+
+                                                <br />
+                                                <div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                                                    <div class="inline position-relative">
+                                                        {% if product.SmallPictureUpType==1 %}
+                                                            <i class="ace-icon fa fa-circle light-red"></i>
+                                                        {% else %}
+                                                            <i class="ace-icon fa fa-circle light-green"></i>
+                                                        {% end %}
+
+                                                            &nbsp;
+                                                            <span class="white" style="cursor:pointer">删除</span>
+                                                            &nbsp;
+                                                        <a class="user-title-label" href="/admin/image/add/?pid={{ product.ProductID }}">
+                                                            <span class="white">重传</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-2 col-md-3">
+                                            <div class="text-center">
+                                                {% if product.BigPictureUpType==1 %}
+                                                    <img height="150" width="140" class="thumbnail inline no-margin-bottom" alt="本地" src="/static/images/upload/{{ product.ProductBigPictureProductBigPicture }}" />
+                                                {% else %}
+                                                    <img height="150" width="140" class="thumbnail inline no-margin-bottom" alt="云存储" src="http://ovsf3r7sm.bkt.clouddn.com/{{ product.ProductBigPictureProductBigPicture }}"  />
+                                                {% end %}
+                                                <br />
+                                                <div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                                                    <div class="inline position-relative">
+                                                        {% if product.BigPictureUpType==1 %}
+                                                            <i class="ace-icon fa fa-circle light-red"></i>
+                                                        {% else %}
+                                                            <i class="ace-icon fa fa-circle light-green"></i>
+                                                        {% end %}
+                                                            &nbsp;
+                                                            <span class="white" style="cursor:pointer">删除</span>
+                                                            &nbsp;
+                                                        <a class="user-title-label" href="/admin/image/add/?pid={{ product.ProductID }} ">
+                                                            <span class="white">重传</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-7">
+                                            <div class="space visible-xs"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block modify_alert %}
+<!-- 修改弹窗块 -->
+<div id="modal-table" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header no-padding">
+                <div class="table-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <span class="white">&times;</span>
+                    </button>
+                    修改商品信息
+                </div>
+            </div>
+
+            <div class="modal-body no-padding">
+                <form action="" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品编号</label>
+                        <div class="col-sm-9">
+                            <input type="text"  id="ProductID" value="" class="col-xs-10 col-sm-5" readonly/>
+                        </div>
+                        </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品名称</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductName" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品品牌</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductBrand" value="" class="col-xs-10 col-sm-5" />
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品类型</label>
+                        <div class="col-sm-9">
+                            <select id="ProductType" class="form-control" style="max-width: 200px;">
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品关键字</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductKeywords" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">市场价</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductMarketPrice" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">优惠价</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductFavorablePrice" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">会员价</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductVipPrice" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品积分</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductPoint" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品库存</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="ProductCount" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">是否热门</label>
+                        <div class="col-sm-9">
+                            <select id="IsHot" class="form-control" style="max-width: 200px;">
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">是否新品</label>
+                        <div class="col-sm-9">
+                            <select id="IsNew" class="form-control" style="max-width: 200px;">
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">上架时间</label>
+                        <div class="col-sm-9">
+                            <input type="date" id="ProductOnTime" value="" class="col-xs-10 col-sm-5"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品简介</label>
+                        <div class="col-sm-9">
+                            <textarea name="ProductIntroduce" id="ProductIntroduce" class="form-control limited"  maxlength="50" style="width: 360px;height: 80px;"></textarea>
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">商品完整描述</label>
+                        <div class="col-sm-9">
+                            <textarea name="ProductDescribe" id="ProductDescribe" class="form-control limited"  maxlength="50" style="width: 360px;height: 80px;"></textarea>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+
+            <div class="modal-footer no-margin-top">
+                <button onclick="save_product()" class="btn btn-sm btn-success pull-right" >
+                    提交
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}

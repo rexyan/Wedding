@@ -1,0 +1,322 @@
+{% extends 'admin_layout.html' %}
+{% block js %}
+<script>
+    $(function(){
+        {# 发起请求，获取商品类型 #}
+         $.ajax({
+                url: "/admin/product/select/"+"All"+"/",
+                data:"",
+                type:'get',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    for (x in coll_back_data.data){
+                        console.log(coll_back_data.data[x])
+                        $("#ProductType").append("<option value='"+coll_back_data.data[x].ProductTypeID+"'>"+coll_back_data.data[x].ProductTypeName+"</option>");
+                    }
+            }});
+    })
+    
+    function add_product() {
+        json_data = {}
+        if ($('#ProductName').val()){
+            json_data.ProductName = $('#ProductName').val()
+        }else{
+            layer.msg('商品名称不能为空');
+            return false;
+        }
+        if ($('#ProductBrand').val()){
+            json_data.ProductBrand = $('#ProductBrand').val()
+        }
+        if ($('#ProductKeywords').val()){
+            json_data.ProductKeywords = $('#ProductKeywords').val()
+        }
+        if ($('#ProductMarketPrice').val()){
+            json_data.ProductMarketPrice = $('#ProductMarketPrice').val()
+        }else{
+            layer.msg('商品市场价格不能为空');
+            return false;
+        }
+
+        if ($('#ProductFavorablePrice').val()){
+            json_data.ProductFavorablePrice = $('#ProductFavorablePrice').val()
+        }
+        if ($('#ProductVipPrice').val()){
+            json_data.ProductVipPrice = $('#ProductVipPrice').val()
+        }
+        if ($('#ProductPoint').val()){
+            json_data.ProductPoint = $('#ProductPoint').val()
+        }
+        if ($('#ProductCount').val()){
+            json_data.ProductCount = $('#ProductCount').val()
+        }else{
+            layer.msg('商品库存不能为空');
+            return false;
+        }
+        if ($('#IsHot').val()){
+            json_data.IsHot = $('#IsHot').val()
+        }
+        if ($('#IsNew').val()){
+            json_data.IsNew = $('#IsNew').val()
+        }
+        if ($('#ProductType').val()){
+            json_data.ProductType = $('#ProductType').val()
+        }
+        if ($('#ProductIntroduce').val()){
+            json_data.ProductIntroduce = $('#ProductIntroduce').val()
+        }
+        if ($('#ProductDescribe').val()){
+            json_data.ProductDescribe = $('#ProductDescribe').val()
+        }
+        if ($('#ProductOnTime').val()){
+            json_data.ProductOnTime = $('#ProductOnTime').val()
+        }
+        console.log(json_data)
+
+        //保存
+        $.ajax({
+            url: "/admin/product/create/",
+            data:{ data: JSON.stringify(json_data) },
+            type:'post',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    layer.confirm('添加成功,是否继续上传图片？', {
+                      btn: ['是','否'] //按钮
+                    }, function(){
+                      window.location.href="/admin/image/add/?pid="+coll_back_data['data']
+                    }, function(){
+                      layer.msg('你可以在商品列表中修相关信息', {
+
+                      });
+                    });
+
+                }else{
+                    layer.msg('保存失败！', {icon: 5});
+                }
+        }});
+    }
+</script>
+{% end %}
+
+	<body class="no-skin">
+		<div id="navbar" class="navbar navbar-default ace-save-state">
+			<div class="navbar-container ace-save-state" id="navbar-container">
+			<div class="main-content">
+				<div class="main-content-inner">
+					<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+						<ul class="breadcrumb">
+							<li>
+								<i class="ace-icon fa fa-home home-icon"></i>
+								<a href="javascript:void(0);">首页</a>
+							</li>
+
+							<li>
+								<a href="javascript:void(0);">商品</a>
+							</li>
+							<li class="active"> &amp; goods</li>
+						</ul>
+
+					</div>
+					
+					{% block bread_crumbs_table_name %}
+						<div class="page-header">
+							<h1>
+								商品表&nbsp;&nbsp;<span style="font-size: 14px;color: red;">&amp;添加</span>
+							</h1>
+						</div>
+					{% end %}
+					
+					<!-- 内容模块	 -->
+					{% block table_content %}
+					<div class="page-content">
+						<div class="ace-settings-container" id="ace-settings-container">
+							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+								<i class="ace-icon fa fa-cog bigger-130"></i>
+							</div>
+
+							<div class="ace-settings-box clearfix" id="ace-settings-box">
+								<div class="pull-left width-50">
+									<div class="ace-settings-item">
+										<div class="pull-left">
+											<select id="skin-colorpicker" class="hide">
+												<option data-skin="no-skin" value="#438EB9">#438EB9</option>
+												<option data-skin="skin-1" value="#222A2D">#222A2D</option>
+												<option data-skin="skin-2" value="#C6487E">#C6487E</option>
+												<option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+											</select>
+										</div>
+										<span>&nbsp; Choose Skin</span>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-add-container" autocomplete="off" />
+										<label class="lbl" for="ace-settings-add-container">
+											Inside
+											<b>.container</b>
+										</label>
+									</div>
+								</div><!-- /.pull-left -->
+
+								<div class="pull-left width-50">
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" autocomplete="off" />
+										<label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact" autocomplete="off" />
+										<label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
+									</div>
+
+								</div><!-- /.pull-left -->
+							</div><!-- /.ace-settings-box -->
+						</div><!-- /.ace-settings-container -->
+						<div class="row">
+							<div class="col-xs-12">
+								<div action="" class="form-horizontal">
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品名称</label>
+
+										<div class="col-sm-9">
+											<input type="text" id="ProductName" placeholder="（必填）" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品品牌</label>
+										<div class="col-sm-9">
+											<input type="text" id="ProductBrand" placeholder="" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品关键字</label>
+										<div class="col-sm-9">
+											<input type="text" id="ProductKeywords" placeholder="多个使用、分隔" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品市场价格</label>
+										<div class="col-sm-9">
+											<input type="text" id="ProductMarketPrice" placeholder="" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品优惠价格</label>
+										<div class="col-sm-9">
+											<input type="text" id="ProductFavorablePrice" placeholder="" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品VIP价格</label>
+										<div class="col-sm-9">
+											<input type="text" id="ProductVipPrice" placeholder="" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品积分</label>
+										<div class="col-sm-9">
+											<input type="text" id="ProductPoint" placeholder="" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+                                     <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品库存量</label>
+										<div class="col-sm-9">
+											<input type="text" id="ProductCount" placeholder="" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">是否是热门商品</label>
+										<div class="col-sm-9">
+											<select id="IsHot" class="form-control" style="max-width: 200px;">
+												<option value="1">是</option>
+												<option value="0">否</option>
+											</select>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">是否是新品</label>
+										<div class="col-sm-9">
+											<select id="IsNew"  class="form-control" style="max-width: 200px;">
+												<option value="1">是</option>
+												<option value="0">否</option>
+											</select>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品类型</label>
+										<div class="col-sm-9" >
+											<select id="ProductType" class="form-control" style="max-width: 200px;">
+
+											</select>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">上市时间</label>
+										<div class="col-sm-9">
+											<input type="date" id="ProductOnTime" placeholder="" class="col-xs-10 col-sm-5" style="max-width: 360px;"/>
+										</div>
+									</div>
+
+{#									<div class="form-group">#}
+{#										<label class="col-sm-3 control-label no-padding-right">商品小图</label>#}
+{##}
+{#										<div class="col-sm-9" style="max-width: 360px;">#}
+{#											<input type="file" id="img-1"/>#}
+{#										</div>#}
+{#									</div>#}
+{#									<div class="form-group">#}
+{#										<label class="col-sm-3 control-label no-padding-right" >商品大图</label>#}
+{##}
+{#										<div class="col-sm-9" style="max-width: 360px;">#}
+{#											<input type="file" id="img-2"/>#}
+{#										</div>#}
+{#									</div>#}
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品简介</label>
+										<div class="col-sm-9">
+											<textarea name="ProductIntroduce" id="ProductIntroduce" class="form-control limited"  maxlength="50" style="width: 360px;height: 80px;"></textarea>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right">商品完整描述</label>
+										<div class="col-sm-9">
+											<textarea name="ProductDescribe" id="ProductDescribe" class="form-control limited"  maxlength="50" style="width: 360px;height: 80px;"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+
+										<div class="col-sm-9 col-md-offset-2" >
+											<div class="center">
+                                                <button type="submit" onclick="add_product()" class="btn btn-sm btn-success">
+													提交
+													<i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% end %}
+				</div>
+			</div>
+		</div>
+	</body>
+{% block page %}
+{% end %}

@@ -40,13 +40,11 @@ QINIU_BUCKET_NAME = 'rexyan'
 QINIU_USER_DOMAIN = 'http://ovsf3r7sm.bkt.clouddn.com'
 LOCAL_TMP_PATH = ''
 
-
-# 豆瓣接口配置
-DOUBAN_GET_BOOK_INFO_API = 'https://api.douban.com/v2/book/'  # https://api.douban.com/v2/book/:id
-
+# 又拍配置
 
 # 允许上传类型
 UP_FILE_TYPE = [u'mobi', u'pdf', u'txt', u'equb']
+
 
 # SMTP 账号设置
 SMTP_ADD = 'smtp.exmail.qq.com'
@@ -55,8 +53,10 @@ SMTP_USER = 'push@kindle15.com'
 SMTP_PASS = '18525350524Yrs'
 
 
-# 推送设置
+# 发送邮件设置
 EMAIL_PUSH_SUBJECT = u'Kindle15电子书推送'
 EMAIL_PUSH_SENDER = [u"kinlde15推送", u'push@kindle15.com']
 
-DEBUG = True
+# luosimao设置
+LUOSIMAO_CHECK_ADDRESS = 'https://captcha.luosimao.com/api/site_verify'
+LUOSIMAO_API_KEY = '0ff0f6b9f68ba28f8eaa7bd4914f78b0'

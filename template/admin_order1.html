@@ -1,5 +1,5 @@
 {% extends 'admin_layout.html' %}
-{% block title %}未处理订单{% end %}
+{% block title %}已处理订单{% end %}
 
 {% block js %}
 <script>
@@ -22,7 +22,7 @@
                 point= coll_back_data.data.UserPoint
         }});
 
-          layer.open({
+       layer.open({
           type: 1
           ,title: '用户信息'
           ,area: ['390px', '230px']
@@ -48,51 +48,6 @@
           }
         });
     }
-    
-    function get_order_info(id) {
-         $.ajax({
-                url: "/admin/order/select/"+id+"/",
-                data:"",
-                type:'get',
-                datatype:'json',
-                success: function(arg){
-                    coll_back_data = $.parseJSON(arg)
-                    console.log(coll_back_data.data)
-                    $('#OrderID').val(coll_back_data.data.OrderID)
-                    if(coll_back_data.data.OrderStatus){
-                        $('#OrderStatus').val('1')
-                    }else{
-                        $('#OrderStatus').val('0')
-                    }
-
-                }});
-    }
-    
-    function save_order() {
-        json_data={}
-        var OrderID = $('#OrderID').val()
-        json_data.OrderStatus = $('#OrderStatus').val()
-       $.ajax({
-        url: "/admin/order/update/"+OrderID+"/",
-        data:{ data: JSON.stringify(json_data) },
-        type:'patch',
-        datatype:'json',
-        success: function(arg){
-            coll_back_data = $.parseJSON(arg)
-            if ((coll_back_data['code']) == 1){
-                layer.confirm('更新成功', {
-                  btn: ['确定'] //按钮
-                }, function(){
-                 location.reload()
-                });
-                //layer.msg('更新成功！', {icon: 1});
-
-            }else{
-                layer.msg('更新失败！', {icon: 5});
-            }
-    }});
-    }
-
 </script>
 {% end %}
 
@@ -104,7 +59,7 @@
 	</li>
 
 	<li>
-		<a href="javascript:void(0);">未处理订单</a>
+		<a href="javascript:void(0);">已处理订单</a>
 	</li>
 	<li class="active"> &amp; Order</li>
 </ul>
@@ -114,7 +69,7 @@
 {% block bread_crumbs_table_name %}
 <div class="page-header">
 	<h1>
-		未处理订单&nbsp;&nbsp;<span style="font-size: 14px;color: red;">&amp;查看</span>
+		已处理订单&nbsp;&nbsp;<span style="font-size: 14px;color: red;">&amp;查看</span>
 	</h1>
 </div>
 {% end %}
@@ -135,7 +90,6 @@
 							<th class="center col-md-2">支付方式</th>
 							<th class="center col-md-2">订单状态</th>
 							<th class="center col-md-2">配送地址</th>
-                            <th class="center">操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -151,13 +105,6 @@
                                 <td class="center">未完成</td>
                             {% end %}
                             <td class="center">{{ order.OrderSendAddress }}</td>
-							<td class="center">
-								<div class="hidden-sm hidden-xs">
-									<button onclick="get_order_info('{{ order.OrderID }}')" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-table">
-										<i class="ace-icon fa fa-pencil bigger-120"></i>
-									</button>
-								</div>
-							</td>
 						</tr>
                     {% end %}
 					</tbody>
@@ -179,25 +126,25 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <span class="white">&times;</span>
                     </button>
-                    修改商品类型
+                    修改订单状态
                 </div>
             </div>
 
             <div class="modal-body no-padding">
-                 <form action="" class="form-horizontal">
+                <form action="" class="form-horizontal">
                     <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right">订单编号</label>
 
                             <div class="col-sm-9">
-                                <input type="text" id="OrderID" value="" class="col-xs-10 col-sm-5" readonly/>
+                                <input type="text" id="product_type_id" value="" class="col-xs-10 col-sm-5" readonly/>
                             </div>
                         </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label no-padding-right">订单状态</label>
                         <div class="col-sm-9">
-                            <select id="OrderStatus" class="form-control" style="max-width: 200px;">
-                                <option value="0">未完成</option>
-                                <option value="1">完成</option>
+                            <select id="IsHot" class="form-control" style="max-width: 200px;">
+                                <option value="1">未完成</option>
+                                <option value="0">完成</option>
                             </select>
                         </div>
                     </div>
@@ -205,7 +152,7 @@
             </div>
 
             <div class="modal-footer no-margin-top">
-                <button onclick="save_order()" class="btn btn-sm btn-success pull-right" >
+                <button onclick="save_product_type()" class="btn btn-sm btn-success pull-right" >
                     提交
                 </button>
             </div>

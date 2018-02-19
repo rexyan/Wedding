@@ -1,0 +1,4 @@
+.project
+.pyc
+.pydevproject
+.qiniu_pythonsdk_hostscache.json

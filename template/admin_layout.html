@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>{% block title %}{% end %}</title>
+		<title>{% block title %}xxx 后台管理系统{% end %}</title>
 		
 		<!-- 基本样式以及css -->
         <!-- basic scripts -->
@@ -46,6 +46,28 @@
             function sleep(d){
               for(var t = Date.now();Date.now() - t <= d;);
             }
+            
+            (function () {
+               {# 从后台获取已经登录的用户名 #}
+               $.ajax({
+                        url: "/admin/user/current/",
+                        data:"",
+                        type:'get',
+                        datatype:'json',
+                        success: function(arg){
+                            coll_back_data = $.parseJSON(arg)
+                            if (coll_back_data.code=='0'){
+                                layer.alert('非法操作、未登录！', {
+                                      skin: 'layui-layer-lan' //样式类名
+                                      ,closeBtn: 0
+                                    }, function(){
+                                      window.location = '/admin/'
+                                    });
+                            }else{
+                                $('#ManagerUserName').html(coll_back_data.data)
+                            }
+                    }});
+            })();
         </script>
 
 		{% block js %}
@@ -75,7 +97,7 @@
 					<a href="javascript:void(0);" class="navbar-brand">
 						<small>
 							<i class="fa fa-leaf"></i>
-							DarryRing Admin
+							XXX 管理系统
 						</small>
 					</a>
 				</div>
@@ -99,8 +121,20 @@
 								</li>
 
 								<li class="dropdown-footer">
-									<a href="javascript:void(0)">
+									<a href="/admin/order/index/false/">
 										未处理订单
+										<i class="ace-icon fa fa-arrow-right"></i>
+									</a>
+								</li>
+
+                                <li class="dropdown-header">
+									<i class="ace-icon fa fa-envelope-o"></i>
+									最新评论
+								</li>
+
+								<li class="dropdown-footer">
+									<a href="/admin/order/index/false/">
+										未处理评论
 										<i class="ace-icon fa fa-arrow-right"></i>
 									</a>
 								</li>
@@ -114,8 +148,8 @@
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 								<img class="nav-user-photo" src="{{static_url('images/avatars/user.jpg')}}" alt="Jason's Photo" />
 								<span class="user-info">
-									<small>Welcome</small>
-									Admin
+									<small>欢迎</small>
+									<span id="ManagerUserName"></span>
 								</span>
 
 								<i class="ace-icon fa fa-caret-down"></i>
@@ -123,9 +157,9 @@
 
 							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 								<li>
-									<a href="#">
+									<a href="/admin/">
 										<i class="ace-icon fa fa-power-off"></i>
-										Logout
+										退出
 									</a>
 								</li>
 							</ul>
@@ -190,7 +224,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="/admin/goods_type/index/">
+								<a href="/admin/product_type/index/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									类型列表
 								</a>
@@ -198,7 +232,7 @@
 								<b class="arrow"></b>
 							</li>
 							<li class="">
-								<a href="/admin/goods_type/add/">
+								<a href="/admin/product_type/add/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									添加类型
 								</a>
@@ -220,7 +254,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="/admin/goods">
+								<a href="/admin/product/index/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									商品列表
 								</a>
@@ -229,7 +263,7 @@
 							</li>
 
 							<li class="">
-								<a href="/admin/goods/add">
+								<a href="/admin/product/add/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									添加商品
 								</a>
@@ -251,7 +285,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="order.html">
+								<a href="/admin/order/index/true/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									已处理订单
 								</a>
@@ -259,7 +293,7 @@
 								<b class="arrow"></b>
 							</li>
 							<li class="">
-								<a href="order_unfinished.html">
+								<a href="/admin/order/index/false/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									未处理订单
 								</a>
@@ -311,7 +345,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="order.html">
+								<a href="/admin/comment/index/">
 									<i class="menu-icon fa fa-caret-right"></i>
 									评论列表
 								</a>
@@ -365,21 +399,21 @@
 							<li>
 								<a href="javascript:void(0);">商品</a>
 							</li>
-							<li class="active"> &amp; goods</li>
+							<li class="active"> &amp; product</li>
 						</ul>
 						{% end %}
 					</div>
 
 					<div class="page-content" style="min-height: 740px;">
 						<div class="ace-settings-container" id="ace-settings-container">
+                            <!-- 设置按钮 -->
+                            {% block setting_button %}
 							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
 								<i class="ace-icon fa fa-cog bigger-130"></i>
 							</div>
-							
+							{% end %}
 							<div class="ace-settings-box clearfix" id="ace-settings-box">
-							
-							<!-- 设置按钮 -->
-							
+
 							<div class="pull-left width-50">
 									<div class="ace-settings-item">
 										<div class="pull-left">
@@ -607,8 +641,8 @@
 				<div class="footer-inner">
 					<div class="footer-content">
 						<span class="bigger-120">
-							<span class="blue bolder">DarryRing</span>
-							winner winner,Chickdinner! &copy; 2017
+							<span class="blue bolder">xxx 管理系统</span>
+							版权所有 &copy; 2017
 						</span>
 					</div>
 				</div>

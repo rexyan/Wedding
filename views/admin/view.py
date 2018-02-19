@@ -2,54 +2,138 @@
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
+import os
 from views.base import BaseHandler
-from models.Base import session
+from models.Base import session, noautoflushsession
 from models.User import Users
 from models.ProductType import ProductType
+from models.Product import Product
+from models.Order import Order
+from models.Comment import Comment
+from models.Manager import Manager
 import json
 from utils.auth import sec_pass
+from utils import up_qiniu
+import requests
+import settings
+import datetime
 
 # 后台首页
 class AdminIndexHandler(BaseHandler):
     def get(self):
+        self.session.set('UserSession', "")
         self.render('admin_login.html')
 
 # 商品
-class AdminGoodsIndexHandler(BaseHandler):
+class AdminProductIndexHandler(BaseHandler):
+    # 获取商品列表
     def get(self):
-        self.render('admin_goods.html')
+        ret = noautoflushsession.query(Product)[0:10]
+        for i, x in enumerate(ret):
+            # 根据ProductTypeID查询每个类型的名称【有个坑，需要关闭sqlalchemy自动刷新】
+            q_name = ""
+            q_name = noautoflushsession.query(ProductType).filter_by(ProductTypeID=x.ProductType).first()
+            if q_name:
+                q_name = q_name.ProductTypeName
+            ret[i].ProductType = q_name
+        noautoflushsession.close()
+        self.render('admin_product.html', Product_list=ret)
         
-class AdminGoodsAddHandler(BaseHandler):
+class AdminProductAddHandler(BaseHandler):
     def get(self):
-        self.render('admin_goods_add.html')
+        self.render('admin_product_add.html')
 
-class AdminGoodsHandler(BaseHandler):
+class AdminProductHandler(BaseHandler):
     def get(self, argument):
-        pass
+        print "argument", argument
+        if argument == 'All':
+            data_list = []
+            ret = session.query(ProductType)
+            for x in ret:
+                data_list.append(x.to_json())
+            self.write_json(data=data_list)
+        else:
+            ret = session.query(Product).filter_by(ProductID=argument).first()
+            data_list = ret.to_json()
+            self.write_json(data=data_list, code=1)
         
     def post(self):
-        pass
+        # 新增商品
+        try:
+            # 获取前端传来的参数
+            data = json.loads(self.get_argument('data'))
+            if data['IsHot'] == '1':
+                data['IsHot'] = True
+            else:
+                data['IsHot'] = False
+            if data['IsNew'] == '1':
+                data['IsNew'] = True
+            else:
+                data['IsNew'] = False
+            pro = Product(**data)
+            session.add(pro)
+            session.commit()
+            self.write_json(pro.ProductID, code=1)
+        except Exception,e :
+            # 事务
+            print e
+            session.rollback()
+            self.write_json("failed", code=0)
+        finally:
+            session.close()
     
-    def delete(self):
-        pass
+    def delete(self, argument):
+        try:
+            noautoflushsession.query(Product).filter(Product.ProductID == int(argument)).delete()
+            noautoflushsession.commit()
+            noautoflushsession.close()
+            self.write_json("success", code=1)
+        except Exception, e:
+            print e
+            self.write_json("failed", code=0)
     
-    def patch(self):
-        pass
+    def patch(self, argument):
+        updata_json = json.loads(self.get_argument('data'))
+        print updata_json
+        try:
+            if updata_json['IsNew'] == '1':
+                updata_json['IsNew'] = True
+            else:
+                updata_json['IsNew'] = False
+
+            if updata_json['IsHot'] == '1':
+                updata_json['IsHot'] = True
+            else:
+                updata_json['IsHot'] = False
+
+            updata_json['ProductType'] = int(updata_json['ProductType'])
+            updata_json['ProductMarketPrice'] = int(updata_json['ProductMarketPrice'])
+            updata_json['ProductFavorablePrice'] = int(updata_json['ProductFavorablePrice'])
+            updata_json['ProductVipPrice'] = int(updata_json['ProductVipPrice'])
+            updata_json['ProductPoint'] = int(updata_json['ProductPoint'])
+            updata_json['ProductCount'] = int(updata_json['ProductCount'])
+
+            session.query(Product).filter(Product.ProductID == argument).update(updata_json)
+            session.commit()
+            self.write_json("success", code=1)
+        except Exception, e:
+            print e
+            self.write_json("failed", code=0)
 
 
 # 商品类型
-class AdminGoodsTypeIndexHandler(BaseHandler):
+class AdminProductTypeIndexHandler(BaseHandler):
     def get(self):
-        self.render('admin_goods_type.html')
+        ret = session.query(ProductType)[0:10]
+        self.render('admin_product_type.html', product_type = ret)
 
 
-class AdminGoodsTypeAddHandler(BaseHandler):
+class AdminProductTypeAddHandler(BaseHandler):
     def get(self):
-        self.render('admin_goods_type_add.html')
+        self.render('admin_product_type_add.html')
 
 
-class AdminGoodsTypeHandler(BaseHandler):
+class AdminProductTypeHandler(BaseHandler):
     def get(self, argument):
         pass
 
@@ -60,25 +144,38 @@ class AdminGoodsTypeHandler(BaseHandler):
             data = json.loads(self.get_argument('data'))
             session.add(ProductType(**data))
             session.commit()
+            self.write_json("success", code=1)
         except:
             # 事务
             session.rollback()
-            self.write_json("faild", code=0)
+            self.write_json("failed", code=0)
         finally:
             session.close()
-        self.write_json("success", code=1)
 
-    def delete(self):
-        pass
 
-    def patch(self):
-        pass
+    def delete(self, argument):
+        try:
+            session.query(ProductType).filter(ProductType.ProductTypeID == argument).delete()
+            self.write_json("success", code=1)
+        except Exception, e:
+            self.write_json("failed", code=0)
+
+    def patch(self, argument):
+        updata_json = json.loads(self.get_argument('data'))
+        try:
+            session.query(ProductType).filter(ProductType.ProductTypeID == argument).update(updata_json)
+            session.commit()
+            self.write_json("success", code=1)
+        except Exception, e:
+            print e
+            self.write_json("failed", code=0)
 
 # 用户
 class AdminUserIndexHandler(BaseHandler):
     def get(self):
         # 用户列表页面
-        ret = session.query(Users)[0:10]
+        # get post
+        ret = session.query(Users)[0:10]  # 10  2  5
         self.render('admin_user.html', user_data=ret)
 
 class AdminUserAddHandler(BaseHandler):
@@ -103,21 +200,21 @@ class AdminUserHandler(BaseHandler):
             data['UserPwd'] = sec_pass(data['UserPwd'])
             session.add(Users(**data))
             session.commit()
+            self.write_json("success", code=1)
         except:
             # 事务
             session.rollback()
-            self.write_json("faild", code=0)
+            self.write_json("failed", code=0)
         finally:
             session.close()
-        self.write_json("success", code=1)
-
 
     def delete(self, argument):
         try:
             session.query(Users).filter(Users.UserID == argument).delete()
             self.write_json("success", code=1)
+            session.commit()
         except Exception,e:
-            self.write_json("faild", code=0)
+            self.write_json("failed", code=0)
 
     
     def patch(self, argument):
@@ -128,7 +225,174 @@ class AdminUserHandler(BaseHandler):
             self.write_json("success", code=1)
         except Exception, e:
             print e
-            self.write_json("faild", code=0)
+            self.write_json("failed", code=0)
+
+# 上传图片
+class AdminProductImgesIndexHandler(BaseHandler):
+    # 上传图片页面
+    def get(self):
+        self.render('admin_product_image.html')
+
+    # 上传图片接口
+    def post(self):
+        pid = self.get_argument('pid')
+        try:
+            complete_file_path = None
+            file_name = None
+            return_save_file_path = os.path.join('images', 'upload') # 要保存到数据库的地址
+            save_file_path = os.path.join('static', return_save_file_path)
+            if self.get_argument('image_type')=='1':
+                # 小图地址字段
+                image_type = 'ProductSmallPicture'
+                # 上传到哪儿
+                upload_type = 'SmallPictureUpType'
+            else:
+                # 大图地址字段
+                image_type = 'ProductBigPictureProductBigPicture'
+                # 上传到哪儿
+                upload_type = 'BigPictureUpType'
+
+            if self.get_argument('save_type') == '2' or self.get_argument('save_type') == '3':
+                # 七牛云、又拍云
+                save_file_path = os.path.join('static', return_save_file_path)
+
+            # 将文件先保存到本地
+            file_metas = self.request.files["file"]  # 获取上传文件信息
+            for meta in file_metas:  # 循环文件信息
+                file_name = meta['filename']  # 获取文件的名称
+                # 拼接完整目录
+                complete_file_path = os.path.join(save_file_path, file_name)
+                with open(complete_file_path, 'wb') as up:  # os拼接文件保存路径，以字节码模式打开
+                    up.write(meta['body'])  # 将文件写入到保存路径目录
+
+            # 要保存到数据库的文件名
+            return_save_file_path = file_name
+
+            # 是否上传七牛云
+            if self.get_argument('save_type') == '2':
+                # 上传
+                obj = up_qiniu.QINIU()
+                # 返回七牛地址
+                return_save_file_path = obj.upload(complete_file_path, file_name)
+
+            # 是否上传又拍云
+            if self.get_argument('save_type') == '3':
+                pass
+                # 上传
+                # 返回七牛地址
+                # return_save_file_path
+
+            # 入库
+            session.query(Product).filter(Product.ProductID == pid).update({image_type: return_save_file_path, upload_type:int(self.get_argument('save_type'))})
+            session.commit()
+            session.close()
+            self.write_json("success", code=1)
+        except Exception, e:
+            print e
+            self.write_json("failed", code=0)
+
+# 订单
+class AdminOrderFalseHandler(BaseHandler):
+    def get(self):
+        ret = session.query(Order).filter_by(OrderStatus=False).all()
+        self.render('admin_order.html', order_list=ret)
+
+class AdminOrderTrueHandler(BaseHandler):
+    def get(self):
+        ret = session.query(Order).filter_by(OrderStatus=True).all()
+        self.render('admin_order1.html', order_list=ret)
+
+class AdminOrderHandler(BaseHandler):
+    def get(self, argument):
+        ret = session.query(Order).filter_by(OrderID=argument).first()
+        self.write_json(data=ret.to_json(), code=1)
+
+    def patch(self, argument):
+        updata_json = json.loads(self.get_argument('data'))
+        try:
+            if updata_json['OrderStatus'] == '1':
+                updata_json['OrderStatus'] = True
+            else:
+                updata_json['OrderStatus'] = False
+            session.query(Order).filter(Order.OrderID == argument).update(updata_json)
+            session.commit()
+            self.write_json("success", code=1)
+        except Exception, e:
+            print e
+            self.write_json("failed", code=0)
+
+# 评论
+class AdminCommentIndexHandler(BaseHandler):
+    def get(self):
+        ret = session.query(Comment)[0:10]
+        self.render('admin_comment.html', comment_list=ret)
+
+class AdminCommenHandler(BaseHandler):
+    def get(self, argument):
+        ret = session.query(Comment).filter_by(CommentID=argument).first()
+        self.write_json(data=ret.to_json(), code=1)
+
+    def patch(self, argument):
+        updata_json = json.loads(self.get_argument('data'))
+        try:
+            if updata_json['Status'] == '1':
+                updata_json['Status'] = True
+            else:
+                updata_json['Status'] = False
+            session.query(Comment).filter(Comment.CommentID == argument).update(updata_json)
+            session.commit()
+            self.write_json("success", code=1)
+        except Exception, e:
+            print e
+            self.write_json("failed", code=0)
+
+    def delete(self, argument):
+        try:
+            session.query(Comment).filter(Comment.CommentID == argument).delete()
+            self.write_json("success", code=1)
+        except Exception, e:
+            self.write_json("failed", code=0)
+
+# 后台登录
+class AdminUserLoginHandler(BaseHandler):
+    def get(self):
+        if self.session['UserSession']:
+            managername = self.session['UserSession'].get('ManagerName')
+            code = 1
+        else:
+            managername = ""
+            code = 0
+        self.write_json(managername, code=code)
+
+    def post(self):
+        # 验证luosimao
+        code = 1
+        msg = "success"
+        data_json = json.loads(self.get_argument('data'))
+        luosimao_rep = data_json.get('luosimao_rep')
+        check_json = {
+            'api_key':settings.LUOSIMAO_API_KEY,
+            'response':luosimao_rep
+        }
+        check_response = requests.post(settings.LUOSIMAO_CHECK_ADDRESS, data=check_json)
+        if json.loads(check_response.content).get('res') != 'success':
+            code = 0
+            msg = u"人机验证失败"
+        # 验证帐号密码
+        ret = session.query(Manager).filter(Manager.ManagerName == data_json.get('user_email'), Manager.ManagerPsd == sec_pass(data_json.get('user_pass'))).first()
+        if not ret:
+            code = 0
+            msg = u"帐号密码不正确"
+        else:
+            # 设置session
+            self.session.set('UserSession', ret.to_json())
+            # 更新信息
+            update_json = {
+                'ManagerLastVisitTime': datetime.datetime.now(),
+                'ManagerLastVisitIP': self.request.remote_ip
+            }
+            session.query(Manager).filter(Manager.ManagerName == data_json.get('user_email')).update(update_json)
+        self.write_json(msg, code=code)
 
 
 # Layout模版      

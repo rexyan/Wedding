@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>Login Page - Ace Admin</title>
+		<title>xxx 后台管理系统</title>
 		
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="{{static_url('css/bootstrap.min.css')}}" />
@@ -30,6 +30,66 @@
 		<script src="{{static_url('js/html5shiv.min.js')}}"></script>
 		<script src="{{static_url('js/respond.min.js')}}"></script>
 		<![endif]-->
+
+        <!--[if !IE]> -->
+		<script src="{{static_url('js/jquery-2.1.4.min.js')}}"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+		<script src="{{static_url('js/jquery-1.11.3.min.js')}}"></script>
+		<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='static_url('js/jquery.mobile.custom.min.js')'>"+"<"+"/script>");
+		</script>
+
+        <script src="{{static_url('layer/layer.js')}}"></script>
+
+        <script>
+            window.luosimao_rep = ""
+            function getResponse(resp){
+                 window.luosimao_rep = resp  // resp 即验证成功后获取的值
+            }
+
+            function login() {
+                if (luosimao_rep==""){
+                    layer.msg('未进行人机验证！', {icon: 5});
+                }else {
+                    json_data = {}
+                    json_data.luosimao_rep = luosimao_rep
+                    var UserEmail = $('#UserEmail').val()
+                    if (UserEmail){
+                        json_data.user_email = UserEmail
+                    }else{
+                        layer.msg('帐号不能为空！', {icon: 5});
+                    }
+
+                    var Password = $('#Password').val()
+
+                    if (Password){
+                        json_data.user_pass = Password
+                    }else{
+                        layer.msg('密码不能为空！', {icon: 5});
+                    }
+
+                       $.ajax({
+                            url: "/admin/user/login/",
+                            data:{data: JSON.stringify(json_data) },
+                            type:'post',
+                            datatype:'json',
+                            success: function(arg){
+                                coll_back_data = $.parseJSON(arg)
+                                if(coll_back_data.code=='0'){
+                                    layer.msg(coll_back_data.data, {icon: 5});
+                                    LUOCAPTCHA.reset()
+                                }else{
+                                    window.location.href='/admin/product_type/index/';
+                                }
+
+                        }});
+                }
+            }
+        </script>
 	</head>
 
 	<body class="login-layout" style="background: {{static_url('images/bg.jpg')}} no-repeat center;">
@@ -41,10 +101,10 @@
 							<div class="center">
 								<h1>
 									<i class="ace-icon fa fa-leaf green"></i>
-									<span class="red">DarryRing</span>
-									<span class="grey" id="id-text2">Application</span>
+									<span class="red">xxx </span>
+									<span class="grey" id="id-text2">后台</span>
 								</h1>
-								<h4 class="blue" id="id-company-text">BackStage</h4>
+								<h4 class="blue" id="id-company-text">管理系统</h4>
 							</div>
 
 							<div class="space-6"></div>
@@ -55,7 +115,7 @@
 										<div class="widget-main">
 											<h4 class="header blue lighter bigger">
 												<i class="ace-icon fa fa-coffee green"></i>
-												Please Enter Your Information
+												请输入帐号和密码
 											</h4>
 
 											<div class="space-6"></div>
@@ -64,29 +124,25 @@
 												<fieldset>
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" class="form-control" placeholder="Admin" />
+															<input id="UserEmail" type="text" class="form-control" placeholder="帐号" />
 															<i class="ace-icon fa fa-user"></i>
 														</span>
 													</label>
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" class="form-control" placeholder="Password" />
+															<input id="Password" type="password" class="form-control" placeholder="密码" />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
 													</label>
 
-													<div class="space"></div>
 
-													<div class="clearfix">
-														<label class="inline">
-															<input type="checkbox" class="ace" />
-															<span class="lbl"> Remember Me</span>
-														</label>
-
-														<button type="button" class="width-35 pull-right btn btn-sm btn-primary">
+                                                    <div class="l-captcha" data-callback="getResponse"  data-site-key="3cd412d4e1046ddac84518f66ee4b235"></div>
+													<br>
+                                                    <div class="clearfix">
+														<button onclick="login()" type="button" class="width-35 pull-right btn btn-sm btn-primary">
 															<i class="ace-icon fa fa-key"></i>
-															<span class="bigger-110">Login</span>
+															<span class="bigger-110">登录</span>
 														</button>
 													</div>
 
@@ -95,24 +151,10 @@
 											</form>
 
 											<div class="social-or-login center">
-												<span class="bigger-110">Or Login Using</span>
+												<span class="bigger-110">© 2018 xxx 版权所有</span>
 											</div>
 
 											<div class="space-6"></div>
-
-											<div class="social-login center">
-												<a class="btn btn-primary">
-													<i class="ace-icon fa fa-facebook"></i>
-												</a>
-
-												<a class="btn btn-info">
-													<i class="ace-icon fa fa-twitter"></i>
-												</a>
-
-												<a class="btn btn-danger">
-													<i class="ace-icon fa fa-google-plus"></i>
-												</a>
-											</div>
 										</div><!-- /.widget-main -->
 									</div><!-- /.widget-body -->
 								</div><!-- /.login-box -->
@@ -125,16 +167,7 @@
 
 		<!-- basic scripts -->
 
-		<!--[if !IE]> -->
-		<script src="{{static_url('js/jquery-2.1.4.min.js')}}"></script>
 
-		<!-- <![endif]-->
-
-		<!--[if IE]>
-		<script src="{{static_url('js/jquery-1.11.3.min.js')}}"></script>
-		<![endif]-->
-		<script type="text/javascript">
-			if('ontouchstart' in document.documentElement) document.write("<script src='static_url('js/jquery.mobile.custom.min.js')'>"+"<"+"/script>");
-		</script>
+    <script src="//captcha.luosimao.com/static/js/api.js"></script>
 	</body>
 </html>

@@ -7,7 +7,7 @@ import datetime
 class ProductType(Base):
     __tablename__ = 'product_type'  # 表名
     ProductTypeID = Column(Integer, primary_key=True, autoincrement=True)
-    ProductTypeName = Column(String(100),unique=True, index=True)
+    ProductTypeName = Column(String(100), unique=True, index=True)
 
     def __repr__(self):
         return "%s-%s" % (self.ProductTypeID, self.ProductTypeName)

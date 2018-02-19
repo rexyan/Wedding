@@ -1,5 +1,5 @@
 {% extends 'admin_layout.html' %}
-{% block title %}未处理订单{% end %}
+{% block title %}商量类型列表{% end %}
 
 {% block js %}
 <script>
@@ -22,7 +22,7 @@
                 point= coll_back_data.data.UserPoint
         }});
 
-          layer.open({
+       layer.open({
           type: 1
           ,title: '用户信息'
           ,area: ['390px', '230px']
@@ -48,32 +48,34 @@
           }
         });
     }
-    
-    function get_order_info(id) {
-         $.ajax({
-                url: "/admin/order/select/"+id+"/",
-                data:"",
-                type:'get',
-                datatype:'json',
-                success: function(arg){
-                    coll_back_data = $.parseJSON(arg)
-                    console.log(coll_back_data.data)
-                    $('#OrderID').val(coll_back_data.data.OrderID)
-                    if(coll_back_data.data.OrderStatus){
-                        $('#OrderStatus').val('1')
-                    }else{
-                        $('#OrderStatus').val('0')
-                    }
 
-                }});
+    function get_comment_info(id) {
+        $.ajax({
+            url: "/admin/comment/select/"+id+"/",
+            data:"",
+            type:'get',
+            async:false,
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                console.log(coll_back_data.data)
+                if (coll_back_data.data.Status){
+                     $('#Status').val('1')
+                }else{
+                    $('#Status').val('0')
+                }
+                $('#CommentID').val(coll_back_data.data.CommentID)
+        }});
     }
     
-    function save_order() {
+    function save_comment() {
+        var CommentID = $('#CommentID').val()
+        var Status = $('#Status').val()
         json_data={}
-        var OrderID = $('#OrderID').val()
-        json_data.OrderStatus = $('#OrderStatus').val()
-       $.ajax({
-        url: "/admin/order/update/"+OrderID+"/",
+        json_data.Status = Status
+
+        $.ajax({
+        url: "/admin/comment/update/"+CommentID+"/",
         data:{ data: JSON.stringify(json_data) },
         type:'patch',
         datatype:'json',
@@ -93,6 +95,25 @@
     }});
     }
 
+    function delete_comment(id) {
+          layer.confirm('您确认删除ID为'+id+'的评论吗？', {
+          btn: ['确认','取消'] //按钮
+        }, function(){
+          $.ajax({
+            url: "/admin/comment/delete/"+id+"/",
+            data:{ data: "" },
+            type:'delete',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    location.reload()
+                }else{
+                    layer.msg('删除失败！', {icon: 5});
+                }
+        }});
+        });
+    }
 </script>
 {% end %}
 
@@ -104,9 +125,9 @@
 	</li>
 
 	<li>
-		<a href="javascript:void(0);">未处理订单</a>
+		<a href="javascript:void(0);">评论表</a>
 	</li>
-	<li class="active"> &amp; Order</li>
+	<li class="active"> &amp; Product Type</li>
 </ul>
 {% end %}
 
@@ -114,7 +135,7 @@
 {% block bread_crumbs_table_name %}
 <div class="page-header">
 	<h1>
-		未处理订单&nbsp;&nbsp;<span style="font-size: 14px;color: red;">&amp;查看</span>
+		评论表&nbsp;&nbsp;<span style="font-size: 14px;color: red;">&amp;查看</span>
 	</h1>
 </div>
 {% end %}
@@ -129,37 +150,41 @@
 				<table id="simple-table" class="table  table-bordered table-hover">
 					<thead>
 						<tr>
-							<th class="center col-md-1">订单ID</th>
+							<th class="center col-md-1">评论ID</th>
 							<th class="center col-md-1">用户ID</th>
-							<th class="center col-md-2">订单总价</th>
-							<th class="center col-md-2">支付方式</th>
-							<th class="center col-md-2">订单状态</th>
-							<th class="center col-md-2">配送地址</th>
+							<th class="center col-md-1">商品ID</th>
+							<th class="center col-md-1">审核状态</th>
+							<th class="center col-md-2">评论时间</th>
+							<th class="center col-md-5">评论内容</th>
                             <th class="center">操作</th>
 						</tr>
 					</thead>
 					<tbody>
-                    {% for order in order_list %}
+                        {% for comment in comment_list %}
 						<tr>
-                            <td class="center">{{ order.OrderID }}</td>
-                            <td style="cursor:pointer;color: red" onclick="get_user_info('{{ order.UserID }}')" class="center">{{ order.UserID }}</td>
-                            <td class="center">{{ order.OrderTotalPrice }}</td>
-                            <td class="center">{{ order.OrderPayType }}</td>
-                            {% if order.OrderStatus == True %}
-                                <td class="center">完成</td>
+                            <td class="center">{{ comment.CommentID }}</td>
+                            <td style="cursor: pointer;color: red" onclick="get_user_info('{{ comment.UserID }}')" class="center">{{ comment.UserID }}</td>
+                            <td class="center">{{ comment.ProductID }}</td>
+                            {% if comment.Status == False %}
+                                <td class="center">未通过</td>
                             {% else %}
-                                <td class="center">未完成</td>
+                                <td class="center">通过</td>
                             {% end %}
-                            <td class="center">{{ order.OrderSendAddress }}</td>
+                            <td class="center">{{ comment.CerateTime }}</td>
+                            <td  class="center">{{ comment.Content }}</td>
 							<td class="center">
 								<div class="hidden-sm hidden-xs">
-									<button onclick="get_order_info('{{ order.OrderID }}')" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-table">
+									<button onclick="get_comment_info('{{ comment.CommentID }}')" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-table">
 										<i class="ace-icon fa fa-pencil bigger-120"></i>
+									</button>
+									<button onclick="delete_comment('{{ comment.CommentID }}')" class="btn btn-xs btn-danger">
+										<i class="ace-icon fa fa-trash-o bigger-120"></i>
 									</button>
 								</div>
 							</td>
 						</tr>
-                    {% end %}
+
+                     {% end %}
 					</tbody>
 				</table>
 			</div>
@@ -179,25 +204,26 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <span class="white">&times;</span>
                     </button>
-                    修改商品类型
+                    评论审核
                 </div>
             </div>
 
             <div class="modal-body no-padding">
-                 <form action="" class="form-horizontal">
+                <form action="" class="form-horizontal">
                     <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right">订单编号</label>
+                            <label class="col-sm-3 control-label no-padding-right">评论编号</label>
 
                             <div class="col-sm-9">
-                                <input type="text" id="OrderID" value="" class="col-xs-10 col-sm-5" readonly/>
+                                <input type="text" id="CommentID" value="" class="col-xs-10 col-sm-5" readonly/>
                             </div>
                         </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">订单状态</label>
-                        <div class="col-sm-9">
-                            <select id="OrderStatus" class="form-control" style="max-width: 200px;">
-                                <option value="0">未完成</option>
-                                <option value="1">完成</option>
+                        <label class="col-sm-3 control-label no-padding-right">评论状态</label>
+
+                       <div class="col-sm-9">
+                            <select id="Status" class="form-control" style="max-width: 200px;">
+                                <option value="1">通过</option>
+                                <option value="0">未通过</option>
                             </select>
                         </div>
                     </div>
@@ -205,7 +231,7 @@
             </div>
 
             <div class="modal-footer no-margin-top">
-                <button onclick="save_order()" class="btn btn-sm btn-success pull-right" >
+                <button onclick="save_comment()" class="btn btn-sm btn-success pull-right" >
                     提交
                 </button>
             </div>

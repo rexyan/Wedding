@@ -87,4 +87,4 @@ def upload_file(file, path):
 
 
 if __name__ == '__main__':
-    print sec_pass("1111")
+    print sec_pass("123456")
