@@ -11,12 +11,16 @@ from models.Product import Product
 from models.Order import Order
 from models.Comment import Comment
 from models.Manager import Manager
+from models.LoginMap import LoginMap
 import json
 from utils.auth import sec_pass
 from utils import up_qiniu
 import requests
 import settings
 import datetime
+from utils import redis_queue_send_email
+import random
+
 
 # 后台首页
 class AdminIndexHandler(BaseHandler):
@@ -124,7 +128,7 @@ class AdminProductHandler(BaseHandler):
 # 商品类型
 class AdminProductTypeIndexHandler(BaseHandler):
     def get(self):
-        ret = session.query(ProductType)[0:10]
+        ret = session.query(ProductType).all()
         self.render('admin_product_type.html', product_type = ret)
 
 
@@ -356,7 +360,7 @@ class AdminCommenHandler(BaseHandler):
 # 后台登录
 class AdminUserLoginHandler(BaseHandler):
     def get(self):
-        if self.session['UserSession']:
+        if self.session.get('UserSession'):
             managername = self.session['UserSession'].get('ManagerName')
             code = 1
         else:
@@ -404,3 +408,62 @@ class AdminLayoutHandler(BaseHandler):
 class UtilsHandler(BaseHandler):
     def get(self):
         pass
+
+# 发送邮件
+class SendEmailHandler(BaseHandler):
+    def post(self, argument):
+        if argument == '1':
+            # 账户激活邮件
+            data_json = json.loads(self.get_argument('data'))
+            to_email = data_json.get('email')
+            self.session['bind_email'] = to_email
+            obj = redis_queue_send_email.REDIS_QUEUE()
+            random_str = str(random.randint(1, 99999))
+            self.session['email_random'] = random_str
+            content1 = '你本次在'+settings.WEB_NAME+"的验证码为:" + str(random_str)
+            content = '''
+<html>
+<body>
+<p>亲爱的用户：</p>
+<pre>
+您收到这封邮件，是由于在 有缘婚恋网 进行了邮箱验证，使用了这个邮箱地址。
+如果您并没有访问过 有缘婚恋网，或没有进行上述操作，请忽 略这封邮件。您不需要退订或进行其他进一步的操作。
+</pre>
+<pre>
+===============验证码===================
+
+''' + content1 + '''
+
+            </pre>
+            </body>
+            </html>
+            '''
+
+            obj.send_email_via_queue(settings.SMTP_USER, to_email, settings.WEB_NAME+"验证", content)
+            self.write_json("验证码发送成功", code=1)
+            # print "argument", argument
+
+
+class CheckCodeHandler(BaseHandler):
+    def post(self, argument):
+        if argument == '1':
+            data_json = json.loads(self.get_argument('data'))
+            code = data_json.get('code')
+            if self.session['email_random'] == code:
+
+                # 新增到User表
+                user_data = {"UserName": self.session['nickname'], "UserEmail": self.session['bind_email'], "UserLastVisitIP": self.request.remote_ip}
+                user_obj = Users(**user_data)
+                session.add(user_obj)
+                session.commit()
+                # 添加到映射表
+                data = {"OpenID": self.session['openid'], "UserID": str(user_obj.UserID)}
+                session.add(LoginMap(**data))
+                session.commit()
+                session.close()
+                print "user_data", user_data
+                self.session.set('index_user', user_data)
+                # self.session['index_user'] = user_data
+                self.write_json("验证成功", code=1)
+            else:
+                self.write_json("验证失败", code=0)

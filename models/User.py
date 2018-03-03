@@ -18,7 +18,8 @@ class Users(Base):
     UserCreatTime = Column(DateTime, nullable=True, default=datetime.datetime.now()) # Time， time类型
     UserLastVisitTime = Column(DateTime, nullable=True, default=datetime.datetime.now())
     UserLastVisitIP = Column(String(100), nullable=True)
-    
+    UserHashCode = Column(String(100), nullable=True)
+
     def __repr__(self):      #当执行查询的时候返回数据，而不是对象
         return "%s-%s" %(self.UserID, self.UserName)
 
@@ -36,6 +37,7 @@ class Users(Base):
             'UserCreatTime': self.UserCreatTime,
             'UserLastVisitTime': self.UserLastVisitTime,
             'UserLastVisitIP': self.UserLastVisitIP,
+            'UserHashCode': self.UserHashCode,
         }
 
 # 创建表

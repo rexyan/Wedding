@@ -1,0 +1,82 @@
+﻿{% extends 'index_layout.html' %}
+
+{% block title %}订单{% end %}
+
+{% block js %}
+{% end %}
+
+{% block content %}
+<section class="sub-header shop-detail-1">
+<img class="rellax bg-overlay" src="http://pic.jj20.com/up/allimg/811/0S114111458/140S1111458-7.jpg" alt="">
+<div class="overlay-call-to-action"></div>
+<h3 class="heading-style-3">订单列表</h3>
+</section>
+<section class="boxed-sm">
+<div class="container">
+  <div class="woocommerce">
+    <form class="woocommerce-cart-form">
+      <table class="woocommerce-cart-table">
+        <thead>
+          <tr>
+            <th class="product-thumbnail">订单ID</th>
+            <th class="product-name">订单总价</th>
+            <th class="product-weight">支付状态</th>
+            <th class="product-quantity">支付方式</th>
+            <th class="product-price">订单商品</th>
+            <th class="product-subtotal">交易号</th>
+            <th class="product-remove"></th>
+          </tr>
+        </thead>
+        {% for order in order_list %}
+        <tbody>
+          <tr>
+            <td class="product-thumbnail">
+              {{ order['order']['OrderID'] }}
+            </td>
+            <td class="product-name" data-title="Product">
+              {{ order['order']['OrderTotalPrice'] }}
+            </td>
+            {%  if order['order']['OrderStatus'] == 1 %}
+            <td class="product-weight" data-title="Weight">完成</td>
+            {% end %}
+            {%  if order['order']['OrderStatus'] == 0 %}
+            <td class="product-weight" data-title="Weight">未完成</td>
+            {% end %}
+
+            {%  if order['order']['OrderStatus'] == 1 %}
+             <td class="product-quantity" data-title="Quantity">
+             支付宝
+            </td>
+            {% end %}
+            {%  if order['order']['OrderStatus'] == 0 %}
+             <td class="product-quantity" data-title="Quantity">
+             微信
+            </td>
+            {% end %}
+
+            {%  if order['order']['OrderStatus'] == 0 %}
+            <td class="product-quantity" data-title="Quantity">
+                其他
+            </td>
+            {% end %}
+
+            <td class="product-price" data-title="Price">
+                {% for pro in order['product_info'] %}
+                    {{ pro['ProductName'] }}
+                {% end %}
+            </td>
+            <td class="product-subtotal" data-title="Total">{{ order['order']['TRADE_NO'] }}</td>
+            <td class="product-remove">
+
+            </td>
+          </tr>
+        </tbody>
+      {% end %}
+      </table>
+
+    </form>
+      <br> <br> <br> <br>
+  </div>
+</div>
+</section>
+{% end %}

@@ -131,7 +131,7 @@
 
         console.log(json_data)
         $.ajax({
-            url: "/admin/goods/update/"+ProductID+"/",
+            url: "/admin/product/update/"+ProductID+"/",
             data:{ data: JSON.stringify(json_data) },
             type:'patch',
             datatype:'json',

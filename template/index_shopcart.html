@@ -1,0 +1,209 @@
+﻿{% extends 'index_layout.html' %}
+
+{% block title %}购物车{% end %}
+
+{% block js %}
+<script>
+    total_price = 0
+    all_data = []
+
+    function modify_number(obj,marketprice,pid,carid,check_id) {
+        {#清空checkbox#}
+        $("input[type='checkbox']").each(function(){
+             this.checked=false;
+        });
+        {#清空总价#}
+        $('#TotalPrice').html(0)
+        total_price = 0
+        all_data = {}
+
+        price = (obj.value*marketprice)
+        $('#TotalProductMarketPrice'+pid).html(price)
+
+        {#修改商品的数量#}
+        json_data={}
+        json_data.number = obj.value
+        $.ajax({
+                url: "/add_shop_cart/"+carid+"/",
+                data:{data: JSON.stringify(json_data) },
+                type:'patch',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    console.log("coll_back_data", coll_back_data)
+            }});
+    }
+
+    function remove_product(carid) {
+        layer.confirm('您确认要删除该商品吗？', {
+              btn: ['确认','取消'] //按钮
+            }, function(){
+                $.ajax({
+                    url: "/add_shop_cart/"+carid+"/",
+                    data:{ data: "" },
+                    type:'delete',
+                    datatype:'json',
+                    success: function(arg){
+                        coll_back_data = $.parseJSON(arg)
+                        if ((coll_back_data['code']) == 1){
+                            location.reload()
+                        }else{
+                            layer.msg('删除失败！', {icon: 5});
+                        }
+                }});
+            })
+    }
+
+    {#获取收货地址#}
+    (function () {
+       $.ajax({
+                url: "/get_delivery_address/",
+                data:{ data: "" },
+                type:'get',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    console.log(coll_back_data)
+                    for (var i=0;i<coll_back_data.data.length;i++) {
+                        html = '<option value='+coll_back_data.data[i]['DeliveryAddressID']+'>'+coll_back_data.data[i]['DetaileAddress']+'</option>'
+                    }
+                    $('#DistributionAddress').append(html)
+
+            }});
+    })();
+
+    {#购物车中要购买的商品#}
+    function add_to_order(td_id, check_id, shopacrt_id, product_num_th_id, productid) {
+        var id = '#'+td_id
+
+        if($('#'+check_id).is(':checked')) {
+            total_price = total_price + parseInt($(id).html())
+            var product_map = {
+                "productid":productid,
+                "shopcartid":shopacrt_id,
+                "num":$('#'+product_num_th_id).val()
+            }
+            all_data.push(product_map)
+        }else{
+            total_price = total_price - parseInt($(id).html())
+            for(var a=0;a<all_data.length;a++){
+                if (all_data[a]['productid'] == productid){
+                   all_data.splice(a,1);
+                }
+            }
+        }
+        $('#TotalPrice').html(total_price)
+
+        console.log(all_data)
+    }
+    
+    function pay() {
+        var address = $('#DistributionAddress').val()
+        var totalprice = $('#TotalPrice').html()
+        json_data = {}
+        json_data.address = address
+        json_data.totalprice = totalprice
+        json_data.all_data = all_data
+        if (json_data.all_data.length==0){
+            layer.msg('啥也没选，咋买！', {icon: 5});
+        }else{
+            var last=JSON.stringify(json_data);
+            window.location = '/alipay/?data='+last
+        }
+    }
+
+</script>
+{% end %}
+
+
+{% block content %}
+<section class="sub-header shop-detail-1">
+<img class="rellax bg-overlay" src="http://img.netbian.com/file/2017/0711/111a9451fe59082a5f998521ed595f34.jpg" alt="">
+<div class="overlay-call-to-action"></div>
+<h3 class="heading-style-3">购物车</h3>
+</section>
+<section class="boxed-sm">
+<div class="container">
+  <div class="woocommerce">
+    <form class="woocommerce-cart-form">
+      <table class="woocommerce-cart-table">
+        <thead>
+          <tr>
+            <th class="product-thumbnail">商品</th>
+            <th class="product-name">商品名称</th>
+            <th class="product-weight">品牌</th>
+            <th class="product-quantity">数量</th>
+            <th class="product-price">市场价</th>
+            <th class="product-subtotal">总价</th>
+            <th class="product-remove">删除</th>
+              <th class="product-remove">选择</th>
+          </tr>
+        </thead>
+        <tbody id="history_income_list">
+        {% for shopcart in shopcart_list %}
+          <tr>
+            <td class="product-thumbnail">
+              <img style="width: 100px;height: 100px;" src="/static/images/upload/{{ shopcart['ProductSmallPicture'] }}" alt="product-thumbnail">
+            </td>
+            <td class="product-name" data-title="Product">
+              <a class="product-name" href="shop-detail.html">{{ shopcart['ProductName'] }}</a>
+            </td>
+            <td class="product-weight" data-title="Weight">{{ shopcart['ProductBrand'] }}</td>
+            <td class="product-quantity" data-title="Quantity">
+              <input id="num{{ shopcart['ProductID'] }}" onchange="modify_number(this,'{{ shopcart['ProductMarketPrice'] }}', '{{ shopcart['ProductID'] }}', '{{ shopcart['ShopCartID'] }}', 'check_order{{ shopcart['ProductID'] }}')" class="qty" step="1" min="0" max="" name="product-name" value={{ shopcart['BuyNum'] }} title="商品数量" size="100" pattern="[0-9]*" inputmode="numeric" type="number">
+            </td>
+            <td class="product-price" id="" data-title="Price">{{ shopcart['ProductMarketPrice'] }}</td>
+            <td class="product-subtotal" id="TotalProductMarketPrice{{ shopcart['ProductID'] }}" data-title="Total">{{ shopcart['BuyNum']*shopcart['ProductMarketPrice'] }}</td>
+            <td class="product-remove">
+              <a class="remove" onclick="remove_product('{{ shopcart['ShopCartID'] }}')" style="cursor:pointer;" aria-label="Remove this item">×</a>
+            </td>
+
+            <td class="product-remove">
+              <input class="all_checkbox"  id="check_order{{ shopcart['ProductID'] }}" onclick="add_to_order('TotalProductMarketPrice{{ shopcart['ProductID'] }}', 'check_order{{ shopcart['ProductID'] }}', '{{ shopcart['ShopCartID'] }}', 'num{{ shopcart['ProductID'] }}', '{{ shopcart['ProductID'] }}')" type="checkbox">
+            </td>
+          </tr>
+       {% end %}
+        </tbody>
+      </table>
+    </form>
+
+    <div class="cart_totals">
+        <br><br>
+       <h4 style="color: black;font-weight: normal" class="title">结算</h4>
+        <br><br>
+      <div class="row">
+        <div class="col-md-8">
+          <table class="woocommerce-cart-subtotal">
+            <tbody>
+              <tr>
+                <th>支付方式</th>
+                <td data-title="Subtotal">
+                    <img src="{{ static_url('picture/zhifubao.png') }}">
+                </td>
+              </tr>
+              <tr>
+                <th>总价</th>
+                <td data-title="Total" id="TotalPrice">0</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+       <br> <br>
+      <h4 style="color: black;font-weight: normal" class="title">配送地址</h4>
+       <br>
+      <select id="DistributionAddress" class="orderby select-custom-wrapper" name="orderby">
+      </select>
+
+         <br> <br> <br> <br>
+          <div class="proceed-to-checkout">
+            <a class="btn btn-brand"  onclick="pay()" style="cursor: pointer">确认订单</a>
+          </div>
+            <br> <br> <br>
+  </div>
+</div>
+</section>
+{% end %}

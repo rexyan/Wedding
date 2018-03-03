@@ -16,10 +16,12 @@ class Order(Base):
     __tablename__ = 'order'  # 表名
     OrderID = Column(Integer, primary_key=True, autoincrement=True)
     UserID = Column(Integer)
+    ProductID = Column(String(100))
     OrderTotalPrice = Column(String(100))
     OrderPayType = Column(Integer, default=OTHER)
     OrderStatus = Column(Boolean, default=False)
     OrderSendAddress = Column(String(1000))
+    TRADE_NO = Column(String(100))
 
     def __repr__(self):
         return "%s-%s" % (self.OrderID, self.UserID)
@@ -31,7 +33,9 @@ class Order(Base):
             'OrderTotalPrice': self.OrderTotalPrice,
             'OrderPayType': self.OrderPayType,
             'OrderStatus': self.OrderStatus,
-            'OrderSendAddress': self.OrderSendAddress
+            'OrderSendAddress': self.OrderSendAddress,
+            'TRADE_NO': self.TRADE_NO,
+            'ProductID': self.ProductID
         }
 
 

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>有缘婚姻网---支付宝</title>
+    <script>
+        window.onload = function(){
+            order_string = ('{{ order_string }}')
+            alipay_getway = ('{{ redirect_utl }}')
+            window.location = (encodeURI(alipay_getway + "?" + order_string))
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% end %}</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="{% block description %}{% end %}" />
+    <meta name="keywords" content="{% block keywords %}{% end %}" />
+    <link href="{{ static_url('css/647be82565184316a7ba9bc638b40a97.css') }}" rel="stylesheet" />
+    <link href="{{ static_url('css/1025b57c3b8b4b63a93efd3b6bed0d58.css') }}" rel="stylesheet" />
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+      <script src="{{static_url('layer/layer.js')}}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ static_url('css/main.css') }}" />
+    {% block js %}{% end %}
+      <script>
+            $(function(){
+                {#检测用户是否登录#}
+            　　$.ajax({
+                url: "/check_login/",
+                data:"",
+                type:'get',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    console.log("coll_back_data", coll_back_data)
+                    if (coll_back_data.code==1){
+                        $('#register').hide()
+                        $('#login').hide()
+                        $('#shopcart').show()
+                        $('#login_user').html('<a href="#">'+coll_back_data.data.UserName+'</a>')
+                    }
+                }});
+
+                {#获取导航（商品类型#}
+                $.ajax({
+                url: "/get_product_list/",
+                data:"",
+                type:'get',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    console.log("coll_back_data", coll_back_data)
+                    for (x in coll_back_data.data) {
+                        var current_url= '/index?pid='+coll_back_data.data[x].ProductTypeID
+                        $("#menu_list").append('<li> <a href='+current_url+'>'+coll_back_data.data[x].ProductTypeName+'</a> </li>');
+                    }
+
+                }});
+
+            });
+      </script>
+    {% block css %}{% end %}
+  </head>
+  <body class="animsition">
+    <div class="login" id="page">
+      <nav id="menu">
+        <ul>
+          <li>
+            <a href="index.html">Home</a>
+          </li>
+        </ul>
+      </nav>
+
+        {% block header %}
+      <header id="header" class="header-style-1 static">
+        <div class="container">
+          <div class="row">
+            <div class="header-1-inner" >
+              <a class="brand-logo  animsition-link" href="/index" style="width: 10%" >
+                <img class="img-responsive" src="{{ static_url('picture/logo.png') }}" alt="" />
+              </a>
+              <nav>
+                <ul class="menu hidden-xs" id="menu_list">
+                  <li>
+                    <a href="/index/">首页</a>
+                  </li>
+                </ul>
+              </nav>
+              <aside class="right">
+
+                <div class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
+                    <span id="login_user">未登录</span>
+                </div>
+
+                  <div id="register" class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
+                  <a class="control" href="/register/">
+                    <p class="counter">0</p>
+                    <span title="注册" class="fa fa-registered"></span>
+                  </a>
+                </div>
+
+                  <div id="login" class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
+                  <a class="control" href="/login/">
+                    <p class="counter">0</p>
+                    <span title="登录"  class="fa fa-user"></span>
+                  </a>
+                </div>
+
+
+                <div class="widget widget-control-header widget-search-header">
+                  <a class="control btn-open-search-form js-open-search-form-header" href="#">
+                    <span class="lnr lnr-magnifier"></span>
+                  </a>
+                  <div class="form-outer">
+                    <button class="btn-close-form-search-header js-close-search-form-header">
+                      <span class="lnr lnr-cross"></span>
+                    </button>
+                    <form>
+                      <input placeholder="搜索" />
+                      <button class="search">
+                        <span class="lnr lnr-magnifier"></span>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <div id="shopcart" style="display: none" class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
+                  <a class="control" href="/shopcart/">
+                    <p class="counter">0</p>
+                    <span class="lnr lnr-cart"></span>
+                  </a>
+                </div>
+                <div class="widget widget-control-header hidden-lg hidden-md hidden-sm">
+                  <a class="navbar-toggle js-offcanvas-has-events" type="button" href="#menu">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </a>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </header>
+        {% end %}
+
+     {% block content %}  {% end %}
+    </div>
+    <footer class="footer-style-1">
+      <div class="container">
+        <div class="row">
+          <div class="footer-style-1-inner">
+            <div class="widget-footer widget-text col-first col-small">
+              <a href="#">
+                <img class="logo-footer" src="{{ static_url('picture/logo.png') }}" alt="" />
+              </a>
+              <div class="widget-link">
+                <ul>
+                  <li>
+                    <span class="lnr lnr-map-marker icon"></span>
+                    <span>大连甘井子区 xxx 路 xxx 号 xxx 婚恋有限公司</span>
+                  </li>
+                  <li>
+                    <span class="lnr lnr-phone-handset icon"></span>
+                    <a href="tel:0123456789">(+1) 96 716 6879</a>
+                  </li>
+                  <li>
+                    <span class="lnr lnr-envelope icon"></span>
+                    <a href="mailto: contact@site.com">contact@site.com </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="widget-footer widget-link col-second col-medium">
+              <div class="list-link">
+                <h4 class="h4 heading">导航</h4>
+                <ul>
+                  <li>
+                    <a href="#">婚纱</a>
+                  </li>
+                  <li>
+                    <a href="#">摄影</a>
+                  </li>
+                  <li>
+                    <a href="#">美妆</a>
+                  </li>
+                  <li>
+                    <a href="#">策划</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="list-link">
+                <h4 class="h4 heading">帮助</h4>
+                <ul>
+                  <li>
+                    <a href="#">投诉</a>
+                  </li>
+                  <li>
+                    <a href="#">建议</a>
+                  </li>
+                  <li>
+                    <a href="#">质量监督</a>
+                  </li>
+                  <li>
+                    <a href="#">合作</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="list-link">
+                <h4 class="h4 heading">关于</h4>
+                <ul>
+                  <li>
+                    <a href="#">公司简介</a>
+                  </li>
+                  <li>
+                    <a href="#">公司发展</a>
+                  </li>
+                  <li>
+                    <a href="#">公司公告</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="widget-footer widget-newsletter-footer col-last col-small">
+              <h4 class="h4 heading">联系我们</h4>
+              <p>大连甘井子区 xxx 路 xxx 号</p>
+              <form class="organic-form form-inline btn-add-on circle border">
+                <div class="form-group">
+                  <input class="form-control pill transparent" placeholder="咨询邮箱" type="email" />
+                  <button class="btn btn-brand circle" type="submit">
+                    <i class="fa fa-envelope-o"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copy-right style-1">
+        <div class="container">
+          <div class="row">
+            <div class="copy-right-inner">
+              <p>Copyright © 2018 xxx 婚恋商城. All rights reserved.</p>
+              <div class="widget widget-footer widget-footer-creadit-card">
+                <ul class="list-unstyle">
+                  <li>
+                    <a href="#">
+                      <img src="{{ static_url('picture/weibo.png') }}" alt="creadit card" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <img src="{{ static_url('picture/qq.png') }}" alt="creadit card" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <img src="{{ static_url('picture/alipay.png') }}" alt="creadit card" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <img src="{{ static_url('picture/baidu.png') }}" alt="creadit card" />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <script src="{{ static_url('js/function-check-viewport.js') }}"></script>
+    <script src="{{ static_url('js/slick.min.js') }}"></script>
+    <script src="{{ static_url('js/select2.full.min.js') }}"></script>
+    <script src="{{ static_url('js/imagesloaded.pkgd.min.js') }}"></script>
+    <script src="{{ static_url('js/jquery.mmenu.all.min.js') }}"></script>
+    <script src="{{ static_url('js/rellax.min.js') }}"></script>
+    <script src="{{ static_url('js/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap-notify.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap-slider.js') }}"></script>
+    <script src="{{ static_url('js/in-view.min.js') }}"></script>
+    <script src="{{ static_url('js/countup.js') }}"></script>
+    <script src="{{ static_url('js/animsition.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ static_url('css/settings.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ static_url('css/layers.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ static_url('css/navigation.css') }}" />
+    <script src="{{ static_url('js/jquery.themepunch.tools.min.js') }}"></script>
+    <script src="{{ static_url('js/jquery.themepunch.revolution.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.actions.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.carousel.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.kenburn.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.layeranimation.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.migration.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.navigation.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.parallax.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.slideanims.min.js') }}"></script>
+    <script src="{{ static_url('js/revolution.extension.video.min.js') }}"></script>
+    <script src="{{ static_url('js/global.js') }}"></script>
+    <script src="{{ static_url('js/config-banner-home-1.js') }}">
+
+
+    </script>
+    <script src="{{ static_url('js/config-mm-menu.js') }}"></script>
+    <script src="{{ static_url('js/config-set-bg-blog-thumb.js') }}"></script>
+    <script src="{{ static_url('js/config-isotope-product-home-1.js') }}">
+
+
+    </script>
+    <script src="{{ static_url('js/config-carousel-thumbnail.js') }}"></script>
+    <script src="{{ static_url('js/config-carousel-product-quickview.js') }}"></script>
+    <!-- Demo Only-->
+    <script src="{{ static_url('js/demo-add-to-cart.js') }}"></script>
+    <script src="{{ static_url('js/config-price-slider.js') }}">
+
+
+    </script>
+  </body>
+</html>

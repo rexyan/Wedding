@@ -1,4 +1,5 @@
 # --coding:utf-8--
+import os
 
 MEMCACHE_HOSTS = ('127.0.0.1:11211',)
 SITE_PORT = 80
@@ -13,6 +14,7 @@ REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 REDIS_DB = 1
 DOMAIN_NAME = 'http://127.0.0.1:3344'
+DEBUG=True
 
 project_setting = dict(
     debug=True,
@@ -42,16 +44,12 @@ LOCAL_TMP_PATH = ''
 
 # 又拍配置
 
-# 允许上传类型
-UP_FILE_TYPE = [u'mobi', u'pdf', u'txt', u'equb']
-
-
 # SMTP 账号设置
 SMTP_ADD = 'smtp.exmail.qq.com'
 SMTP_PORT = 25
 SMTP_USER = 'push@kindle15.com'
 SMTP_PASS = '18525350524Yrs'
-
+REDIS_QUEUE_NAME = "REDIS_QUEUE_SEND_EMAIL"
 
 # 发送邮件设置
 EMAIL_PUSH_SUBJECT = u'Kindle15电子书推送'
@@ -60,3 +58,22 @@ EMAIL_PUSH_SENDER = [u"kinlde15推送", u'push@kindle15.com']
 # luosimao设置
 LUOSIMAO_CHECK_ADDRESS = 'https://captcha.luosimao.com/api/site_verify'
 LUOSIMAO_API_KEY = '0ff0f6b9f68ba28f8eaa7bd4914f78b0'
+
+
+# 网站名称
+WEB_NAME = u'有缘婚恋网'
+WEB_DOMAIN_NAME = 'test.com'
+
+# 第三方登录设置
+# QQ
+QQ_APP_ID = '101463730'
+QQ_APPKey = '1807ed84146dc54df99bc24b6c169dcc'
+QQ_CollBackUrl = 'http://'+WEB_DOMAIN_NAME+'/check_qq'
+
+# 支付宝支付设置
+ALIPAY_APPID = 2016080300160299
+ALIPAY_GETWAY = 'https://openapi.alipaydev.com/gateway.do'
+ALIPAY_APP_PRIVATE_KEY_PATH = os.path.join('pay', 'alipay', 'app_private_key.pem')
+ALIPAY_APP_PUBLIC_KEY_PATH = os.path.join('pay', 'alipay', 'app_public_key.pem')
+ALIPAY_SIGN_TYPE = "RSA2"
+ALIPAY_RETURN_URL = "http://test.com/alipay_success/"

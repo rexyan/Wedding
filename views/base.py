@@ -2,7 +2,7 @@ import tornado
 from pycket.session import SessionMixin
 import json
 from utils.encode import MyEncoder
-from utils import auth
+
 
 class BaseHandler(tornado.web.RequestHandler, SessionMixin):
     # def get_current_user(self):

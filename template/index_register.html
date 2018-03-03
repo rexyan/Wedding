@@ -1,0 +1,207 @@
+﻿{% extends 'index_layout.html' %}
+
+{% block title %}注册{% end %}
+
+{% block js %}
+<script>
+     function getUrlParam(name) {
+         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+         var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+         if (r != null) return unescape(r[2]); return null; //返回参数值
+     }
+
+     window.luosimao_rep = ""
+            function getResponse(resp){
+                 window.luosimao_rep = resp  // resp 即验证成功后获取的值
+            }
+
+    function QQ_Login() {
+        var a=layer.open({
+          type: 2,
+          area: ['700px', '450px'],
+          fixed: false, //不固定
+          maxmin: true,
+          title:"第三方快捷登录",
+          content: '/qq_login_page/'
+        });
+    }
+
+    (function () {
+        if (getUrlParam('status') ==1){
+           layer.prompt({title: '请绑定邮箱帐号', formType: 3}, function(val, index){
+               {# 账户绑定激活邮件 #}
+               type = 1
+               json_data ={}
+               json_data.email = val
+               $.ajax({
+                    url: "/tools/send_email/"+type+"/",
+                    data:{ data: JSON.stringify(json_data) },
+                    type:'post',
+                    datatype:'json',
+                    success: function(arg){
+                        coll_back_data = $.parseJSON(arg)
+                        console.log(coll_back_data)
+                }});
+              layer.close(index);
+              layer.prompt({title: '请输入邮箱中的验证码', formType: 3}, function(val, index1){
+                  type = 1
+                  json_data = {}
+                  json_data.code = val
+                  $.ajax({
+                    url: "/tools/check_code/"+type+"/",
+                    data:{ data: JSON.stringify(json_data) },
+                    type:'post',
+                    datatype:'json',
+                    success: function(arg){
+                        coll_back_data = $.parseJSON(arg)
+                        console.log("coll_back_data", coll_back_data)
+                        if(coll_back_data.code=='1'){
+                            layer.alert('绑定成功！您以后可以直接使用第三方帐号登录', {icon: 6});
+                            window.location = '/index/'
+                        }else {
+                            layer.msg('绑定失败！', {icon: 5});
+                        }
+                    }});
+                  layer.close(index1);
+              })
+
+           });
+        }
+
+        if (getUrlParam('status') ==2){
+            layer.msg('第三方登录故障，可联系管理员！', {icon: 5});
+        }else if (getUrlParam('status') ==3){
+            layer.msg('人机验证失败！', {icon: 5});
+        }
+
+    })();
+     
+     function register() {
+         json_data = {}
+         var UserName = $('#UserName').val()
+         if(UserName){
+             json_data.UserName = UserName
+         }else {
+             layer.msg('用户名不能为空', {icon: 5});
+             return false
+         }
+         var UserEmail = $('#UserEmail').val()
+         if(UserEmail){
+             json_data.UserEmail = UserEmail
+         }else{
+             layer.msg('邮箱帐号不能为空', {icon: 5});
+             return false
+         }
+         var UserPwd = $('#UserPwd').val()
+         if(UserPwd){
+             json_data.UserPwd = UserPwd
+         }else{
+             layer.msg('密码不能为空', {icon: 5});
+             return false
+         }
+         var ReUserPwd = $('#ReUserPwd').val()
+
+         var UserRealName = $('#UserRealName').val()
+         if(UserRealName){
+             json_data.UserRealName = UserRealName
+         }
+         var UserAge = $('#UserAge').val()
+         if(UserAge){
+             json_data.UserAge = UserAge
+         }
+         if(UserPwd != ReUserPwd){
+             layer.msg('密码不一致！', {icon: 5});
+             return false
+         }
+         if (luosimao_rep == ""){
+             layer.msg('未进行人机验证', {icon: 5});
+             return false
+         }else{
+             json_data.luosimao_rep = luosimao_rep
+         }
+
+         $.ajax({
+                url: "/register/",
+                data:{data: JSON.stringify(json_data) },
+                type:'post',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    console.log("coll_back_data", coll_back_data)
+
+                    if((coll_back_data['code']) == 1){
+                        layer.confirm('注册成功、请前往注册邮箱进行账户激活', {
+                          btn: ['确认'] //按钮
+                        }, function(){
+                          window.location = '/login/'
+                        })
+                    }else{
+                        layer.msg('注册失败', {icon: 5});
+                    }
+            }});
+
+     }
+</script>
+{% end %}
+
+{% block content %}
+<section class="sub-header shop-layout-1">
+<img class="rellax bg-overlay" src="{{ static_url('picture/register_banner.jpg') }}" alt="">
+<div class="overlay-call-to-action"></div>
+<h3 class="heading-style-3">欢迎注册</h3>
+</section>
+<section class="boxed-sm">
+<div class="container">
+  <div class="login-wrapper">
+    <div class="row">
+
+      <div>
+        <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
+          <label>用户名 *</label>
+          <input id="UserName" class="form-control" type="text">
+        </div>
+        <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
+          <label>邮箱地址 *</label>
+          <input id="UserEmail" class="form-control" type="Email">
+        </div>
+        <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
+          <label>密码 *</label>
+          <input id="UserPwd" class="form-control" type="Password">
+        </div>
+        <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
+          <label>重复密码 *</label>
+          <input id="ReUserPwd" class="form-control" type="Password">
+        </div>
+          <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
+          <label>真实姓名</label>
+          <input id="UserRealName" class="form-control" type="text">
+        </div>
+           <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
+          <label>年龄</label>
+          <input id="UserAge" class="form-control" type="text">
+        </div>
+
+           <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
+           <div class="l-captcha" data-width="100%" data-callback="getResponse"  data-site-key="3cd412d4e1046ddac84518f66ee4b235"></div>
+        </div>
+
+        <div class="form-group remember-me" style="width: 70%;float: left;margin-left: 15%;">
+          <div class="checkbox pull-left">
+            <label>
+              <input type="checkbox"> 《xx 婚恋网用户注册协议》
+            </label>
+              <br>
+              快捷登录 <a href="/qq_login_page/"> <img src="{{ static_url('picture/qq.png') }}"> </a>&nbsp;
+              <a href="https://api.weibo.com/oauth2/authorize?client_id=1816247821&redirect_uri=http://test.com/check_weibo/"> <img src="{{ static_url('picture/weibo.png') }}"> </a>
+          </div>
+        </div>
+        <div class="form-group footer-form">
+          <button class="btn btn-brand pill" onclick="register()" type="submit">注册</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+<script src="//captcha.luosimao.com/static/js/api.js"></script>
+{% end %}

@@ -13,7 +13,7 @@
         var name = $('#product_type_name').val()
         json_data.ProductTypeName = name
         $.ajax({
-            url: "/admin/goods_type/update/"+id+"/",
+            url: "/admin/product_type/update/"+id+"/",
             data:{ data: JSON.stringify(json_data) },
             type:'patch',
             datatype:'json',

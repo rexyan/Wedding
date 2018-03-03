@@ -1,5 +1,6 @@
 # --*-- coding:utf-8--*--
 from views.admin import view as admin_view
+from views.index import view as index_view
 
 url = [
         # 登录页
@@ -52,6 +53,8 @@ url = [
 
         # 工具接口
         (r"/admin/check_email_is_exists/", admin_view.UtilsHandler),
+        (r"/tools/send_email/(\w+)/", admin_view.SendEmailHandler),  # 邮件接口
+        (r"/tools/check_code/(\w+)/", admin_view.CheckCodeHandler),  # 邮件接口
 
         # 上传图片接口
         (r"/admin/image/add/", admin_view.AdminProductImgesIndexHandler),
@@ -59,4 +62,22 @@ url = [
         # (r"/admin/goods/image/add/", admin_view.AdminGoodsImgesAddHandler),
 
         # 网站前台路由
+        (r"/layout/", index_view.IndexLayoutHandler),  # 模版页
+        (r"/", index_view.IndexHandler),  # 首页
+        (r"/login/", index_view.IndexLoginHandler),  # 登录
+        (r"/register/", index_view.IndexRegisterHandler),  # 注册
+        (r"/check_login/", index_view.CheckLoginHandler),  # 注册
+        (r"/active_email/", index_view.ActiveEmailHandler),  # 用户激活
+        (r"/get_product_list/", index_view.GetProductListHandler),  # 获取所有导航类型（商品类型）
+        (r"/index", index_view.IndexHandler),
+        (r"/qq_login_page/", index_view.IndexQQLoginPageHandler),  # QQ登录页面
+        (r"/check_qq", index_view.IndexQQLoginHandler),  # QQ登录页面
+        (r"/check_weibo/", index_view.WeiboLoginHandler),  # QQ登录页面
+        (r"/baidu_map_page/", index_view.BaiduMapHandler),  # 百度地图页面
+        (r"/collection_product/(\w+)/", index_view.CollectionProductHandler),  # 百度地图页面
+        (r"/shopcart/", index_view.ShopCartHandler),  # 购物车页面
+        (r"/add_shop_cart/(\w+)/", index_view.AddShopCartHandler),  # 添加商品到购物车
+        (r"/get_delivery_address/", index_view.DeliveryAddressHandler),  # 获得收货地址
+        (r"/alipay/", index_view.AlipayHandler),  # 支付宝支付
+        (r"/alipay_success/", index_view.AlipaySusscessHandler),  # 支付支付成功
       ]
