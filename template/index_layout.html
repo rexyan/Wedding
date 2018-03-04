@@ -27,6 +27,9 @@
                         $('#login').hide()
                         $('#shopcart').show()
                         $('#login_user').html('<a href="#">'+coll_back_data.data.UserName+'</a>')
+
+                    }else{
+                        $('#logout').hide()
                     }
                 }});
 
@@ -47,6 +50,22 @@
                 }});
 
             });
+            
+            function logout() {
+                 $.ajax({
+                url: "/index_logout/",
+                data:"",
+                type:'patch',
+                datatype:'json',
+                success: function(arg){
+                    coll_back_data = $.parseJSON(arg)
+                    if(coll_back_data.code==1){
+                        window.location='/index'
+                    }
+                    console.log("coll_back_data", coll_back_data)
+                }});
+            }
+            
       </script>
     {% block css %}{% end %}
   </head>
@@ -71,7 +90,7 @@
               <nav>
                 <ul class="menu hidden-xs" id="menu_list">
                   <li>
-                    <a href="/index/">首页</a>
+                    <a href="/index">首页</a>
                   </li>
                 </ul>
               </nav>
@@ -79,6 +98,10 @@
 
                 <div class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
                     <span id="login_user">未登录</span>
+                </div>
+
+                <div onclick="logout()" style="cursor:pointer;" class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
+                    <span id="logout">退出</span>
                 </div>
 
                   <div id="register" class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
@@ -302,9 +325,9 @@
     <script src="{{ static_url('js/config-carousel-product-quickview.js') }}"></script>
     <!-- Demo Only-->
     <script src="{{ static_url('js/demo-add-to-cart.js') }}"></script>
-    <script src="{{ static_url('js/config-price-slider.js') }}">
+    <script src="{{ static_url('js/config-price-slider.js') }}"></script>
+    <script src="{{ static_url('js/config-carousel.js') }}"></script>
 
 
-    </script>
   </body>
 </html>

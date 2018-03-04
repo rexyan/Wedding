@@ -20,7 +20,7 @@
     {#商品收藏#}
     function CollectionProduct(id) {
         if($('#login_user').html() == "未登录"){
-            layer.msg('未登录', {icon: 5});
+             window.location='/login/'
         }else{
             {#保存用户收藏信息#}
             $.ajax({
@@ -41,7 +41,7 @@
     
     function AddShopCart(id) {
          if($('#login_user').html() == "未登录"){
-            layer.msg('未登录', {icon: 5});
+             window.location='/login/'
         }else{
              {#添加购物车#}
             $.ajax({
@@ -82,13 +82,13 @@
 
                   {% for info_1_1 in info_1 %}
                 <div class="col-sm-4">
-                  <a href="#">
+                  <a href="/shop_product_detail?pid={{ info_1_1.ProductID }}">
                     <figure class="product-category-item">
                       <div class="thumbnail">
                         <img src="{{ static_url('images/upload/') }}{{ info_1_1.ProductSmallPicture }}" alt="" />
                       </div>
                       <figcaption>
-                        <h3>{{ info_1_1.ProductName }}</h3>
+                        <h3 style="font-size: 18px;">{{ info_1_1.ProductName }}</h3>
                       </figcaption>
                     </figure>
                   </a>
@@ -103,7 +103,7 @@
       <section class="boxed-sm">
         <div class="container">
           <div class="heading-wrapper text-center">
-            <h3 class="heading">热门推荐</h3>
+            <h3 style="font-size: 24px;" class="heading">热门推荐</h3>
           </div>
           <div class="row">
             <div class="row js-product-masonry-layout-1 product-masonry-layout-1">
@@ -113,8 +113,8 @@
               <figure class="item">
                 <div class="product product-style-2">
                   <div class="img-wrapper">
-                    <a href="shop-detail.html">
-                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ info_2_2.ProductSmallPicture }}" alt="product thumbnail" />
+                    <a href="/shop_product_detail?pid={{ info_2_2.ProductID }}">
+                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ info_2_2.ProductSmallPicture }}" alt="" />
                     </a>
                     <div class="product-control-wrapper bottom-right">
                       <div class="wrapper-control-item">
@@ -138,7 +138,7 @@
                     </div>
                     <figcaption class="desc">
                       <h3>
-                        <a class="product-name" href="shop-detail.html">{{ info_2_2.ProductName }}</a>
+                        <a style="font-size: 18px;" class="product-name" href="/shop_product_detail?pid={{ info_2_2.ProductID }}">{{ info_2_2.ProductName }}</a>
                       </h3>
                       <span class="price">{{ info_2_2.ProductMarketPrice }}</span>
                     </figcaption>
@@ -152,7 +152,7 @@
                 <div class="product product-style-2">
                   <div class="img-wrapper">
                     <a href="shop-detail.html">
-                      <img class="img-responsive" src="{{ static_url('images/upload') }}{{ info_3_3.ProductSmallPicture }}" alt="product thumbnail" />
+                      <img class="img-responsive" src="{{ static_url('images/upload') }}{{ info_3_3.ProductSmallPicture }}" alt="" />
                     </a>
                     <div class="product-control-wrapper bottom-right">
                       <div class="wrapper-control-item">
@@ -176,7 +176,7 @@
                     </div>
                     <figcaption class="desc">
                       <h3>
-                        <a class="product-name" href="shop-detail.html">{{ info_3_3.ProductName }}</a>
+                        <a class="product-name" href="/shop_product_detail?pid={{ info_3_3.ProductID }}">{{ info_3_3.ProductName }}</a>
                       </h3>
                       <span class="price">{{ info_3_3.ProductMarketPrice }} </span>
                     </figcaption>
@@ -194,8 +194,8 @@
         <div class="overlay-call-to-action"></div>
         <div class="container">
           <div class="row">
-            <p class="h3">有缘婚姻</p>
-            <h2>Love never too late.</h2>
+            <p class="h3" style="font-size: 20px;">有缘婚姻</p>
+              <span style="font-size: 20px;">Love never too late.</span>
 {#            <a class="btn btn-brand pill" href="/login/">立即注册</a>#}
           </div>
         </div>
@@ -203,67 +203,30 @@
       <section class="boxed-sm">
         <div class="container">
           <div class="heading-wrapper text-center">
-            <h3 class="heading">最新留言</h3>
+            <h3 class="heading" style="font-size: 24px;">商品留言</h3>
           </div>
           <div class="row">
             <div class="row blog-h reverse flex one-row multi-row-sm">
+                {% for com in comment_product_limit_3_list %}
               <div class="col-md-4">
                 <div class="post">
                   <div class="img-wrapper js-set-bg-blog-thumb">
-                    <a href="blog-detail.html">
-                      <img src="{{ static_url('picture/01.jpg') }}" alt="Image" />
+                    <a href="/shop_product_detail?pid={{ com['product']['ProductID'] }}">
+                      <img src="{{ static_url('images/upload') }}/{{ com['product']['ProductSmallPicture']  }}" alt="Image" />
                     </a>
                   </div>
                   <div class="desc">
                     <h4>
-                      <a href="blog-detail.html">Beauty With Organic Products</a>
+                      <a href="blog-detail.html">{{ com['product']['ProductName'] }}</a>
                     </h4>
                     <p class="meta">
-                      <span class="time">Feberuary 05, 2017</span>
-                      <span class="comment">2</span>
+                      <span class="time">{{ com['CerateTime'] }}</span>
                     </p>
-                    <p>Etiam at varius diam, id blandit erat. Suspendisse eget volutpat risus, id venenatis justo. Fusce elementum ligula elit. Duis ultricies ultrices nibh, a tincidunt risus pretium eleifend. </p>
+                    <p> {{ com['Content'] }} </p>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="post">
-                  <div class="img-wrapper js-set-bg-blog-thumb">
-                    <a href="blog-detail.html">
-                      <img src="{{ static_url('picture/02.jpg') }}" alt="Image" />
-                    </a>
-                  </div>
-                  <div class="desc">
-                    <h4>
-                      <a href="blog-detail.html">Green Vegetables Are Good For Healthy</a>
-                    </h4>
-                    <p class="meta">
-                      <span class="time">January 30, 2017</span>
-                      <span class="comment">0</span>
-                    </p>
-                    <p>Vivamus consectetur nulla mattis lorem ultricies, ac congue tellus consectetur. Vivamus sed purus volutpat, varius mauris id, tempus augue. Nuefd ans congue liquam.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="post">
-                  <div class="img-wrapper js-set-bg-blog-thumb">
-                    <a href="blog-detail.html">
-                      <img src="{{ static_url('picture/03.jpg') }}" alt="Image" />
-                    </a>
-                  </div>
-                  <div class="desc">
-                    <h4>
-                      <a href="blog-detail.html">Refreshing Green Smoothie Recipe</a>
-                    </h4>
-                    <p class="meta">
-                      <span class="time">January 20, 2017</span>
-                      <span class="comment">4</span>
-                    </p>
-                    <p>Praesent efficitur felis eu luctus vestibulum. In hac habitasse platea dictumst. Nam egestas eu nisl ac pellentesque. Duis congue suscipit lorem vel congue. </p>
-                  </div>
-                </div>
-              </div>
+                {% end %}
             </div>
           </div>
         </div>
@@ -315,8 +278,8 @@
                 <div class="summary">
                   <div class="desc">
                     <div class="header-desc">
-                      <h2 class="product-title">{{ info_2_2.ProductName }}</h2>
-                      <p class="price">{{ info_2_2.ProductMarketPrice }}</p>
+                      <h2 style="font-size: 20px;" class="product-title">{{ info_2_2.ProductName }}</h2>
+                      <p style="font-size: 10px;">{{ info_2_2.ProductMarketPrice }}</p>
                     </div>
                     <div class="body-desc">
                       <div class="woocommerce-product-details-short-description">
@@ -324,7 +287,7 @@
                       </div>
                     </div>
                     <div class="footer-desc">
-                      <form class="cart">
+                      <form1 class="cart">
                         <div class="quantity buttons-added">
                           <input class="minus" value="-" type="button" />
                           <input class="input-text qty text" step="1" min="1" max="100" name="quantity" value="1" title="Qty" size="4" pattern="[0-9]*" inputmode="numeric" type="number" />
@@ -337,7 +300,7 @@
                             <i class="fa fa-heart"></i>
                           </button>
                         </div>
-                      </form>
+                      </form1>
                     </div>
                   </div>
                   <div class="product-meta">
@@ -350,7 +313,6 @@
                     <p class="id">ID:
                       <a href="#">{{ info_2_2.ProductID }}</a>
                     </p>
-                     <div class="bshare-custom"><a title="分享到QQ空间" class="bshare-qzone"></a><a title="分享到新浪微博" class="bshare-sinaminiblog"></a><a title="分享到人人网" class="bshare-renren"></a><a title="分享到腾讯微博" class="bshare-qqmb"></a><a title="分享到网易微博" class="bshare-neteasemb"></a><a title="更多平台" class="bshare-more bshare-more-icon more-style-addthis"></a><span class="BSHARE_COUNT bshare-share-count">0</span></div><script type="text/javascript" charset="utf-8" src="{{ static_url('js/button.js') }}#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script><a class="bshareDiv" onclick="javascript:return false;"></a><script type="text/javascript" charset="utf-8" src="{{ static_url('js/bshareC0.js') }}"></script>
                   </div>
                   <div class="widget-social align-left">
                   </div>

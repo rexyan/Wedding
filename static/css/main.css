@@ -2416,7 +2416,7 @@ pre code {
     width: 58.33333%;
   }
   .col-md-8 {
-    width: 66.66667%;
+    width: 35.66667%;
   }
   .col-md-9 {
     width: 75%;
@@ -19819,7 +19819,7 @@ ul.tabs {
 }
 
 .woocommerce .woocommerce-cart-form .woocommerce-cart-table tbody td {
-  padding: 40px 30px;
+  padding: 20px 30px;
 }
 
 .woocommerce .woocommerce-cart-form .woocommerce-cart-table tbody td:before {
@@ -19986,7 +19986,7 @@ ul.tabs {
 
 .woocommerce .woocommerce-cart-subtotal tbody td, .woocommerce .woocommerce-cart-subtotal tbody th {
   border: 1px solid #cccccc;
-  padding: 14px 30px;
+  padding: 3px 30px;
 }
 
 .woocommerce .woocommerce-cart-subtotal tbody th {
@@ -21896,24 +21896,24 @@ header .widget-control-header .dropdown-menu {
   }
 }
 
-form.cart {
+form1.cart {
   width: 100%;
 }
 
-form.cart .quantity {
+form1.cart .quantity {
   float: left;
   display: inline-block;
   min-width: 164px;
   margin-bottom: 10px;
 }
 
-form.cart .quantity input {
+form1.cart .quantity input {
   float: left;
   border: 1px solid #97ae76;
   text-align: center;
 }
 
-form.cart .quantity .minus, form.cart .quantity .plus {
+form1.cart .quantity .minus, form1.cart .quantity .plus {
   padding: 0;
   background-color: transparent;
   width: 48px;
@@ -21922,25 +21922,25 @@ form.cart .quantity .minus, form.cart .quantity .plus {
   transition: all 0.3s ease-in-out;
 }
 
-form.cart .quantity .minus:hover, form.cart .quantity .plus:hover {
+form1.cart .quantity .minus:hover, form1.cart .quantity .plus:hover {
   background-color: #97ae76;
   color: #fff;
 }
 
-form.cart .quantity .qty {
+form1.cart .quantity .qty {
   border-left: 0;
   border-right: 0;
   height: 48px;
   width: 68px;
 }
 
-form.cart .btn-brand {
+form1.cart .btn-brand {
   height: 48px;
   margin-bottom: 10px;
   display: inline-block;
 }
 
-form.cart .btn-wishlist {
+form1.cart .btn-wishlist {
   height: 48px;
   font-size: 18px;
   margin-bottom: 10px;

@@ -13,6 +13,7 @@ from models.User import Users
 from models.Collection import Collection
 from models.DeliveryAddress import DeliveryAddress
 from models.Order import Order
+from models.Comment import Comment
 import settings
 import requests
 import json
@@ -21,6 +22,9 @@ from utils import redis_queue_send_email
 import time
 from views.view_utils.tools import getAllProductType
 from views.view_utils.tools import getProductTypeByPid
+from views.view_utils.tools import getProductByPidFirst
+from views.view_utils.tools import getRecommendProduct
+from views.view_utils.tools import getComLast3Limit
 from pay.alipay.main import return_order_string
 from sqlalchemy.sql import func
 
@@ -98,13 +102,9 @@ class IndexHandler(BaseHandler):
             label = json.loads('"' + "".join([(i and "\\" + i) for i in label.split('%')]) + '"')
             if label:
                 pid_product_list = [x for x in pid_product_list if x.ProductKeywords == label][start_page_num:end_page_num]
-
-
             pid_product_list = [x.to_json() for x in pid_product_list][start_page_num:end_page_num]
-
             page_data_count = len(pid_product_list) # 返回前台的数据总条数
             page_info = {"pid": pid, "max_page": max_page, "data_count": data_count, "page_data_count": page_data_count, "page_num": page_num}
-
             self.render(
                 'index_shop_list.html',
                 name=name,
@@ -113,7 +113,7 @@ class IndexHandler(BaseHandler):
                 max_price=max_price,
                 hot_product_list=hot_product_list,
                 product_list=pid_product_list,
-                page_info=page_info
+                page_info=page_info,
             )
         else:
             # 获取首页大图下的三个图（是新品且是热门）
@@ -121,7 +121,24 @@ class IndexHandler(BaseHandler):
             # 获取首页下的5个热门商品
             info_2 = session.query(Product).filter(Product.IsHot == 1, Product.IsNew == 0)[0:4]
             info_3 = session.query(Product).filter(Product.IsHot == 0, Product.IsNew == 1)[0:4]
-            self.render('index_index.html', info_1=info_1, info_2=info_2, info_3=info_3)
+
+            # 获取评论的商品，取最新三条
+            # comment_product_limit_3 = session.query(Comment).filter_by(Status=True).all()[-4:-1]
+            comment_product_limit_3 = getComLast3Limit()
+            comment_product_limit_3_list = []
+            for com in comment_product_limit_3:
+                rmp_com_dict = com.to_json()
+                product_id = rmp_com_dict['ProductID']
+                product = getProductByPidFirst(product_id).to_json()
+                rmp_com_dict['product'] = product
+                comment_product_limit_3_list.append(rmp_com_dict)
+            self.render(
+                'index_index.html',
+                info_1=info_1,
+                info_2=info_2,
+                info_3=info_3,
+                comment_product_limit_3_list=comment_product_limit_3_list
+            )
 
 # 登录页
 class IndexLoginHandler(BaseHandler):
@@ -160,6 +177,10 @@ class IndexLoginHandler(BaseHandler):
             code = 1
             msg = u"登录成功"
             self.write_json(msg, code=code)
+
+    def patch(self):
+        self.session['index_user'] = ""
+        self.write_json(u"注销成功", code=1)
 
 # 注册页
 class IndexRegisterHandler(BaseHandler):
@@ -216,7 +237,6 @@ class IndexRegisterHandler(BaseHandler):
 
             self.write_json("success", code=1)
         except Exception,e:
-            print e
             # 事务
             session.rollback()
             self.write_json("failed", code=0)
@@ -264,7 +284,7 @@ class IndexQQLoginHandler(BaseHandler):
                 userid = ret.UserID
                 ret = session.query(Users).filter_by(UserID=userid).first()
                 self.session['index_user'] = ret
-                self.redirect('/index/')
+                self.redirect('/index')
         except Exception,e:
             self.redirect('/register/?status=2')  # 第三方登录出现错误
 
@@ -310,7 +330,6 @@ class ActiveEmailHandler(BaseHandler):
                 session.commit()
                 self.redirect('/login/?active_status=1')
         except Exception, e :
-            print e
             self.redirect('/login/?active_status=0')
 
 class CheckLoginHandler(BaseHandler):
@@ -322,7 +341,6 @@ class CheckLoginHandler(BaseHandler):
             user_info = None
             code = 0
         finally:
-            print "user_info", user_info
             self.write_json(user_info, code=code)
 
 class GetProductListHandler(BaseHandler):
@@ -399,7 +417,6 @@ class AddShopCartHandler(BaseHandler):
             code = 1
             msg = u"添加购物车成功"
         except Exception, e:
-            print e
             code = 0
             msg=u"添加购物车出错"
         finally:
@@ -418,7 +435,6 @@ class AddShopCartHandler(BaseHandler):
             session.commit()
             self.write_json("success", code=1)
         except Exception, e:
-            print e
             self.write_json("failed", code=0)
 
 class DeliveryAddressHandler(BaseHandler):
@@ -456,7 +472,6 @@ class AlipayHandler(BaseHandler):
             session.add(Order(**save_data))
             session.commit()
         except Exception, e:
-            print e
             session.rollback()
         # 接受支付参数,整理支付宝接口所需参数
         order_string = return_order_string(u'有缘婚姻网支付测试', trade_no, int(data.get('totalprice')),settings.ALIPAY_RETURN_URL)
@@ -501,9 +516,67 @@ class AlipaySusscessHandler(BaseHandler):
                 ProductInfo = session.query(Product).filter_by(ProductID=id).first().to_json()
                 product_info_list.append(ProductInfo)
             all_data.append({"order": x.to_json(), "product_info": product_info_list})
-
-        print "all_data", all_data
         self.render('order_list.html', order_list=all_data)
 
     def post(self):
         pass
+
+
+class ErrorHandler(BaseHandler):
+    def get(self):
+        self.write_error(404)
+
+    def write_error(self, status_code, **kwargs):
+        if status_code == 404:
+            self.render('404.html')
+        elif status_code == 500:
+            self.render('500.html')
+        else:
+            self.write('error:' + str(status_code))
+
+class ShopProductDetailHandler(BaseHandler):
+    def get(self):
+        pid = self.get_argument('pid', None)
+        ProductInfo = []
+        comment_list = []
+        comment_msg = ""
+        comment_count = 0
+        if pid:
+            ProductInfo = getProductByPidFirst(pid).to_json()
+            try:
+                suer_info = self.session['index_user'].to_json()
+                order_info = session.query(Order).filter(Order.UserID == suer_info['UserID'], Order.ProductID == pid).first()
+                if not order_info:
+                    comment_msg = u'未购买过该商品，不能进行评论'
+            except Exception, e:
+                comment_msg = u'未登录、登录后才能进行相关操作！'
+            comment = session.query(Comment).filter(Comment.ProductID == pid, Comment.Status==True).all()
+            for com in comment:
+                com_dict = com.to_json()
+                UserID = int(com_dict['UserID'])
+                try:
+                    UserName= session.query(Users).filter_by(UserID=UserID).first().to_json()['UserName']
+                    com_dict['UserName'] = UserName
+                except:
+                    com_dict['UserName'] = u"有缘网用户"
+                comment_list.append(com_dict)
+            comment_count = len(comment_list)
+
+            # 商品详情下的推荐
+            # recommend_product = session.query(Users).all()[-8:-1]
+            recommend_product = getRecommendProduct()
+        self.render('index_shop_detail.html', ProductInfo=ProductInfo, comment_list=comment_list, comment_msg=comment_msg, comment_count=comment_count, recommend_product=recommend_product)
+
+
+class ProductCommentHandler(BaseHandler):
+    def post(self):
+        arg_data = json.loads(self.get_argument('data'))
+        user_info = self.session['index_user'].to_json()
+        data = {"UserID":user_info['UserID'], "ProductID":arg_data['pid'], "Content":arg_data['user_comment_content'], "Status":False}
+        obj = Comment(**data)
+        session.add(obj)
+        session.commit()
+        self.write_json(u"新增成功、审核成功后即可显示！", code=1)
+
+
+

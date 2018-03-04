@@ -80,4 +80,9 @@ url = [
         (r"/get_delivery_address/", index_view.DeliveryAddressHandler),  # 获得收货地址
         (r"/alipay/", index_view.AlipayHandler),  # 支付宝支付
         (r"/alipay_success/", index_view.AlipaySusscessHandler),  # 支付支付成功
+        (r"/index_logout/", index_view.IndexLoginHandler),  # 注销
+        (r"/shop_product_detail", index_view.ShopProductDetailHandler),  # 商品详情
+        (r"/add_product_comment/", index_view.ProductCommentHandler),  # 商品详情
+
+        (r".*", index_view.ErrorHandler),  # 在所有的路由后面捕获错误
       ]
