@@ -629,5 +629,19 @@ class WishListHandler(BaseHandler):
 
         self.render('index_wish_list.html', wish_list=wish_list)
 
-    def post(self, arg):
-        print arg
+    def post(self):
+        user_info = self.session['index_user'].to_json()
+        pid = self.get_argument('pid')
+        session.query(Collection).filter(Collection.ProductID == pid, Collection.UserID==user_info['UserID']).delete()
+        session.commit()
+        self.write_json(u"移除成功", code=1)
+
+
+class MyAddressHandler(BaseHandler):
+    def get(self):
+        user_info = self.session['index_user'].to_json()
+        my_address = session.query(DeliveryAddress).filter_by(UserID=user_info['UserID']).all()
+        self.render('my_address.html', my_address=my_address)
+
+    def post(self):
+        pass

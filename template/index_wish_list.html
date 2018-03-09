@@ -17,8 +17,6 @@
                     success: function(arg){
                         coll_back_data = $.parseJSON(arg)
                         if(coll_back_data.code==1){
-                            layer.msg(coll_back_data.data, {icon: 6});
-
                             {# 从心愿单中删除 #}
                             $.ajax({
                                 url: "/wish_list/?pid="+id,
@@ -28,10 +26,11 @@
                                 success: function(arg){
                                     coll_back_data = $.parseJSON(arg)
                                     if(coll_back_data.code==1){
-                                        layer.msg(coll_back_data.data, {icon: 6});
+                                        layer.msg('添加购物车成功', {icon: 6});
+                                        $('#'+id).remove()
                                         {# 从心愿单中删除 #}
                                     }else{
-                                        layer.msg(coll_back_data.data, {icon: 5});
+                                        layer.msg('添加购物车失败', {icon: 5});
                                     }
                                 }});
 
@@ -69,7 +68,7 @@
             </thead>
             <tbody>
             {% for wish in wish_list %}
-              <tr>
+              <tr id="{{ wish['product']['ProductID'] }}">
                 <td class="product-thumbnail">
                   <img style="width: 80px;" src="{{ static_url('images/upload') }}/{{ wish['product']['ProductSmallPicture'] }}" alt="">
                 </td>
