@@ -27,6 +27,7 @@ from views.view_utils.tools import getRecommendProduct
 from views.view_utils.tools import getComLast3Limit
 from pay.alipay.main import return_order_string
 from sqlalchemy.sql import func
+import datetime
 
 
 class IndexHandler(BaseHandler):
@@ -173,9 +174,11 @@ class IndexLoginHandler(BaseHandler):
             self.write_json(msg, code=code)
             return
         else:
-            self.session['index_user'] = ret
             code = 1
             msg = u"登录成功"
+            session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime":datetime.datetime.now(),"UserLastVisitIP":self.request.remote_ip})
+            session.commit()
+            self.session['index_user'] = ret
             self.write_json(msg, code=code)
 
     def patch(self):
@@ -284,6 +287,8 @@ class IndexQQLoginHandler(BaseHandler):
                 userid = ret.UserID
                 ret = session.query(Users).filter_by(UserID=userid).first()
                 self.session['index_user'] = ret
+                session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime": datetime.datetime.now(), "UserLastVisitIP": self.request.remote_ip})
+                session.commit()
                 self.redirect('/index')
         except Exception,e:
             self.redirect('/register/?status=2')  # 第三方登录出现错误
@@ -314,6 +319,8 @@ class WeiboLoginHandler(BaseHandler):
             # 登录
             userid = ret.UserID
             ret = session.query(Users).filter_by(UserID=userid).first()
+            session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime": datetime.datetime.now(), "UserLastVisitIP": self.request.remote_ip})
+            session.commit()
             self.session['index_user'] = ret
             self.redirect('/index')
 
@@ -578,5 +585,49 @@ class ProductCommentHandler(BaseHandler):
         session.commit()
         self.write_json(u"新增成功、审核成功后即可显示！", code=1)
 
+class UserCenterHandler(BaseHandler):
+    def get(self):
+        user_info = self.session['index_user'].to_json()
+        self.render('index_user_center.html', user_info=user_info)
+
+    def post(self):
+        try:
+            data = json.loads(self.get_argument('data'))
+            if data.keys()[0] == "UserSex":
+                data['UserSex'] = 1 if data['UserSex'] == u"男" else 0
+            user_info = self.session['index_user'].to_json()
+            session.query(Users).filter(Users.UserID == user_info['UserID']).update(data)
+            session.commit()
+            user_info = session.query(Users).filter_by(UserID=user_info['UserID']).first()
+            self.session['index_user'] = user_info
+            self.write_json(u"修改成功", code=1)
+        except Exception, e:
+            print e
+            self.write_json(u"修改失败", code=0)
 
 
+class ProductHistoryHandler(BaseHandler):
+    def get(self):
+        user_info = self.session['index_user'].to_json()
+        history_list = session.query(Order).filter_by(UserID=user_info['UserID']).all()
+        self.render('index_product_history_list.html', history_list=history_list)
+
+class WishListHandler(BaseHandler):
+    def get(self):
+        user_info = self.session['index_user'].to_json()
+        wish_list = []
+        try:
+            wish_all = session.query(Collection).filter_by(UserID=user_info['UserID']).all()
+            for wish in wish_all:
+                wish_dict = wish.to_json()
+                Product = getProductByPidFirst(wish_dict['ProductID'])
+                wish_dict['product'] = Product.to_json()
+                wish_list.append(wish_dict)
+        except Exception,e:
+            print e
+            pass
+
+        self.render('index_wish_list.html', wish_list=wish_list)
+
+    def post(self, arg):
+        print arg

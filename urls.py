@@ -82,7 +82,11 @@ url = [
         (r"/alipay_success/", index_view.AlipaySusscessHandler),  # 支付支付成功
         (r"/index_logout/", index_view.IndexLoginHandler),  # 注销
         (r"/shop_product_detail", index_view.ShopProductDetailHandler),  # 商品详情
-        (r"/add_product_comment/", index_view.ProductCommentHandler),  # 商品详情
+        (r"/add_product_comment/", index_view.ProductCommentHandler),  # 添加商品评论
+        (r"/user_center/", index_view.UserCenterHandler),  # 用户中心
+        (r"/modify_user_info/", index_view.UserCenterHandler),  # 修改用户信息
+        (r"/product_history/", index_view.ProductHistoryHandler),  # 修改用户信息
+        (r"/wish_list/", index_view.WishListHandler),  # 修改用户信息
 
         (r".*", index_view.ErrorHandler),  # 在所有的路由后面捕获错误
       ]
