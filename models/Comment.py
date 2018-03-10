@@ -9,7 +9,7 @@ class Comment(Base):
     CommentID = Column(Integer, primary_key=True, autoincrement=True)
     UserID = Column(Integer)
     ProductID = Column(Integer)
-    CerateTime = Column(DateTime,default=datetime.datetime.now())
+    CerateTime = Column(DateTime, default=datetime.datetime.now())
     Content = Column(String(5000))
     Status = Column(Boolean, default=False)
 

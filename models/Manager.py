@@ -9,10 +9,10 @@ class Manager(Base):
     ManagerID = Column(Integer, primary_key=True, autoincrement=True)
     ManagerName = Column(String(100), unique=True, index=True)
     ManagerPsd = Column(String(100))
-    ManagerRights = Column(String(100))
-    ManagerTime = Column(DateTime)
-    ManagerLastVisitTime = Column(DateTime)
-    ManagerLastVisitIP = Column(String(100))
+    ManagerRights = Column(String(100), nullable=True)
+    ManagerTime = Column(DateTime, default=datetime.datetime.now())
+    ManagerLastVisitTime = Column(DateTime, default=datetime.datetime.now())
+    ManagerLastVisitIP = Column(String(100), nullable=True)
 
     def __repr__(self):
         return "%s-%s" % (self.ManagerID, self.ManagerName)
