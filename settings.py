@@ -76,4 +76,4 @@ ALIPAY_GETWAY = 'https://openapi.alipaydev.com/gateway.do'
 ALIPAY_APP_PRIVATE_KEY_PATH = os.path.join('pay', 'alipay', 'app_private_key.pem')
 ALIPAY_APP_PUBLIC_KEY_PATH = os.path.join('pay', 'alipay', 'app_public_key.pem')
 ALIPAY_SIGN_TYPE = "RSA2"
-ALIPAY_RETURN_URL = "http://test.com/alipay_success/"
+ALIPAY_RETURN_URL = "http://"+WEB_DOMAIN_NAME+"/alipay_success/"
