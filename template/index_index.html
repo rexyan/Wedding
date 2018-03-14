@@ -19,7 +19,7 @@
     
     {#商品收藏#}
     function CollectionProduct(id) {
-        if($('#login_user').html() == "未登录"){
+        if($('#login_user').html() == "{{ _(u'未登录') }}"){
              window.location='/login/'
         }else{
             {#保存用户收藏信息#}
@@ -40,7 +40,7 @@
     }
     
     function AddShopCart(id) {
-         if($('#login_user').html() == "未登录"){
+         if($('#login_user').html() == "{{ _(u'未登录') }}"){
              window.location='/login/'
         }else{
              {#添加购物车#}
@@ -103,7 +103,7 @@
       <section class="boxed-sm">
         <div class="container">
           <div class="heading-wrapper text-center">
-            <h3 style="font-size: 24px;" class="heading">热门推荐</h3>
+            <h3 style="font-size: 24px;" class="heading">{{ _(u'热门推荐') }}</h3>
           </div>
           <div class="row">
             <div class="row js-product-masonry-layout-1 product-masonry-layout-1">
@@ -194,7 +194,7 @@
         <div class="overlay-call-to-action"></div>
         <div class="container">
           <div class="row">
-            <p class="h3" style="font-size: 20px;">有缘婚姻</p>
+            <p class="h3" style="font-size: 20px;">{{ _(u'有缘婚姻') }}</p>
               <span style="font-size: 20px;">Love never too late.</span>
 {#            <a class="btn btn-brand pill" href="/login/">立即注册</a>#}
           </div>
@@ -203,7 +203,7 @@
       <section class="boxed-sm">
         <div class="container">
           <div class="heading-wrapper text-center">
-            <h3 class="heading" style="font-size: 24px;">商品留言</h3>
+            <h3 class="heading" style="font-size: 24px;">{{ _(u'商品评论') }}</h3>
           </div>
           <div class="row">
             <div class="row blog-h reverse flex one-row multi-row-sm">
@@ -240,7 +240,7 @@
       </div>
       <div class="overlay-call-to-action"></div>
       <span class="btn btn-brand pill icon-left" onclick="baidu_map()" >
-        <i class="fa fa-instagram"></i>联系我们</span>
+        <i class="fa fa-instagram"></i>{{ _(u'联系我们') }}</span>
     </div>
 
 {% for info_2_2 in info_2 %}

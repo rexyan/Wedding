@@ -2,6 +2,7 @@ import tornado
 from pycket.session import SessionMixin
 import json
 from utils.encode import MyEncoder
+import tornado.locale
 
 
 class BaseHandler(tornado.web.RequestHandler, SessionMixin):
@@ -26,3 +27,10 @@ class BaseHandler(tornado.web.RequestHandler, SessionMixin):
             self.write(json.dumps(data, indent=2, cls=MyEncoder))
         else:
             self.write(data)
+
+    def get_user_locale(self):
+        user_locale = self.get_argument('lang', 'en')
+        if user_locale == 'en':
+            return tornado.locale.get('en_US')
+        else:
+            return tornado.locale.get('zh_CN')
