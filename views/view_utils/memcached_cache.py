@@ -7,12 +7,12 @@ import memcache
 import settings
 import redis
 
-pool = redis.ConnectionPool(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
-memcache_client = redis.Redis(connection_pool=pool)
+# pool = redis.ConnectionPool(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
+# memcache_client = redis.Redis(connection_pool=pool)
 
 # 以前是memcached，现在改为redis，见上面
-# memcache_client = memcache.Client(
-#     ['%s:%s' % (settings.MEMCACHE_SERVER, str(settings.MEMCACHE_PORT))])
+memcache_client = memcache.Client(
+    ['%s:%s' % (settings.MEMCACHE_SERVER, str(settings.MEMCACHE_PORT))])
 
 OBJ_DICT = {}
 OBJ_DICT2 = {}
