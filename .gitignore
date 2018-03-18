@@ -2,3 +2,11 @@
 .pyc
 .pydevproject
 .qiniu_pythonsdk_hostscache.json
+
+.idea
+.idea/*
+.project
+data.db
+*.pyc
+static/images/*
+static/picture/*
