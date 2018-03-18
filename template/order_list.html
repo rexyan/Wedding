@@ -43,18 +43,19 @@
             <td class="product-weight" data-title="Weight">{{ _(u'未完成') }}</td>
             {% end %}
 
-            {%  if order['order']['OrderStatus'] == 1 %}
+            {%  if order['order']['OrderPayType'] == 1 %}
              <td class="product-quantity" data-title="Quantity">
              {{ _(u'支付宝') }}
             </td>
             {% end %}
-            {%  if order['order']['OrderStatus'] == 0 %}
+
+            {%  if order['order']['OrderPayType'] == 2 %}
              <td class="product-quantity" data-title="Quantity">
              {{ _(u'微信') }}
             </td>
             {% end %}
 
-            {%  if order['order']['OrderStatus'] == 0 %}
+            {%  if order['order']['OrderPayType'] == 3 %}
             <td class="product-quantity" data-title="Quantity">
                 {{ _(u'其他') }}
             </td>

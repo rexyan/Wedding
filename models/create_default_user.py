@@ -9,7 +9,7 @@ class INIT_DEFAULT_USER(object):
         pass
 
     def create_user(self):
-        data = {"UserName": "default", "UserPwd": "b9d9b8ddd5e59bc8cac074a2272dfb28", "UserEmail": "default@test.com"}
+        data = {"UserName": "default", "UserPwd": "b9d9b8ddd5e59bc8cac074a2272dfb28", "UserEmail": "default@test.com", "UserHashCode": "default"}
         obj = User.Users(**data)
         session.add(obj)
         session.commit()
@@ -25,5 +25,5 @@ class INIT_DEFAULT_USER(object):
 
 if __name__=='__main__':
     obj = INIT_DEFAULT_USER()
-    # obj.create_user()
+    obj.create_user()
     obj.crete_manager()

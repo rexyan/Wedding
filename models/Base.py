@@ -9,8 +9,8 @@ from sqlalchemy import create_engine
 # mysql:3306
 # test1:数据库名称
 # 设置编码: charset=utf8
-# engine = create_engine("mysql://root:root@127.0.0.1:3306/test1?charset=utf8", max_overflow=5) #创建引擎，还可以加上echo=True，加上后会显示创建sql的命令
-engine = create_engine("sqlite:///data.db") #创建引擎，还可以加上echo=True，加上后会显示创建sql的命令
+engine = create_engine("mysql://root:root@127.0.0.1:3306/test1?charset=utf8", max_overflow=5) #创建引擎，还可以加上echo=True，加上后会显示创建sql的命令
+# engine = create_engine("sqlite:///data.db") #创建引擎，还可以加上echo=True，加上后会显示创建sql的命令
 
 Base = declarative_base() #创建基类
 
