@@ -1,6 +1,6 @@
 ﻿{% extends 'index_layout.html' %}
 
-{% block title %}订单{% end %}
+{% block title %} {{ _(u'订单') }} {% end %}
 
 {% block js %}
 {% end %}
@@ -9,7 +9,7 @@
 <section class="sub-header shop-detail-1">
 <img class="rellax bg-overlay" src="http://pic.jj20.com/up/allimg/811/0S114111458/140S1111458-7.jpg" alt="">
 <div class="overlay-call-to-action"></div>
-<h3 class="heading-style-3">订单列表</h3>
+<h3 class="heading-style-3">{{ _(u'订单列表') }}</h3>
 </section>
 <section class="boxed-sm">
 <div class="container">
@@ -18,12 +18,12 @@
       <table class="woocommerce-cart-table">
         <thead>
           <tr>
-            <th class="product-thumbnail">订单ID</th>
-            <th class="product-name">订单总价</th>
-            <th class="product-weight">支付状态</th>
-            <th class="product-quantity">支付方式</th>
-            <th class="product-price">订单商品</th>
-            <th class="product-subtotal">交易号</th>
+            <th class="product-thumbnail">{{ _(u'订单ID') }}</th>
+            <th class="product-name">{{ _(u'订单总价') }}</th>
+            <th class="product-weight">{{ _(u'支付状态') }}</th>
+            <th class="product-quantity">{{ _(u'支付方式') }}</th>
+            <th class="product-price">{{ _(u'订单商品') }}</th>
+            <th class="product-subtotal">{{ _(u'交易号') }}</th>
             <th class="product-remove"></th>
           </tr>
         </thead>
@@ -37,26 +37,26 @@
               {{ order['order']['OrderTotalPrice'] }}
             </td>
             {%  if order['order']['OrderStatus'] == 1 %}
-            <td class="product-weight" data-title="Weight">完成</td>
+            <td class="product-weight" data-title="Weight">{{ _(u'完成') }}</td>
             {% end %}
             {%  if order['order']['OrderStatus'] == 0 %}
-            <td class="product-weight" data-title="Weight">未完成</td>
+            <td class="product-weight" data-title="Weight">{{ _(u'未完成') }}</td>
             {% end %}
 
             {%  if order['order']['OrderStatus'] == 1 %}
              <td class="product-quantity" data-title="Quantity">
-             支付宝
+             {{ _(u'支付宝') }}
             </td>
             {% end %}
             {%  if order['order']['OrderStatus'] == 0 %}
              <td class="product-quantity" data-title="Quantity">
-             微信
+             {{ _(u'微信') }}
             </td>
             {% end %}
 
             {%  if order['order']['OrderStatus'] == 0 %}
             <td class="product-quantity" data-title="Quantity">
-                其他
+                {{ _(u'其他') }}
             </td>
             {% end %}
 

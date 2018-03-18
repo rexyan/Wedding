@@ -1,6 +1,6 @@
 ﻿{% extends 'index_layout.html' %}
 
-{% block title %}购物车{% end %}
+{% block title %} {{ _(u'购物车') }}{% end %}
 
 {% block js %}
 <script>
@@ -35,8 +35,8 @@
     }
 
     function remove_product(carid) {
-        layer.confirm('您确认要删除该商品吗？', {
-              btn: ['确认','取消'] //按钮
+        layer.confirm('{{ _(u'您确认要删除该商品吗？') }}', {
+              btn: ['{{ _(u'确认') }}','{{ _(u'取消') }}'] //按钮
             }, function(){
                 $.ajax({
                     url: "/add_shop_cart/"+carid+"/",
@@ -48,7 +48,7 @@
                         if ((coll_back_data['code']) == 1){
                             location.reload()
                         }else{
-                            layer.msg('删除失败！', {icon: 5});
+                            layer.msg('{{ _(u'删除失败') }}！', {icon: 5});
                         }
                 }});
             })
@@ -105,7 +105,7 @@
         json_data.totalprice = totalprice
         json_data.all_data = all_data
         if (json_data.all_data.length==0){
-            layer.msg('啥也没选，咋买！', {icon: 5});
+            layer.msg('{{ _(u'啥也没选，咋买') }}！', {icon: 5});
         }else{
             var last=JSON.stringify(json_data);
             window.location = '/alipay/?data='+last
@@ -120,7 +120,7 @@
 <section class="sub-header shop-detail-1">
 <img class="rellax bg-overlay" src="http://img.netbian.com/file/2017/0711/111a9451fe59082a5f998521ed595f34.jpg" alt="">
 <div class="overlay-call-to-action"></div>
-<h3 style="font-size: 24px;" class="heading-style-3">购物车</h3>
+<h3 style="font-size: 24px;" class="heading-style-3">{{ _(u'购物车') }}</h3>
 </section>
 <section class="boxed-sm">
 <div class="container">
@@ -129,14 +129,14 @@
       <table class="woocommerce-cart-table">
         <thead>
           <tr>
-            <th class="product-thumbnail">商品</th>
-            <th class="product-name">商品名称</th>
-            <th class="product-weight">品牌</th>
-            <th class="product-quantity">数量</th>
-            <th class="product-price">市场价</th>
-            <th class="product-subtotal">总价</th>
-            <th class="product-remove">删除</th>
-              <th class="product-remove">选择</th>
+            <th class="product-thumbnail">{{ _(u'商品') }}</th>
+            <th class="product-name">{{ _(u'商品名称') }}</th>
+            <th class="product-weight">{{ _(u'品牌') }}</th>
+            <th class="product-quantity">{{ _(u'数量') }}</th>
+            <th class="product-price">{{ _(u'市场价') }}</th>
+            <th class="product-subtotal">{{ _(u'总价') }}</th>
+            <th class="product-remove">{{ _(u'删除') }}</th>
+              <th class="product-remove">{{ _(u'选择') }}</th>
           </tr>
         </thead>
         <tbody id="history_income_list">
@@ -150,7 +150,7 @@
             </td>
             <td class="product-weight" data-title="Weight">{{ shopcart['ProductBrand'] }}</td>
             <td class="product-quantity" data-title="Quantity">
-              <input id="num{{ shopcart['ProductID'] }}" onchange="modify_number(this,'{{ shopcart['ProductMarketPrice'] }}', '{{ shopcart['ProductID'] }}', '{{ shopcart['ShopCartID'] }}', 'check_order{{ shopcart['ProductID'] }}')" class="qty" step="1" min="0" max="" name="product-name" value={{ shopcart['BuyNum'] }} title="商品数量" size="100" pattern="[0-9]*" inputmode="numeric" type="number">
+              <input id="num{{ shopcart['ProductID'] }}" onchange="modify_number(this,'{{ shopcart['ProductMarketPrice'] }}', '{{ shopcart['ProductID'] }}', '{{ shopcart['ShopCartID'] }}', 'check_order{{ shopcart['ProductID'] }}')" class="qty" step="1" min="0" max="" name="product-name" value={{ shopcart['BuyNum'] }} title="{{ _(u'商品数量') }}" size="100" pattern="[0-9]*" inputmode="numeric" type="number">
             </td>
             <td class="product-price" id="" data-title="Price">{{ shopcart['ProductMarketPrice'] }}</td>
             <td class="product-subtotal" id="TotalProductMarketPrice{{ shopcart['ProductID'] }}" data-title="Total">{{ shopcart['BuyNum']*shopcart['ProductMarketPrice'] }}</td>
@@ -169,20 +169,20 @@
 
     <div class="cart_totals">
         <br><br>
-       <h4 style="color: black;font-weight: normal" class="title">结算</h4>
+       <h4 style="color: black;font-weight: normal" class="title">{{ _(u'结算') }}</h4>
         <br><br>
       <div class="row">
         <div class="col-md-8">
           <table class="woocommerce-cart-subtotal">
             <tbody>
               <tr>
-                <th>支付方式</th>
+                <th>{{ _(u'支付方式') }}</th>
                 <td data-title="Subtotal">
                     <img src="{{ static_url('picture/zhifubao.png') }}">
                 </td>
               </tr>
               <tr>
-                <th>总价</th>
+                <th>{{ _(u'总价') }}</th>
                 <td data-title="Total" id="TotalPrice">0</td>
               </tr>
             </tbody>
@@ -193,14 +193,14 @@
     </div>
 
        <br> <br>
-      <h4 style="color: black;font-weight: normal" class="title">配送地址</h4>
+      <h4 style="color: black;font-weight: normal" class="title">{{ _(u'配送地址') }}</h4>
        <br>
       <select id="DistributionAddress" class="orderby select-custom-wrapper" name="orderby">
       </select>
 
          <br> <br> <br> <br>
           <div class="proceed-to-checkout">
-            <a class="btn btn-brand"  onclick="pay()" style="cursor: pointer">确认订单</a>
+            <a class="btn btn-brand"  onclick="pay()" style="cursor: pointer">{{ _(u'确认订单') }}</a>
           </div>
             <br> <br> <br>
   </div>

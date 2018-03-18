@@ -26,3 +26,156 @@
 婚恋商城,Love mall
 帮助,Help
 礼服,Full dress
+,
+欢迎注册,Welcome to register
+用户名,User name
+邮箱地址,E-mail address
+密码,Password
+重复密码,Repeat password
+真实姓名,Real name
+年龄,Age
+xx 婚恋网用户注册协议,XX marriage network user registration protocol
+快捷登录,Quick login
+欢迎登录,Welcome
+账户密码,Account password
+忘记密码?,Forgot your password?
+确认,Confirm
+,
+价格筛选,The price of screening
+价格区间,Price range
+品牌分类,Brand classification
+推荐商品,Pick of the week
+标签分类,Label classification
+商品详情,Product details
+市场价,Market value
+优惠价,Concessional rate
+VIP价,VIP Price
+添加到购物车,Add to cart
+品牌,Brand
+关键字,Keyword
+相关推荐,The relevant recommendation
+商品描述,The description of the goods
+商品参数,Product parameters
+评论列表,Comment list
+添加评论,Add a comment
+商品积分,Integral
+上架时间,On time
+销售量,Sales volume
+商品剩余,The remaining goods
+会员价,Member price
+暂无评论,No comment
+未登录、登录后才能进行相关操作,"No login, login after the operation can be carried out"
+提交评论,Submit comments
+图片展示,Picture display
+无符合条件的数据,No matching data
+分类共,Classification
+条数据,data
+本页显示,This page is displayed
+条数据,data
+默认排序,The default sort
+价格从高到低,From high to low price
+销量从高到低,Sales from high to low
+评论从高到低,Comments from high to low
+上架时间从高到低,On time from high to low
+销量从高到低,Sales from high to low
+新品,New
+热门,Hot
+当前页数,Page
+清空当前筛选条件,Clear the current filter
+价格,Price
+标签,Label
+账户激活失败,Account activation failure
+账户激活成功,Account activation success
+账户已经激活了,The account has been activated.
+邮箱不能不为空,Not for the empty mailbox
+密码不能为空,The password can not be empty
+未进行人机验证,Without man-machine verification
+第三方快捷登录,Quick login
+请绑定邮箱帐号,Please bind the mail account
+请输入邮箱中的验证码,Please enter the mailbox in the verification code
+绑定成功！您以后可以直接使用第三方帐号登录,The binding is successful! You can use third party account after login
+绑定失败,Bind failed
+第三方登录故障，可联系管理员,The third party can contact the administrator login failure
+人机验证失败,Machine validation failed
+用户名不能为空,The user name cannot be empty
+邮箱帐号不能为空,Mail account cannot be empty
+密码不能为空,The password can not be empty
+密码不一致,The password is not consistent
+未进行人机验证,Without man-machine verification
+注册成功、请前往注册邮箱进行账户激活,"Please go to the registration, registered mail account activation"
+注册失败,Login has failed
+订单,Order
+订单列表,Order list
+订单ID,The order of ID
+订单总价,Order price
+支付状态,Payment status
+支付方式,Method of payment
+订单商品,Orders for goods
+交易号,Transaction number
+完成,complete
+未完成,Not completed
+支付宝,Alipay
+微信,WeChat
+其他,Other
+商品列表,The list of goods
+添加收货地址,Add the delivery address
+我喜欢的商品,I love the goods
+添加收货地址,Add the delivery address
+省份,Province
+城市,City
+邮编,Zip code
+电话,Telephone
+固定电话,Fixed telephone
+联系人,Contacts
+详细地址,Detailed address
+添加购物车成功,To add a shopping cart to success
+添加购物车失败,Failed to add a shopping cart
+商品,Commodity
+商品名称,Name of commodity
+价格,Price
+剩余库存,The remaining inventory
+加入购物车,Add to cart
+添加到购物车,Add to cart
+点击可修改信息,Click to modify the information
+性别格式不正确,Sex is not in the correct format
+男,male
+女,female
+邮箱格式不正确,The mailbox is not in the correct format
+个人中心,Individual center
+已购买的商品,Have to buy goods
+我的购物车,My shopping cart
+我喜欢的商品,I love the goods
+我的收货地址,My shipping address
+用户ID,User ID
+用户名称,User name
+真实姓名,Real name
+用户性别,User gender
+用户年龄,User age
+用户邮箱,Email
+用户VIP等级,User level VIP
+用户积分,The user points
+用户创建时间,Users create time
+用户最后登录时间,"Finally, the user login time"
+用户最后登录IP,"Finally, the user login IP"
+购物车,Shopping Cart
+您确认要删除该商品吗？,Are you sure you want to delete this item?
+取消,Cancel
+删除失败,Delete failed
+啥也没选，咋买,No choice of goods
+购物车,Shopping Cart
+数量,Number
+总价,Total
+删除,Delete
+选择,Choice
+商品数量,The quantity of the goods
+结算,Settlement
+支付方式,Method of payment
+配送地址,Delivery address
+确认订单,Confirm the order
+公司地址,Company address
+退出,Sign out
+语言,Language
+语言切换,Language switching
+简体中文,Chinese
+英语,English
+日语,Japanese

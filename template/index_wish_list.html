@@ -1,11 +1,11 @@
 ﻿{% extends 'index_layout.html' %}
 
-{% block title %}商品列表{% end %}
+{% block title %} {{ _(u'我喜欢的商品') }} {% end %}
 
 {% block js %}
 <script>
     function AddShopCart(id) {
-         if($('#login_user').html() == "未登录"){
+         if($('#login_user').html() == "{{ _(u'未登录') }}"){
              window.location='/login/'
         }else{
              {#添加购物车#}
@@ -26,11 +26,11 @@
                                 success: function(arg){
                                     coll_back_data = $.parseJSON(arg)
                                     if(coll_back_data.code==1){
-                                        layer.msg('添加购物车成功', {icon: 6});
+                                        layer.msg('{{ _(u'添加购物车成功') }}', {icon: 6});
                                         $('#'+id).remove()
                                         {# 从心愿单中删除 #}
                                     }else{
-                                        layer.msg('添加购物车失败', {icon: 5});
+                                        layer.msg('{{ _(u'添加购物车失败') }}', {icon: 5});
                                     }
                                 }});
 
@@ -48,7 +48,7 @@
   <section class="sub-header shop-detail-1">
     <img class="rellax bg-overlay" src="{{ static_url('picture/014.jpg') }}" alt="">
     <div class="overlay-call-to-action"></div>
-    <h3 class="heading-style-3" style="font-size: 24px;">我喜欢的商品</h3>
+    <h3 class="heading-style-3" style="font-size: 24px;">{{ _(u'我喜欢的商品') }}</h3>
   </section>
   <section class="boxed-sm">
     <div class="container">
@@ -58,11 +58,11 @@
           <table class="woocommerce-cart-table">
             <thead>
               <tr>
-                <th class="product-thumbnail">商品</th>
-                <th class="product-name">商品名称</th>
-                <th class="product-price">价格</th>
-                <th class="product-status">剩余库存</th>
-                <th class="product-add-to-cart">加入购物车</th>
+                <th class="product-thumbnail">{{ _(u'商品') }}</th>
+                <th class="product-name">{{ _(u'商品名称') }}</th>
+                <th class="product-price">{{ _(u'价格') }}</th>
+                <th class="product-status">{{ _(u'剩余库存') }}</th>
+                <th class="product-add-to-cart">{{ _(u'加入购物车') }}</th>
                 <th class="product-remove"></th>
               </tr>
             </thead>
@@ -80,7 +80,7 @@
                   {{ wish['product']['ProductCount'] }}
                 </td>
                 <td class="product-add-to-cart">
-                    <span onclick="AddShopCart({{ wish['product']['ProductID'] }})" style="margin-left: 20px;cursor: pointer">添加到购物车</span>
+                    <span onclick="AddShopCart({{ wish['product']['ProductID'] }})" style="margin-left: 20px;cursor: pointer">{{ _(u'添加到购物车') }}</span>
                 </td>
                 <td class="product-remove text-right">
                   <a class="remove" href="#" aria-label="Remove this item">x</a>

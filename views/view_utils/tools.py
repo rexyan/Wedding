@@ -13,6 +13,11 @@ def getAllProductType():
     return ret_list
 
 @memorize
+def getAllProductType_EN():
+    ret_list = session.query(ProductType).all()
+    return ret_list
+
+@memorize
 def getProductTypeByPid(pid):
     product = session.query(Product).filter(Product.ProductType == pid).all()
     return product

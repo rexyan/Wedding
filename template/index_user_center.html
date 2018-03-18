@@ -1,24 +1,24 @@
 ﻿{% extends 'index_layout.html' %}
 
-{% block title %}商品列表{% end %}
+{% block title %} {{ _(u'个人中心') }} {% end %}
 
 {% block js %}
 <script>
     $(function () {
-        layer.tips('点击可修改信息', '#UserID');
+        layer.tips('{{ _(u'点击可修改信息') }}', '#UserID');
     })
     
     function modify_user_info(id) {
         layer.prompt(function(val, index){
             if (id == 'UserSex'){
-                if (val !="男" || val !="女"){
-                    layer.msg('性别格式不正确！', {icon: 5});
+                if (val !="{{ _(u'男') }}" || val !="{{ _(u'女') }}"){
+                    layer.msg('{{ _(u'性别格式不正确') }}！', {icon: 5});
                     return false
                 }
             }else if(id == 'UserEmail'){
                 var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
                 if (!reg.test(val)){
-                    layer.msg('邮箱格式不正确！', {icon: 5});
+                    layer.msg('{{ _(u'邮箱格式不正确') }}！', {icon: 5});
                     return false
                 }
             }
@@ -51,30 +51,30 @@
   <section class="sub-header shop-detail-1">
     <img class="rellax bg-overlay" src="{{ static_url('picture/buy.jpg') }}" alt="">
     <div class="overlay-call-to-action"></div>
-    <h3 class="heading-style-3">个人中心</h3>
+    <h3 class="heading-style-3">{{ _(u'个人中心') }}</h3>
   </section>
   <section class="boxed-sm">
     <div class="container">
         <br><br><br><br>
       <div class=" col-md-6" style="margin-left: 23%">
-        <a href="/product_history/" ><span style="cursor: pointer" class="label label-warning">已购买的商品</span> </a>
-        <a href="/shopcart/" > <span style="cursor: pointer" class="label label-info">我的购物车</span> </a>
-        <a href="/wish_list/" > <span style="cursor: pointer" class="label label-danger">我喜欢的商品</span> </a>
-        <a href="/my_address/" > <span style="cursor: pointer" class="label label-primary">我的收货地址</span> </a>
+        <a href="/alipay_success/" ><span style="cursor: pointer" class="label label-warning">{{ _(u'已购买的商品') }}</span> </a>
+        <a href="/shopcart/" > <span style="cursor: pointer" class="label label-info">{{ _(u'我的购物车') }}</span> </a>
+        <a href="/wish_list/" > <span style="cursor: pointer" class="label label-danger">{{ _(u'我喜欢的商品') }}</span> </a>
+        <a href="/my_address/" > <span style="cursor: pointer" class="label label-primary">{{ _(u'我的收货地址') }}</span> </a>
 
           <br><br>
        <ul class="list-group">
-            <li id="UserID" class="list-group-item">用户ID：<span style="float: right;">{{ user_info["UserID"] }}</span></li>
-            <li  onclick="modify_user_info('UserName')" style="cursor: pointer" class="list-group-item">用户名称：<span id="UserName" style="float: right;">{{ user_info["UserName"] }}</span> </li>
-            <li  onclick="modify_user_info('UserRealName')" style="cursor: pointer" class="list-group-item">真实姓名：<span  id="UserRealName"  style="float: right;">{{ user_info["UserRealName"] }}</span> </li>
-            <li  onclick="modify_user_info('UserSex')" style="cursor: pointer" class="list-group-item">用户性别：<span id="UserSex" style="float: right;">{% if user_info["UserSex"] ==1  %}男{% else %}女{% end %}</span> </li>
-            <li  onclick="modify_user_info('UserAge')" style="cursor: pointer" class="list-group-item">用户年龄：<span id="UserAge" style="float: right;">{{ user_info["UserAge"] }}</span> </li>
-            <li  onclick="modify_user_info('UserEmail')" style="cursor: pointer" class="list-group-item">用户邮箱：<span id="UserEmail" style="float: right;">{{ user_info["UserEmail"] }}</span> </li>
-            <li class="list-group-item">用户VIP等级：<span style="float: right;">{{ user_info["UserVip"] }}</span></li>
-            <li class="list-group-item">用户积分：<span style="float: right;">{{ user_info["UserPoint"] }}</span></li>
-            <li class="list-group-item">用户创建时间：<span style="float: right;">{{ user_info["UserCreatTime"] }}</span></li>
-            <li class="list-group-item">用户最后登录时间：<span style="float: right;">{{ user_info["UserLastVisitTime"] }}</span></li>
-            <li class="list-group-item">用户最后登录IP：<span style="float: right;">{{ user_info["UserLastVisitIP"] }}</span></li>
+            <li id="UserID" class="list-group-item">{{ _(u'用户ID') }}：<span style="float: right;">{{ user_info["UserID"] }}</span></li>
+            <li  onclick="modify_user_info('UserName')" style="cursor: pointer" class="list-group-item">{{ _(u'用户名称') }}：<span id="UserName" style="float: right;">{{ user_info["UserName"] }}</span> </li>
+            <li  onclick="modify_user_info('UserRealName')" style="cursor: pointer" class="list-group-item">{{ _(u'真实姓名') }}：<span  id="UserRealName"  style="float: right;">{{ user_info["UserRealName"] }}</span> </li>
+            <li  onclick="modify_user_info('UserSex')" style="cursor: pointer" class="list-group-item">{{ _(u'用户性别') }}：<span id="UserSex" style="float: right;">{% if user_info["UserSex"] ==1  %}{{ _(u'男') }}{% else %}{{ _(u'女') }}{% end %}</span> </li>
+            <li  onclick="modify_user_info('UserAge')" style="cursor: pointer" class="list-group-item">{{ _(u'用户年龄') }}：<span id="UserAge" style="float: right;">{{ user_info["UserAge"] }}</span> </li>
+            <li  onclick="modify_user_info('UserEmail')" style="cursor: pointer" class="list-group-item">{{ _(u'用户邮箱') }}：<span id="UserEmail" style="float: right;">{{ user_info["UserEmail"] }}</span> </li>
+            <li class="list-group-item">{{ _(u'用户VIP等级') }}：<span style="float: right;">{{ user_info["UserVip"] }}</span></li>
+            <li class="list-group-item">{{ _(u'用户积分') }}：<span style="float: right;">{{ user_info["UserPoint"] }}</span></li>
+            <li class="list-group-item">{{ _(u'用户创建时间') }}：<span style="float: right;">{{ user_info["UserCreatTime"] }}</span></li>
+            <li class="list-group-item">{{ _(u'用户最后登录时间') }}：<span style="float: right;">{{ user_info["UserLastVisitTime"] }}</span></li>
+            <li class="list-group-item">{{ _(u'用户最后登录IP') }}：<span style="float: right;">{{ user_info["UserLastVisitIP"] }}</span></li>
        </ul>
 
       </div>

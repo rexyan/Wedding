@@ -1,6 +1,6 @@
 ﻿{% extends 'index_layout.html' %}
 
-{% block title %}登录{% end %}
+{% block title %}{{ _(u'登录') }}{% end %}
 
 {% block js %}
     <script>
@@ -17,11 +17,11 @@
 
          (function () {
              if (getUrlParam('active_status')==0){
-                 layer.msg('账户激活失败！', {icon: 5});
+                 layer.msg('{{ _(u'账户激活失败') }}！', {icon: 5});
              }else if(getUrlParam('active_status')==1){
-                 layer.msg('账户激活成功！', {icon: 6});
+                 layer.msg('{{ _(u'账户激活成功') }}！', {icon: 6});
              }else if(getUrlParam('active_status')==3){
-                 layer.msg('账户已经激活了！', {icon: 6});
+                 layer.msg('{{ _(u'账户已经激活了') }}！', {icon: 6});
              }
          })();
 
@@ -29,7 +29,7 @@
             json_data = {}
             var Email = $('#Email').val()
             if (Email==""){
-                layer.msg('邮箱不能不为空！', {icon: 5});
+                layer.msg('{{ _(u'邮箱不能不为空') }}！', {icon: 5});
                 return false
             }else{
                 json_data.Email = Email
@@ -37,14 +37,14 @@
 
             var Pass = $('#Pass').val()
             if (Pass==""){
-                layer.msg('密码不能为空！', {icon: 5});
+                layer.msg('{{ _(u'密码不能为空') }}！', {icon: 5});
                 return false
             }else{
                 json_data.Pass = Pass
             }
 
             if(luosimao_rep==""){
-                layer.msg('未进行人机验证！', {icon: 5});
+                layer.msg('{{ _(u'未进行人机验证') }}！', {icon: 5});
                 return false
             }else{
                 json_data.luosimao_rep= luosimao_rep
@@ -75,20 +75,20 @@
 {#<img class="rellax bg-overlay" src="{{ static_url('picture/011.jpg') }}" alt="">#}
 <img class="rellax bg-overlay" src="{{ static_url('picture/login_banner.jpg') }}" alt="">
 <div class="overlay-call-to-action"></div>
-<h3 class="heading-style-3">欢迎登录</h3>
+<h3 class="heading-style-3">{{ _(u'欢迎登录') }}</h3>
 </section>
 <section class="boxed-sm">
 <div class="container">
   <div class="login-wrapper">
     <div class="row">
-      <h3>登录</h3>
+      <h3>{{ _(u'登录') }}</h3>
       <div>
         <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
-          <label>邮箱地址 *</label>
+          <label>{{ _(u'邮箱地址') }} *</label>
           <input id="Email" class="form-control" type="Email">
         </div>
         <div class="form-group organic-form-8" style="width: 70%;float: left;margin-left: 15%;">
-          <label>账户密码 *</label>
+          <label>{{ _(u'账户密码') }} *</label>
           <input id="Pass" class="form-control" type="Password">
         </div>
 
@@ -98,13 +98,13 @@
            <br>
           <br>
         <div class="form-group remember-me"  style="float: left;margin-left: 15%;">
-          <a class="pull-left" href="#">忘记密码?</a>
+          <a class="pull-left" href="#">{{ _(u'忘记密码?') }}</a>
             <br>
-              快捷登录 <a href="/qq_login_page/"> <img src="{{ static_url('picture/qq.png') }}"> </a>&nbsp;
+              {{ _(u'快捷登录') }} <a href="/qq_login_page/"> <img src="{{ static_url('picture/qq.png') }}"> </a>&nbsp;
               <a href="https://api.weibo.com/oauth2/authorize?client_id=1816247821&redirect_uri=http://test.com/check_weibo/"> <img src="{{ static_url('picture/weibo.png') }}"> </a>
         </div>
         <div class="form-group footer-form">
-          <button class="btn btn-brand pill" onclick="login()" type="submit">确认</button>
+          <button class="btn btn-brand pill" onclick="login()" type="submit">{{ _(u'确认') }}</button>
         </div>
       </div>
     </div>

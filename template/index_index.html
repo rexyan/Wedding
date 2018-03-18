@@ -1,5 +1,7 @@
 ﻿{% extends 'index_layout.html' %}
 
+{% block title %} {{ _(u'有缘婚姻') }} {% end %}
+
 {% block js %}
 <script>
     $(function () {
@@ -9,7 +11,7 @@
     function baidu_map() {
         layer.open({
           type: 2,
-            title:"公司地址",
+            title:"{{ _(u'公司地址') }}",
           area: ['700px', '450px'],
           fixed: false, //不固定
           maxmin: true,

@@ -25,6 +25,7 @@ from views.view_utils.tools import getProductTypeByPid
 from views.view_utils.tools import getProductByPidFirst
 from views.view_utils.tools import getRecommendProduct
 from views.view_utils.tools import getComLast3Limit
+from views.view_utils.tools import getAllProductType_EN
 from pay.alipay.main import return_order_string
 from sqlalchemy.sql import func
 import datetime
@@ -352,11 +353,14 @@ class CheckLoginHandler(BaseHandler):
 
 class GetProductListHandler(BaseHandler):
     def get(self):
-        ret_list = getAllProductType()
+        _ = self.locale.translate
+        ret_list = getAllProductType_EN()
         # ret_list = ret_list = session.query(ProductType).all()
         all_list = []
         for ret in ret_list:
-            all_list.append(ret.to_json())
+            tmp_json = ret.to_json()
+            tmp_json['ProductTypeName'] = _(tmp_json['ProductTypeName'])  # js中不能进行国际化，只好放在后端翻译
+            all_list.append(tmp_json)
         self.write_json(all_list, code=1)
 
 class BaiduMapHandler(BaseHandler):
@@ -379,8 +383,9 @@ class CollectionProductHandler(BaseHandler):
                 session.add(Collection(**data))
                 session.commit()
         except Exception, e:
+            print e
             code = 3
-            msg = u"收藏出现问题"
+            msg = u"用户未登录"
         finally:
             self.write_json(msg, code=code)
 
@@ -492,13 +497,14 @@ class AlipaySusscessHandler(BaseHandler):
     def get(self):
         # 支付成功，改变订单状态
         user_info = self.session['index_user'].to_json()
-        out_trade_no = self.get_argument('out_trade_no')
-        select_order_status = session.query(Order).filter_by(TRADE_NO=out_trade_no).first()
-        if not select_order_status.OrderStatus:
-            session.query(Order).filter(Order.TRADE_NO == out_trade_no).update({"OrderStatus": True})
-            session.commit()
-            # 发送邮件
-            content = '''
+        out_trade_no = self.get_argument('out_trade_no', None)
+        if out_trade_no:
+            select_order_status = session.query(Order).filter_by(TRADE_NO=out_trade_no).first()
+            if not select_order_status.OrderStatus:
+                session.query(Order).filter(Order.TRADE_NO == out_trade_no).update({"OrderStatus": True})
+                session.commit()
+                # 发送邮件
+                content = '''
 <html>
 <body>
 <p>亲爱的用户：</p>
@@ -512,8 +518,8 @@ class AlipaySusscessHandler(BaseHandler):
 </body>
 </html>
 '''
-            obj = redis_queue_send_email.REDIS_QUEUE()
-            obj.send_email_via_queue(settings.SMTP_USER, user_info.get('UserEmail'), settings.WEB_NAME + "订单信息", content)
+                obj = redis_queue_send_email.REDIS_QUEUE()
+                obj.send_email_via_queue(settings.SMTP_USER, user_info.get('UserEmail'), settings.WEB_NAME + "订单信息", content)
         order_list = session.query(Order).filter_by(UserID=user_info.get('UserID')).all()
         all_data = []
         for i, x in enumerate(order_list):
@@ -556,7 +562,7 @@ class ShopProductDetailHandler(BaseHandler):
                 if not order_info:
                     comment_msg = u'未购买过该商品，不能进行评论'
             except Exception, e:
-                comment_msg = u'未登录、登录后才能进行相关操作！'
+                comment_msg = u'未登录、登录后才能进行相关操作'
             comment = session.query(Comment).filter(Comment.ProductID == pid, Comment.Status==True).all()
             for com in comment:
                 com_dict = com.to_json()

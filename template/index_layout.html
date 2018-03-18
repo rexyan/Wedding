@@ -65,7 +65,52 @@
                     console.log("coll_back_data", coll_back_data)
                 }});
             }
-            
+
+            function getCookie(name) {
+                var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+                if(arr=document.cookie.match(reg))
+                    return unescape(arr[2]);
+                else
+                    return null;
+            }
+            function setCookie(name,value) {
+                var Days = 30;
+                var exp = new Date();
+                exp.setTime(exp.getTime() + Days*24*60*60*1000);
+                document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString()+";path=/";
+            }
+
+
+            function delCookie(name) {
+                var exp = new Date();
+                exp.setTime(exp.getTime() - 1);
+                var cval=getCookie(name);
+                if(cval!=null)
+                    document.cookie= name + "="+cval+";expires="+exp.toGMTString()+";path=/";
+            }
+
+            function choose_language(arg) {
+                delCookie("lang")
+                if (arg==1){
+                    setCookie("lang", "zh_CN")
+                }else if(arg==2){
+                    setCookie("lang", "en_US")
+                }else{
+                    setCookie("lang", "ja_JP")
+                }
+                window.location = window.location
+            }
+
+          function change_lan() {
+              layer.open({
+                  title:"{{ _(u'语言切换') }}",
+                  type: 1,
+                  skin: 'layui-layer-rim', //加上边框
+                  area: ['430px', '240px'], //宽高
+                  content: '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="choose_language(1)" class="btn btn-xs btn-default" type="button">{{ _(u'简体中文') }}</button>' +
+                  '&nbsp;&nbsp;<button  onclick="choose_language(2)" class="btn btn-default" type="button">{{ _(u'英语') }}</button>&nbsp;&nbsp;<button onclick="choose_language(3)" class="btn btn-default" type="button">{{ _(u'日语') }}</button>'
+                });
+          }
       </script>
     {% block css %}{% end %}
   </head>
@@ -74,7 +119,7 @@
       <nav id="menu">
         <ul>
           <li>
-            <a href="index.html">Home</a>
+            <a href="index.html">{{ _(u'首页') }}</a>
           </li>
         </ul>
       </nav>
@@ -148,6 +193,14 @@
                     <span class="icon-bar"></span>
                   </a>
                 </div>
+
+                 <div class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
+                  <a style="cursor: pointer" onclick="change_lan()">
+                    <p class="counter">0</p>
+                    <span title="{{ _(u'语言') }}"  class="fa fa-language"></span>
+                  </a>
+                </div>
+
               </aside>
             </div>
           </div>

@@ -1,6 +1,6 @@
 ﻿{% extends 'index_layout.html' %}
 
-{% block title %}商品列表{% end %}
+{% block title %} {{ _(u'商品列表') }} {% end %}
 
 {% block js %}
 <script>
@@ -38,22 +38,22 @@
         }
 
         {#显示已选筛选条件#}
-        var current_filter_list_html = "<a style='color:red' href='/index?pid={{ page_info['pid'] }}'>清空当前筛选条件</a>&nbsp;"
+        var current_filter_list_html = "<a style='color:red' href='/index?pid={{ page_info['pid'] }}'>{{ _(u'清空当前筛选条件') }}</a>&nbsp;"
         var is_show = false
         if (getQueryString('filter_price')){
-            current_filter_list_html =current_filter_list_html+" | 价格<"+getQueryString('filter_price')
+            current_filter_list_html =current_filter_list_html+" | {{ _(u'价格') }}<"+getQueryString('filter_price')
             is_show = true
         }
         if (getQueryString('brand')){
-            current_filter_list_html =current_filter_list_html+" | 品牌:"+ unescape(getQueryString('brand'))
+            current_filter_list_html =current_filter_list_html+" | {{ _(u'品牌') }}:"+ unescape(getQueryString('brand'))
             is_show = true
         }
         if (getQueryString('page')){
-            current_filter_list_html =current_filter_list_html+" | 当前页数:"+ unescape(getQueryString('page'))
+            current_filter_list_html =current_filter_list_html+" | {{ _(u'当前页数') }}:"+ unescape(getQueryString('page'))
             is_show = true
         }
         if (getQueryString('label')){
-            current_filter_list_html =current_filter_list_html+" | 标签:"+ unescape(getQueryString('label'))
+            current_filter_list_html =current_filter_list_html+" | {{ _(u'标签') }}:"+ unescape(getQueryString('label'))
             is_show = true
         }
         if(is_show){
@@ -83,7 +83,7 @@
     }
 
      function AddShopCart(id) {
-         if($('#login_user').html() == "未登录"){
+         if($('#login_user').html() == "{{ _(u'未登录') }}"){
              window.location='/login/'
         }else{
              {#添加购物车#}
@@ -104,7 +104,7 @@
     }
 
     function CollectionProduct(id) {
-        if($('#login_user').html() == "未登录"){
+        if($('#login_user').html() == "{{ _(u'未登录') }}"){
             window.location='/login/'
         }else{
             {#保存用户收藏信息#}
@@ -131,7 +131,7 @@
 <section class="sub-header shop-layout-1">
 <img class="rellax bg-overlay" src="{{ static_url('picture/banner.jpg') }}" alt="">
 <div class="overlay-call-to-action"></div>
-<h3 class="heading-style-3" style="font-size: 24px;">{{ name }}</h3>
+<h3 class="heading-style-3" style="font-size: 24px;">{{ _(name) }}</h3>
 </section>
 <section class="boxed-sm">
 <div class="container">
@@ -140,11 +140,11 @@
       <div class="col-md-3">
         <div class="sidebar" >
           <div class="widget widget-filter-price" style="float: right;margin-top: 20px;">
-            <h4 class="title-widget text-center">价格筛选</h4>
+            <h4 class="title-widget text-center">{{ _(u'价格筛选') }}</h4>
             <input class="js-filter-price" id="filter_price" type="text" data-slider-min="1" data-slider-max="{{ max_price }}" data-slider-step="1" data-slider-value="{{ max_price }}">
             <div class="filter-price-control-box">
-              <a class="btn btn-brand btn-filter" onclick="filter_product_price()" style="cursor: pointer">确认</a>
-              <p>价格区间:
+              <a class="btn btn-brand btn-filter" onclick="filter_product_price()" style="cursor: pointer">{{ _(u'确认') }}</a>
+              <p>{{ _(u'价格区间') }}:
                 <span>￥</span>
                 <span>1 - </span>
                 <span id="js-filter-result-val">{{ max_price }}</span>
@@ -153,7 +153,7 @@
             </div>
           </div>
           <div class="widget widget-categories">
-            <h4 class="title-widget text-center">品牌分类</h4>
+            <h4 class="title-widget text-center">{{ _(u'品牌分类') }}</h4>
             <ul>
                 {% for brand in product_brand_list %}
               <li>
@@ -165,7 +165,7 @@
             </ul>
           </div>
           <div class="widget widget-product-bestseller">
-            <h4 class="title-widget text-center">推荐商品</h4>
+            <h4 class="title-widget text-center">{{ _(u'推荐商品') }}</h4>
             <ul class="list-product">
                 {% for hot_product in hot_product_list %}
               <li>
@@ -183,7 +183,7 @@
             </ul>
           </div>
           <div class="widget widget-tags">
-            <h4 class="title text-center">标签分类</h4>
+            <h4 class="title text-center">{{ _(u'标签分类') }}</h4>
             <ul>
                 {% for key in key_words_list %}
               <li>
@@ -198,19 +198,19 @@
         <div class="woocommerce-top-control wrapper">
           <div class="woocommerce-top-control">
               {% if page_info['page_data_count']==0 %}
-                  <p class="woocommerce-result-count">无符合条件的数据</p>
+                  <p class="woocommerce-result-count">{{ _(u'无符合条件的数据') }}</p>
               {% else %}
-                  <p class="woocommerce-result-count">分类共 {{ page_info['data_count'] }} 条数据 本页显示{{ page_info['page_data_count'] }}条数据</p>
+                  <p class="woocommerce-result-count">{{ _(u'分类共') }} {{ page_info['data_count'] }} {{ _(u'条数据') }} {{ _(u'本页显示') }}{{ page_info['page_data_count'] }}{{ _(u'条数据') }}</p>
               {% end %}
               <p id="current_filter_list"></p>
             <form class="woocommerce-ordering select-custom-wrapper" method="get">
               <select onchange="product_filter_order()" id="filter_order" class="orderby select-custom-wrapper" name="orderby">
-                <option value="1" selected="selected">默认排序</option>
-                <option value="2">价格从高到低</option>
-                <option value="3">销量从高到低</option>
-                <option value="4">评论从高到低</option>
-                <option value="5">上架时间从高到低</option>
-                <option value="6">销量从高到低</option>
+                <option value="1" selected="selected">{{ _(u'默认排序') }}</option>
+                <option value="2">{{ _(u'价格从高到低') }}</option>
+                <option value="3">{{ _(u'销量从高到低') }}</option>
+                <option value="4">{{ _(u'评论从高到低') }}</option>
+                <option value="5">{{ _(u'上架时间从高到低') }}</option>
+                <option value="6">{{ _(u'销量从高到低') }}</option>
               </select>
             </form>
           </div>
@@ -248,7 +248,7 @@
                 <h3>
                   <a style="font-size: 18px;" class="product-name" href="/shop_product_detail?pid={{ product['ProductID'] }}">{{ product['ProductName'] }}</a>
                 </h3>
-                <span style="font-size: 10px;" >市场价:{{ product['ProductMarketPrice'] }} {% if product['IsNew'] ==1 %}| 新品 {% end %} {% if product['IsHot'] ==1 %}| 热门 {% end %}</span>
+                <span style="font-size: 10px;" >{{ _(u'市场价') }}:{{ product['ProductMarketPrice'] }} {% if product['IsNew'] ==1 %}| {{ _(u'新品') }} {% end %} {% if product['IsHot'] ==1 %}| {{ _(u'热门') }} {% end %}</span>
               </figcaption>
             </div>
           </figure>
@@ -332,7 +332,7 @@
                         </div>
                         <div class="group-btn-control-wrapper">
                             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
-                          <button onclick="AddShopCart('{{ product['ProductID'] }}')" class="btn btn-brand no-radius">添加到购物车</button>
+                          <button onclick="AddShopCart('{{ product['ProductID'] }}')" class="btn btn-brand no-radius">{{ _(u'添加到购物车') }}</button>
                           <button onclick="CollectionProduct('{{ product['ProductID'] }}')" class="btn btn-wishlist btn-brand-ghost no-radius">
                             <i class="fa fa-heart"></i>
                           </button>
@@ -341,10 +341,10 @@
                     </div>
                   </div>
                   <div class="product-meta">
-                    <p class="posted-in">品牌:
+                    <p class="posted-in">{{ _(u'品牌') }}:
                       <a href="#" rel="tag">{{ product['ProductBrand'] }}</a>
                     </p>
-                    <p class="tagged-as">关键字:
+                    <p class="tagged-as">{{ _(u'关键字') }}:
                       <a href="#" rel="tag">{{ product['ProductKeywords'] }}</a>
                     </p>
                     <p class="id">ID:

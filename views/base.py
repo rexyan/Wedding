@@ -29,8 +29,10 @@ class BaseHandler(tornado.web.RequestHandler, SessionMixin):
             self.write(data)
 
     def get_user_locale(self):
-        user_locale = self.get_argument('lang', 'en')
-        if user_locale == 'en':
+        user_locale = self.get_cookie("lang")
+        if user_locale == 'en_US':
             return tornado.locale.get('en_US')
-        else:
+        elif user_locale == 'zh_CN':
             return tornado.locale.get('zh_CN')
+        elif user_locale == 'ja_JP':
+            return tornado.locale.get('ja_JP')
