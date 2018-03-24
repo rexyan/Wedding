@@ -32,7 +32,7 @@ class Product(Base):
     BigPictureUpType = Column(Integer)  #1为本地，2为七牛云，3为又拍云
     ProductSmallPicture = Column(String(100), nullable=True)
     ProductBigPictureProductBigPicture = Column(String(100), nullable=True)
-    ProductOnTime = Column(DateTime,  nullable=True)
+    ProductOnTime = Column(String,  nullable=True)
     ProductCreatTime = Column(DateTime,  nullable=True, default=datetime.datetime.now())
     ProductBuyNum = Column(Integer, nullable=True, default=0)
     ProductCollectNum = Column(Integer, nullable=True, default=0)

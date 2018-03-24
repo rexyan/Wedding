@@ -420,7 +420,7 @@ class SendEmailHandler(BaseHandler):
             obj = redis_queue_send_email.REDIS_QUEUE()
             random_str = str(random.randint(1, 99999))
             self.session['email_random'] = random_str
-            content1 = '你本次在'+settings.WEB_NAME+"的验证码为:" + str(random_str)
+            content1 = '你本次在'+settings.WEB_NAME+"的验证码为:<a>" + str(random_str)+"</a>"
             content = '''
 <html>
 <body>
@@ -459,10 +459,10 @@ class CheckCodeHandler(BaseHandler):
                 # 添加到映射表
                 data = {"OpenID": self.session['openid'], "UserID": str(user_obj.UserID)}
                 session.add(LoginMap(**data))
+                self.session.set('index_user', user_obj)
                 session.commit()
                 session.close()
                 print "user_data", user_data
-                self.session.set('index_user', user_data)
                 # self.session['index_user'] = user_data
                 self.write_json("验证成功", code=1)
             else:

@@ -168,7 +168,7 @@ class IndexLoginHandler(BaseHandler):
             msg = u"帐号密码错误"
             self.write_json(msg, code=code)
             return
-        if not ret.UserHashCode:
+        if ret.UserHashCode:
             # 账户未激活
             code = 0
             msg = u"帐号未激活"
@@ -178,8 +178,8 @@ class IndexLoginHandler(BaseHandler):
             code = 1
             msg = u"登录成功"
             session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime":datetime.datetime.now(),"UserLastVisitIP":self.request.remote_ip})
-            session.commit()
             self.session['index_user'] = ret
+            session.commit()
             self.write_json(msg, code=code)
 
     def patch(self):
@@ -321,8 +321,8 @@ class WeiboLoginHandler(BaseHandler):
             userid = ret.UserID
             ret = session.query(Users).filter_by(UserID=userid).first()
             session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime": datetime.datetime.now(), "UserLastVisitIP": self.request.remote_ip})
-            session.commit()
             self.session['index_user'] = ret
+            session.commit()
             self.redirect('/index')
 
 
@@ -334,7 +334,7 @@ class ActiveEmailHandler(BaseHandler):
             ret = session.query(Users).filter_by(UserEmail=email_address).first()
             if ret and hash_code == ret.UserHashCode:
                 # 激活账户
-                session.query(Users).filter(UserEmail=email_address).update({"UserHashCode": ""})
+                session.query(Users).filter(Users.UserEmail==email_address).update({"UserHashCode": ""})
                 session.commit()
                 self.redirect('/login/?active_status=1')
         except Exception, e :
@@ -509,7 +509,7 @@ class AlipaySusscessHandler(BaseHandler):
 <body>
 <p>亲爱的用户：</p>
 <pre>
-您已经成功购买商品。我们已经收到您的订单 '''+out_trade_no+''' 的购买请求，商品正在发货中,请等待！
+您已经成功购买商品。我们已经收到您的订单 <a>'''+out_trade_no+'''</a> 的购买请求，商品正在发货中,请等待！
 如果您并没有访问过 有缘婚恋网，或没有进行上述操作，请忽 略这封邮件。您不需要退订或进行其他进一步的操作。
 </pre>
 <pre>
@@ -603,10 +603,10 @@ class UserCenterHandler(BaseHandler):
                 data['UserSex'] = 1 if data['UserSex'] == u"男" else 0
             user_info = self.session['index_user'].to_json()
             session.query(Users).filter(Users.UserID == user_info['UserID']).update(data)
-            session.commit()
             user_info = session.query(Users).filter_by(UserID=user_info['UserID']).first()
             self.session['index_user'] = user_info
             self.write_json(u"修改成功", code=1)
+            session.commit()
         except Exception, e:
             print e
             self.write_json(u"修改失败", code=0)

@@ -25,14 +25,29 @@ project_setting = dict(
 )
 
 # SESSION插件配置
+# project_setting['pycket'] = {
+#     'engine': 'redis',
+#     'storage': {
+#         'host': REDIS_HOST,
+#         'port': REDIS_PORT,
+#         'db_sessions': 10,
+#         'db_notifications': 11
+#     }
+# }
 project_setting['pycket'] = {
     'engine': 'redis',
     'storage': {
-        'host': REDIS_HOST,
-        'port': REDIS_PORT,
+        'host': 'localhost',
+        'port': 6379,
         'db_sessions': 10,
-        'db_notifications': 11
-    }
+        'db_notifications': 11,
+        'max_connections': 2 ** 31,
+    },
+    'cookies': {
+        # 设置过期时间
+        'expires_days': 2,
+        #'expires':None, #秒
+    },
 }
 
 # 七牛配置
