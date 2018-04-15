@@ -29,6 +29,7 @@ from views.view_utils.tools import getAllProductType_EN
 from pay.alipay.main import return_order_string
 from sqlalchemy.sql import func
 import datetime
+from sqlalchemy import or_
 
 
 class IndexHandler(BaseHandler):
@@ -648,6 +649,22 @@ class MyAddressHandler(BaseHandler):
         user_info = self.session['index_user'].to_json()
         my_address = session.query(DeliveryAddress).filter_by(UserID=user_info['UserID']).all()
         self.render('my_address.html', my_address=my_address)
+
+    def post(self):
+        pass
+
+
+class SearchHandler(BaseHandler):
+    def get(self):
+        search_info = self.get_argument('info')
+        words = [u'%'+x+'%' for x in search_info.split('-')]
+        product_search_result = []
+        rule = or_(*[Product.ProductName.like(w) for w in words])
+        product_search_result.extend(session.query(Product).filter(rule).all())
+        rule = or_(*[Product.ProductBrand.like(w) for w in words])
+        product_search_result.extend(session.query(Product).filter(rule).all())
+        product_search_result = [x.to_json() for x in product_search_result]
+        self.render('search_list.html', product_search_result=product_search_result)
 
     def post(self):
         pass

@@ -111,6 +111,11 @@
                   '&nbsp;&nbsp;<button  onclick="choose_language(2)" class="btn btn-default" type="button">{{ _(u'英语') }}</button>&nbsp;&nbsp;<button onclick="choose_language(3)" class="btn btn-default" type="button">{{ _(u'日语') }}</button>'
                 });
           }
+          
+          function search() {
+              var info=$('#search_value').val()
+              window.open('/search?info='+info)
+          }
       </script>
     {% block css %}{% end %}
   </head>
@@ -173,9 +178,9 @@
                       <span class="lnr lnr-cross"></span>
                     </button>
                     <form>
-                      <input placeholder="{{ _(u'搜索') }}" />
+                      <input id="search_value" value="" placeholder="{{ _(u'名称、品牌、名称1-名称2、名称1-品牌1、品牌1-品牌2等') }}" />
                       <button class="search">
-                        <span class="lnr lnr-magnifier"></span>
+                        <span onclick="search()" class="lnr lnr-magnifier"></span>
                       </button>
                     </form>
                   </div>

@@ -1,0 +1,40 @@
+﻿{% extends 'index_layout.html' %}
+
+{% block title %} {{ _(u'订单') }} {% end %}
+
+{% block js %}
+{% end %}
+
+{% block content %}
+<section class="sub-header shop-layout-1">
+        <img class="rellax bg-overlay" src="{{ static_url('picture/05.jpg') }}" alt="">
+        <div class="overlay-call-to-action"></div>
+        <h3 class="heading-style-3">查询结果</h3>
+      </section>
+      <section class="boxed-sm">
+        <div class="container">
+          <div class="row main">
+            <div class="row js-post-masonry-3-columns-wrapper pinterest-layout-post pinterest-3-cols">
+                <br><br><br><br>
+                {% for pro in product_search_result %}
+                <div class="post">
+                <div class="img-wrapper">
+                  <a href="/shop_product_detail?pid={{ pro['ProductID'] }}">
+                    <img src="{{ static_url('images/upload/') }}{{ pro['ProductSmallPicture'] }}" alt="商品图片" />
+                  </a>
+                </div>
+                <div class="desc">
+                  <h4>
+                    <a href="/shop_product_detail?pid={{ pro['ProductID'] }}">{{ pro['ProductName'] }}</a>
+                  </h4>
+                  <p class="meta">
+                    <span class="time">{{ pro['ProductBrand'] }}</span>
+                  </p>
+                </div>
+              </div>
+                {% end %}
+            </div>
+          </div>
+        </div>
+      </section>
+{% end %}
