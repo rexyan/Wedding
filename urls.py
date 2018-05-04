@@ -87,7 +87,10 @@ url = [
         (r"/modify_user_info/", index_view.UserCenterHandler),  # 修改用户信息
         (r"/product_history/", index_view.ProductHistoryHandler),  # 修改用户信息
         (r"/wish_list/", index_view.WishListHandler),  # 修改用户信息
+        (r"/my_address_delete/(\w+)/", index_view.MyAddressHandler),  # 修改用户信息
         (r"/my_address/", index_view.MyAddressHandler),  # 修改用户信息
         (r"/search", index_view.SearchHandler),  # 查询商品
+        (r"/address_page", index_view.AddressPageHandler),  # 查询商品
+
         (r".*", index_view.ErrorHandler),  # 在所有的路由后面捕获错误
       ]

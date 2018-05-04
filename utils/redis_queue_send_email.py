@@ -40,7 +40,7 @@ class REDIS_QUEUE(object):
         message['To'] = Header(to_send.get('to_email'), 'utf-8')
 
         try:
-            smtpObj = smtplib.SMTP()
+            smtpObj = smtplib.SMTP_SSL()
             smtpObj.connect(settings.SMTP_ADD, settings.SMTP_PORT)  # 25 为 SMTP 端口号
             smtpObj.login(settings.SMTP_USER, settings.SMTP_PASS)
             smtpObj.sendmail(sender, receivers, message.as_string())

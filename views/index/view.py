@@ -102,7 +102,9 @@ class IndexHandler(BaseHandler):
 
             # 筛选标签
             label = self.get_argument('label', "")
+            print "=====", [(i and "\\" + i) for i in label.split('%')]
             label = json.loads('"' + "".join([(i and "\\" + i) for i in label.split('%')]) + '"')
+            print "label", label
             if label:
                 pid_product_list = [x for x in pid_product_list if x.ProductKeywords == label][start_page_num:end_page_num]
             pid_product_list = [x.to_json() for x in pid_product_list][start_page_num:end_page_num]
@@ -651,7 +653,23 @@ class MyAddressHandler(BaseHandler):
         self.render('my_address.html', my_address=my_address)
 
     def post(self):
-        pass
+        data = json.loads(self.get_argument('data'))
+        user_id = self.session['index_user'].to_json()['UserID']
+        data["UserID"] = user_id
+        obj = DeliveryAddress(**data)
+        session.add(obj)
+        session.commit()
+        self.write_json(u"新增成功", code=1)
+
+    def delete(self, argument):
+        try:
+            noautoflushsession.query(DeliveryAddress).filter(DeliveryAddress.DeliveryAddressID == int(argument)).delete()
+            noautoflushsession.commit()
+            noautoflushsession.close()
+            self.write_json("success", code=1)
+        except Exception, e:
+            print e
+            self.write_json("failed", code=0)
 
 
 class SearchHandler(BaseHandler):
@@ -668,3 +686,8 @@ class SearchHandler(BaseHandler):
 
     def post(self):
         pass
+
+
+class AddressPageHandler(BaseHandler):
+    def get(self):
+        self.render('address.html')

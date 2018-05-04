@@ -5,17 +5,29 @@
 {% block js %}
 <script>
     function remove(id) {
-        alert(id)
+         $.ajax({
+            url: "/my_address_delete/"+id.trim()+"/",
+            data:{ data: "" },
+            type:'delete',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+                if ((coll_back_data['code']) == 1){
+                    location.reload()
+                }else{
+                    layer.msg('删除失败！', {icon: 5});
+                }
+        }});
     }
     
     function add_address() {
         layer.open({
             title:"{{ _(u'添加收货地址') }}",
           type: 2,
-          area: ['700px', '450px'],
+          area: ['500px', '450px'],
           fixed: false, //不固定
           maxmin: true,
-          content: 'test/iframe.html'
+          content: '/address_page'
         });
     }
     

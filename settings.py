@@ -61,7 +61,7 @@ LOCAL_TMP_PATH = ''
 
 # SMTP 账号设置
 SMTP_ADD = 'smtp.exmail.qq.com'
-SMTP_PORT = 25
+SMTP_PORT = 465
 SMTP_USER = 'push@kindle15.com'
 SMTP_PASS = '18525350524Yrs'
 REDIS_QUEUE_NAME = "REDIS_QUEUE_SEND_EMAIL"

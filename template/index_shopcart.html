@@ -63,9 +63,10 @@
                 datatype:'json',
                 success: function(arg){
                     coll_back_data = $.parseJSON(arg)
-                    console.log(coll_back_data)
+                    console.log("收货地址",coll_back_data)
+                    var html = ""
                     for (var i=0;i<coll_back_data.data.length;i++) {
-                        html = '<option value='+coll_back_data.data[i]['DeliveryAddressID']+'>'+coll_back_data.data[i]['DetaileAddress']+'</option>'
+                        html += '<option value='+coll_back_data.data[i]['DeliveryAddressID']+'>'+coll_back_data.data[i]['DetaileAddress']+'</option>'
                     }
                     $('#DistributionAddress').append(html)
 

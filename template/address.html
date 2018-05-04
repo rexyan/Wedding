@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.js"></script>
+    <script>
+        function save_address() {
+            json_data={}
+            json_data.UserProvince = $('#UserProvince').val()
+            json_data.UserCity = $('#UserCity').val()
+            json_data.UserZipCode = $('#UserZipCode').val()
+            json_data.UserTelphone = $('#UserTelphone').val()
+            json_data.UserMobile = $('#UserMobile').val()
+            json_data.ConsigneeName = $('#ConsigneeName').val()
+            json_data.DetaileAddress = $('#DetaileAddress').val()
+            console.log(json_data)
+            $.ajax({
+            url: "/my_address/",
+            data:{ data: JSON.stringify(json_data) },
+            type:'post',
+            datatype:'json',
+            success: function(arg){
+                coll_back_data = $.parseJSON(arg)
+            }});
+        }    
+    
+    </script>
+    
+</head>
+<body style="margin-left:21%">
+  <form class="form-horizontal">
+        <div style="width: 70%" class="form-group organic-form-2">
+          <label>省份</label>
+          <input class="form-control" id="UserProvince" type="text">
+        </div>
+         <div style="width: 70%" class="form-group organic-form-2">
+          <label>城市</label>
+          <input class="form-control" id="UserCity" type="text">
+        </div>
+        <div style="width: 70%" class="form-group organic-form-2">
+          <label>邮编</label>
+          <input class="form-control" id="UserZipCode" type="text">
+        </div>
+        <div style="width: 70%" class="form-group organic-form-2">
+          <label>电话</label>
+          <input class="form-control" id="UserTelphone" type="text">
+        </div>
+         <div style="width: 70%" class="form-group organic-form-2">
+          <label>固定电话</label>
+          <input class="form-control" id="UserMobile" type="text">
+        </div>
+        <div style="width: 70%" class="form-group organic-form-2">
+          <label>联系人</label>
+          <input class="form-control" id="ConsigneeName" type="text">
+        </div>
+        <div style="width: 70%" class="form-group organic-form-2">
+          <label>详细地址</label>
+          <input class="form-control" id="DetaileAddress" type="text">
+        </div>
+        <div style="margin-right: 130px;float: right" class="form-group footer-form">
+          <button class="btn btn-brand pill" onclick="save_address()" type="submit">添加</button>
+        </div>
+  </form>
+
+</body>
+</html>
