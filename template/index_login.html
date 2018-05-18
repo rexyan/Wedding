@@ -99,7 +99,8 @@
         <div class="form-group remember-me"  style="float: left;margin-left: 15%;">
           <a class="pull-left" href="#">{{ _(u'忘记密码?') }}</a>
             <br>
-              {{ _(u'快捷登录') }} <a href="/qq_login_page/"> <img src="{{ static_url('picture/qq.png') }}"> </a>&nbsp;
+              {{ _(u'快捷登录') }}
+{#              <a href="/qq_login_page/"> <img src="{{ static_url('picture/qq.png') }}"> </a>&nbsp;#}
               <a href="https://api.weibo.com/oauth2/authorize?client_id=1816247821&redirect_uri=http://test.com/check_weibo/"> <img src="{{ static_url('picture/weibo.png') }}"> </a>
         </div>
         <div class="form-group footer-form">

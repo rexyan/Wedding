@@ -76,6 +76,8 @@
                     }});
         }
     }
+    
+
 </script>
 {% end %}
 
@@ -96,18 +98,18 @@
                 <div class="item">
                   <img class="img-responsive" src="{{ static_url('images/upload') }}/{{ ProductInfo['ProductSmallPicture'] }}" alt="{{ _(u'图片展示') }}">
                 </div>
-                <div class="item">
-                  <img class="img-responsive" src="{{ static_url('images/upload') }}/{{ ProductInfo['ProductBigPictureProductBigPicture'] }}" alt="{{ _(u'图片展示') }}">
-                </div>
+{#                <div class="item">#}
+{#                  <img class="img-responsive" src="{{ static_url('images/upload') }}/{{ ProductInfo['ProductBigPictureProductBigPicture'] }}" alt="{{ _(u'图片展示') }}">#}
+{#                </div>#}
 
               </div>
               <div class="thumbnail-carousel">
-                <div class="item">
-                  <img class="img-responsive" src="{{ static_url('images/upload') }}/{{ ProductInfo['ProductSmallPicture'] }}" alt="{{ _(u'图片展示') }}">
-                </div>
-                <div class="item">
-                  <img class="img-responsive" src="{{ static_url('images/upload') }}/{{ ProductInfo['ProductBigPictureProductBigPicture'] }}" alt="{{ _(u'图片展示') }}">
-                </div>
+{#                <div class="item">#}
+{#                  <img class="img-responsive" src="{{ static_url('images/upload') }}/{{ ProductInfo['ProductSmallPicture'] }}" alt="{{ _(u'图片展示') }}">#}
+{#                </div>#}
+{#                <div class="item">#}
+{#                  <img class="img-responsive" src="{{ static_url('images/upload') }}/{{ ProductInfo['ProductBigPictureProductBigPicture'] }}" alt="{{ _(u'图片展示') }}">#}
+{#                </div>#}
               </div>
             </div>
           </div>
@@ -119,8 +121,8 @@
                   <h2 class="product-title" style="font-size: 20px;">{{ ProductInfo['ProductName'] }}</h2>
                     <br>
                   <p class="price">
-                      {{ _(u'市场价') }}: ￥{{ ProductInfo['ProductVipPrice'] }}&nbsp;&nbsp;
-                      {{ _(u'优惠价') }}: ￥{{ ProductInfo['ProductVipPrice'] }}&nbsp;&nbsp;
+                      {{ _(u'市场价') }}: ￥{{ ProductInfo['ProductMarketPrice'] }}&nbsp;&nbsp;
+                      {{ _(u'优惠价') }}: ￥{{ ProductInfo['ProductFavorablePrice'] }}&nbsp;&nbsp;
                       {{ _(u'VIP价') }}: ￥{{ ProductInfo['ProductVipPrice'] }}&nbsp;&nbsp;
                   </p>
                 </div> <br>
@@ -134,9 +136,9 @@
                 <div class="footer-desc">
                   <form1 class="cart">
                     <div class="quantity buttons-added">
-                      <input class="minus" value="-" type="button">
-                      <input class="input-text qty text" step="1" min="1" max="" name="quantity" value="1" title="Qty" size="4" pattern="[0-9]*" inputmode="numeric" type="number">
-                      <input class="plus" value="+" type="button">
+                      <input class="minus" onclick="lessen_product({{ ProductInfo['ProductCount'] }})" value="-" type="button">
+                      <input class="input-text qty text" step="1" min="1" max="{{ ProductInfo['ProductCount'] }}" id="product_number" value="1" title="Qty" size="4" pattern="[0-9]*" inputmode="numeric" type="number">
+                      <input class="plus" onclick="add_product({{ ProductInfo['ProductCount'] }})" value="+" type="button">
                     </div>
                       <br>
                       <br>

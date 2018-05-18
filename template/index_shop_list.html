@@ -297,18 +297,18 @@
                     <div class="item">
                       <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ product['ProductSmallPicture'] }}" alt="" />
                     </div>
-                    <div class="item">
-                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ product['ProductBigPictureProductBigPicture'] }}" alt="" />
-                    </div>
+{#                    <div class="item">#}
+{#                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ product['ProductBigPictureProductBigPicture'] }}" alt="" />#}
+{#                    </div>#}
                   </div>
-                  <div class="thumbnail-carousel-product-quickview">
-                    <div class="item">
-                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ product['ProductSmallPicture'] }}" alt="" />
-                    </div>
-                    <div class="item">
-                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ product['ProductBigPictureProductBigPicture'] }}" alt="" />
-                    </div>
-                  </div>
+{#                  <div class="thumbnail-carousel-product-quickview">#}
+{#                    <div class="item">#}
+{#                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ product['ProductSmallPicture'] }}" alt="" />#}
+{#                    </div>#}
+{#                    <div class="item">#}
+{#                      <img class="img-responsive" src="{{ static_url('images/upload/') }}{{ product['ProductBigPictureProductBigPicture'] }}" alt="" />#}
+{#                    </div>#}
+{#                  </div>#}
                 </div>
               </div>
               <div class="col-md-6">
@@ -326,9 +326,9 @@
                     <div class="footer-desc">
                       <form1 class="cart">
                         <div class="quantity buttons-added">
-                          <input class="minus" value="-" type="button" />
-                          <input class="input-text qty text" step="1" min="1" max="100" name="quantity" value="1" title="Qty" size="4" pattern="[0-9]*" inputmode="numeric" type="number" />
-                          <input class="plus" value="+" type="button" />
+                          <input class="minus" onclick="lessen_product({{ product['ProductCount'] }})" value="-" type="button" />
+                          <input class="input-text qty text" step="1" min="1" max="{{ product['ProductCount'] }}" id="product_number" value="1" title="Qty" size="4" pattern="[0-9]*" inputmode="numeric" type="number" />
+                          <input class="plus" onclick="add_product({{ product['ProductCount'] }})" value="+" type="button" />
                         </div>
                         <div class="group-btn-control-wrapper">
                             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>

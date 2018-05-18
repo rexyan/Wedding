@@ -489,7 +489,7 @@ class AlipayHandler(BaseHandler):
         except Exception, e:
             session.rollback()
         # 接受支付参数,整理支付宝接口所需参数
-        order_string = return_order_string(u'有缘婚姻网支付测试', trade_no, int(data.get('totalprice')),settings.ALIPAY_RETURN_URL)
+        order_string = return_order_string(u'春色撩人支付测试', trade_no, int(data.get('totalprice')),settings.ALIPAY_RETURN_URL)
         self.redirect(settings.ALIPAY_GETWAY + "?" + order_string)
 
     def post(self):

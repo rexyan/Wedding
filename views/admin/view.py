@@ -32,7 +32,7 @@ class AdminIndexHandler(BaseHandler):
 class AdminProductIndexHandler(BaseHandler):
     # 获取商品列表
     def get(self):
-        ret = noautoflushsession.query(Product)[0:10]
+        ret = noautoflushsession.query(Product)
         for i, x in enumerate(ret):
             # 根据ProductTypeID查询每个类型的名称【有个坑，需要关闭sqlalchemy自动刷新】
             q_name = ""

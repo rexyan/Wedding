@@ -76,7 +76,7 @@ LUOSIMAO_API_KEY = '0ff0f6b9f68ba28f8eaa7bd4914f78b0'
 
 
 # 网站名称
-WEB_NAME = u'有缘婚恋网'
+WEB_NAME = u'春色撩人'
 WEB_DOMAIN_NAME = 'test.com'
 
 # 第三方登录设置

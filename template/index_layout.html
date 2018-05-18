@@ -111,11 +111,41 @@
                   '&nbsp;&nbsp;<button  onclick="choose_language(2)" class="btn btn-default" type="button">{{ _(u'英语') }}</button>&nbsp;&nbsp;<button onclick="choose_language(3)" class="btn btn-default" type="button">{{ _(u'日语') }}</button>'
                 });
           }
-          
+
           function search() {
               var info=$('#search_value').val()
               window.open('/search?info='+info)
           }
+
+           {#简单弹窗#}
+          function simple_msg(msg) {
+                  layer.msg(msg);
+              }
+
+           {#减少商品#}
+          function lessen_product(id) {
+            var current_num = $('#product_number').val()
+            var num = (parseInt(current_num)-1)
+            if (num>0){
+                $('#product_number').val(num)
+            }else{
+                simple_msg('不能再低了')
+            }
+
+          }
+
+         {#添加商品#}
+         function add_product(max_num) {
+             var current_num = $('#product_number').val()
+             var num = (parseInt(current_num)+1)
+             if (num<=max_num){
+                 $('#product_number').val(num)
+             }else{
+                 simple_msg('已达最大库存量')
+             }
+        }
+
+
       </script>
     {% block css %}{% end %}
   </head>
@@ -200,10 +230,10 @@
                 </div>
 
                  <div class="widget widget-control-header widget-shop-cart js-widget-shop-cart">
-                  <a style="cursor: pointer" onclick="change_lan()">
-                    <p class="counter">0</p>
-                    <span title="{{ _(u'语言') }}"  class="fa fa-language"></span>
-                  </a>
+{#                  <a style="cursor: pointer" onclick="change_lan()">#}
+{#                    <p class="counter">0</p>#}
+{#                    <span title="{{ _(u'语言') }}"  class="fa fa-language"></span>#}
+{#                  </a>#}
                 </div>
 
               </aside>
@@ -227,15 +257,15 @@
                 <ul>
                   <li>
                     <span class="lnr lnr-map-marker icon"></span>
-                    <span>{{ _(u'大连甘井子区 xxx 路 xxx 号 xxx 婚恋有限公司') }}</span>
+                    <span>{{ _(u'大连沙河口区软件园路8号大连东软信息学院') }}</span>
                   </li>
                   <li>
                     <span class="lnr lnr-phone-handset icon"></span>
-                    <a href="tel:0123456789">(+1) 96 716 6879</a>
+                    <a href="tel:0123456789">18640920308</a>
                   </li>
                   <li>
                     <span class="lnr lnr-envelope icon"></span>
-                    <a href="mailto: contact@site.com">contact@site.com </a>
+                    <a href="mailto: contact@site.com">1252935330@qq.com</a>
                   </li>
                 </ul>
               </div>
@@ -292,7 +322,7 @@
             </div>
             <div class="widget-footer widget-newsletter-footer col-last col-small">
               <h4 class="h4 heading">{{ _(u'联系我们') }}</h4>
-              <p>{{ _(u'大连甘井子区 xxx 路 xxx 号') }}</p>
+              <p>{{ _(u'大连东软信息学院') }}</p>
               <form class="organic-form form-inline btn-add-on circle border">
                 <div class="form-group">
                   <input class="form-control pill transparent" placeholder="{{ _(u'咨询邮箱') }}" type="email" />
@@ -309,7 +339,7 @@
         <div class="container">
           <div class="row">
             <div class="copy-right-inner">
-              <p>Copyright © 2018 xxx {{ _(u'婚恋商城') }}. All rights reserved.</p>
+              <p>Copyright © 2017 春色撩人  版权所有.</p>
               <div class="widget widget-footer widget-footer-creadit-card">
                 <ul class="list-unstyle">
                   <li>
