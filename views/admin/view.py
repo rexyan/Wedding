@@ -46,7 +46,7 @@ class AdminProductIndexHandler(BaseHandler):
 class AdminProductAddHandler(BaseHandler):
     def get(self):
         self.render('admin_product_add.html')
-
+# 商品
 class AdminProductHandler(BaseHandler):
     def get(self, argument):
         print "argument", argument
@@ -60,7 +60,6 @@ class AdminProductHandler(BaseHandler):
             ret = session.query(Product).filter_by(ProductID=argument).first()
             data_list = ret.to_json()
             self.write_json(data=data_list, code=1)
-        
     def post(self):
         # 新增商品
         try:
@@ -130,17 +129,12 @@ class AdminProductTypeIndexHandler(BaseHandler):
     def get(self):
         ret = session.query(ProductType).all()
         self.render('admin_product_type.html', product_type = ret)
-
-
 class AdminProductTypeAddHandler(BaseHandler):
     def get(self):
         self.render('admin_product_type_add.html')
-
-
 class AdminProductTypeHandler(BaseHandler):
     def get(self, argument):
         pass
-
     def post(self):
         # 新增商品类型
         try:
@@ -155,15 +149,12 @@ class AdminProductTypeHandler(BaseHandler):
             self.write_json("failed", code=0)
         finally:
             session.close()
-
-
     def delete(self, argument):
         try:
             session.query(ProductType).filter(ProductType.ProductTypeID == argument).delete()
             self.write_json("success", code=1)
         except Exception, e:
             self.write_json("failed", code=0)
-
     def patch(self, argument):
         updata_json = json.loads(self.get_argument('data'))
         try:
@@ -177,22 +168,18 @@ class AdminProductTypeHandler(BaseHandler):
 # 用户
 class AdminUserIndexHandler(BaseHandler):
     def get(self):
-        # 用户列表页面
-        # get post
+        # 用户列表页面# get post
         ret = session.query(Users)[0:10]  # 10  2  5
         self.render('admin_user.html', user_data=ret)
-
 class AdminUserAddHandler(BaseHandler):
     def get(self):
         # 添加用户页面
         self.render('admin_user_add.html')
-
 class AdminUserHandler(BaseHandler):
-    # 查询用户, argument为传来的参数
+        # 查询用户, argument为传来的参数
     def get(self, argument):
         ret = session.query(Users).filter_by(UserID=argument).first()
         self.write_json(data=ret.to_json(), code=1)
-
     def post(self):
         # 新增用户
         try:
@@ -211,7 +198,6 @@ class AdminUserHandler(BaseHandler):
             self.write_json("failed", code=0)
         finally:
             session.close()
-
     def delete(self, argument):
         try:
             session.query(Users).filter(Users.UserID == argument).delete()
@@ -219,8 +205,6 @@ class AdminUserHandler(BaseHandler):
             session.commit()
         except Exception,e:
             self.write_json("failed", code=0)
-
-    
     def patch(self, argument):
         updata_json = json.loads(self.get_argument('data'))
         try:
@@ -383,7 +367,8 @@ class AdminUserLoginHandler(BaseHandler):
             code = 0
             msg = u"人机验证失败"
         # 验证帐号密码
-        ret = session.query(Manager).filter(Manager.ManagerName == data_json.get('user_email'), Manager.ManagerPsd == sec_pass(data_json.get('user_pass'))).first()
+        ret = session.query(Manager).filter(Manager.ManagerName == data_json.get('user_email'),
+                                            Manager.ManagerPsd == sec_pass(data_json.get('user_pass'))).first()
         if not ret:
             code = 0
             msg = u"帐号密码不正确"

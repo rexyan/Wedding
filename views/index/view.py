@@ -219,14 +219,18 @@ class IndexRegisterHandler(BaseHandler):
             data['UserHashCode'] = active_hash_code
             session.add(Users(**data))
             session.commit()
-            active_url = '<a href='+'http://'+settings.WEB_DOMAIN_NAME+'/active_email/?address='+data['UserEmail']+'&hash_code='+active_hash_code+'>http://'+settings.WEB_DOMAIN_NAME+'/active_email/?address='+data['UserEmail']+'&hash_code='+active_hash_code+'</a>'
+            active_url = '<a href='+'http://'+settings.WEB_DOMAIN_NAME+\
+                         '/active_email/?address='+data['UserEmail']+\
+                         '&hash_code='+active_hash_code+'>http://'+settings.WEB_DOMAIN_NAME+\
+                         '/active_email/?address='+data['UserEmail']+\
+                         '&hash_code='+active_hash_code+'</a>'
             content = '''
-            <html>
+<html>
 <body>
 <p>亲爱的用户：</p>
 <pre>
-  您收到这封邮件，是由于在 有缘婚恋网 进行了新用户注册，或用户修改 Email 使用 了这个邮箱地址。
- 如果您并没有访问过 有缘婚恋网，或没有进行上述操作，请忽 略这封邮件。您不需要退订或进行其他进一步的操作。
+  您收到这封邮件，是由于在 春色撩人网站 进行了新用户注册，或用户修改 Email 使用 了这个邮箱地址。
+ 如果您并没有访问过 春色撩人网站，或没有进行上述操作，请忽 略这封邮件。您不需要退订或进行其他进一步的操作。
 </pre>
 <pre>
  ===============激活链接===================
@@ -266,7 +270,8 @@ class IndexQQLoginHandler(BaseHandler):
             # 获取code
             code = self.get_argument('code')
             # 根据code获取access_token
-            url1 = 'https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id='+settings.QQ_APP_ID+'&client_secret='+settings.QQ_APPKey+'&code='+code+'&redirect_uri='+settings.QQ_CollBackUrl
+            url1 = 'https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id='+settings.QQ_APP_ID+'&client_secret='\
+                   +settings.QQ_APPKey+'&code='+code+'&redirect_uri='+settings.QQ_CollBackUrl
             req1 = requests.get(url1)
             access_token = req1.content.split('&')[0].split('=')[1]
             # 根据access_token获取openid
@@ -291,7 +296,9 @@ class IndexQQLoginHandler(BaseHandler):
                 userid = ret.UserID
                 ret = session.query(Users).filter_by(UserID=userid).first()
                 self.session['index_user'] = ret
-                session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime": datetime.datetime.now(), "UserLastVisitIP": self.request.remote_ip})
+                session.query(Users).filter(Users.UserID == ret.UserID).update({
+                    "UserLastVisitTime": datetime.datetime.now(),
+                    "UserLastVisitIP": self.request.remote_ip})
                 session.commit()
                 self.redirect('/index')
         except Exception,e:
@@ -323,7 +330,8 @@ class WeiboLoginHandler(BaseHandler):
             # 登录
             userid = ret.UserID
             ret = session.query(Users).filter_by(UserID=userid).first()
-            session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime": datetime.datetime.now(), "UserLastVisitIP": self.request.remote_ip})
+            session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime": datetime.datetime.now(),
+                                                                            "UserLastVisitIP": self.request.remote_ip})
             self.session['index_user'] = ret
             session.commit()
             self.redirect('/index')
@@ -421,7 +429,7 @@ class AddShopCartHandler(BaseHandler):
                                                  ShopCart.ProductID == argument).first()
             if ret:
                 session.query(ShopCart).filter(ShopCart.UserID == user_info.get('UserID'),
-                                                 ShopCart.ProductID == argument).update({"BuyNum": int(buy_num)+int(ret.BuyNum)})
+                                               ShopCart.ProductID == argument).update({"BuyNum": int(buy_num)+int(ret.BuyNum)})
             else:
                 if buy_num:
                     data = {"UserID": user_info.get('UserID'), "ProductID": argument, "BuyNum":buy_num}
@@ -433,7 +441,7 @@ class AddShopCartHandler(BaseHandler):
             msg = u"添加购物车成功"
         except Exception, e:
             code = 0
-            msg=u"添加购物车出错"
+            msg= u"添加购物车出错"
         finally:
             self.write_json(msg, code=code)
 
@@ -442,7 +450,6 @@ class AddShopCartHandler(BaseHandler):
         session.query(ShopCart).filter(ShopCart.ShopCartID == cartid).update({"BuyNum": number})
         session.commit()
         self.write_json(u"购物车更新成功", code=1)
-
 
     def delete(self, cartid):
         try:
@@ -474,7 +481,11 @@ class AlipayHandler(BaseHandler):
         data = json.loads(self.get_argument('data'))
         trade_no = sec_pass(str(int(time.time()))) # 交易号
         # 加入订单
-        save_data = {"TRADE_NO": trade_no, "UserID": user_info.get('UserID'), "OrderTotalPrice": data.get('totalprice'), "OrderPayType": 1, "OrderStatus":False, "OrderSendAddress": data.get('address')}
+        save_data = {"TRADE_NO": trade_no, "UserID": user_info.get('UserID'),
+                     "OrderTotalPrice": data.get('totalprice'),
+                     "OrderPayType": 1,
+                     "OrderStatus":False,
+                     "OrderSendAddress": data.get('address')}
         try:
             product_list = []
             for i, x in enumerate(data.get('all_data')):
@@ -529,6 +540,7 @@ class AlipaySusscessHandler(BaseHandler):
             ProductID = x.to_json().get('ProductID')
             product_info_list = []
             for id in ProductID.split(','):
+                print "==========", id
                 ProductInfo = session.query(Product).filter_by(ProductID=id).first().to_json()
                 product_info_list.append(ProductInfo)
             all_data.append({"order": x.to_json(), "product_info": product_info_list})
@@ -581,7 +593,8 @@ class ShopProductDetailHandler(BaseHandler):
             # 商品详情下的推荐
             # recommend_product = session.query(Users).all()[-8:-1]
             recommend_product = getRecommendProduct()
-        self.render('index_shop_detail.html', ProductInfo=ProductInfo, comment_list=comment_list, comment_msg=comment_msg, comment_count=comment_count, recommend_product=recommend_product)
+        self.render('index_shop_detail.html', ProductInfo=ProductInfo, comment_list=comment_list,
+                    comment_msg=comment_msg, comment_count=comment_count, recommend_product=recommend_product)
 
 
 class ProductCommentHandler(BaseHandler):

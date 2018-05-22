@@ -9,7 +9,7 @@ class INIT_DEFAULT_USER(object):
         pass
 
     def create_user(self):
-        data = {"UserName": "default", "UserPwd": "b9d9b8ddd5e59bc8cac074a2272dfb28", "UserEmail": "default@test.com", "UserHashCode": "default"}
+        data = {"UserName": "default", "UserPwd": "b9d9b8ddd5e59bc8cac074a2272dfb28", "UserEmail": "default@test.com", "UserHashCode": ""}
         obj = User.Users(**data)
         session.add(obj)
         session.commit()

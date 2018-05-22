@@ -11,7 +11,7 @@
     function modify_user_info(id) {
         layer.prompt(function(val, index){
             if (id == 'UserSex'){
-                if (val !="{{ _(u'男') }}" || val !="{{ _(u'女') }}"){
+                if ((val !="男")&&(val !="女")){
                     layer.msg('{{ _(u'性别格式不正确') }}！', {icon: 5});
                     return false
                 }
