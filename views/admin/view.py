@@ -273,7 +273,6 @@ class AdminProductImgesIndexHandler(BaseHandler):
             # 入库
             session.query(Product).filter(Product.ProductID == pid).update({image_type: return_save_file_path, upload_type:int(self.get_argument('save_type'))})
             session.commit()
-            session.close()
             self.write_json("success", code=1)
         except Exception, e:
             print e

@@ -170,7 +170,7 @@
                 {% for hot_product in hot_product_list %}
               <li>
                 <a href="/shop_product_detail?pid={{ hot_product['ProductID'] }}">
-                  <div class="img-wrapper">
+                  <div class="img-wrapper" style="height: 50%">
                     <img src="{{ static_url('images/upload/') }}{{ hot_product['ProductSmallPicture'] }}" alt="product">
                   </div>
                   <div class="desc">
