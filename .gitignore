@@ -1,14 +1,3 @@
-.project
-.pyc
-.pydevproject
-.qiniu_pythonsdk_hostscache.json
-.idea
-.idea/*
-.project
-data.db
-*.pyc
-static/images/*
-static/picture/*
-.idea/workspace.xml
-*.idea*
-*data.db*
+local_setting.py
+.idea/2018-6.iml
+setting.py
