@@ -1,3 +1,6 @@
 local_setting.py
 .idea/2018-6.iml
 setting.py
+*.pyc
+*.xml
+*.iml
