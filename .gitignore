@@ -4,3 +4,5 @@ setting.py
 *.pyc
 *.xml
 *.iml
+local_setting.py
+.prdevproject
