@@ -1,4 +1,4 @@
-import tornado
+import tornado.web
 from pycket.session import SessionMixin
 import json
 from utils.encode import MyEncoder
@@ -17,7 +17,6 @@ class BaseHandler(tornado.web.RequestHandler, SessionMixin):
     #     return self._user
 
     def write_json(self, data, status=200, code=0, type=True):
-        ''''''
         self.set_status(status)
         data = {
             'code': code,

@@ -1,5 +1,4 @@
 # encoding=utf8
-
 import sys
 import commands
 import os
@@ -11,7 +10,7 @@ import requests
 current_user = getpass.getuser()
 
 
-def get_pid(port):
+def get_pid(sys_port):
     output = commands.getoutput('ps aux|grep "[p]ython main.py"')
     lines = output.split('\n')
     ps_dict = {}
@@ -23,7 +22,7 @@ def get_pid(port):
         pid, port1 = result[0]
         ps_dict[port1] = pid
 
-    return ps_dict.get(str(port))
+    return ps_dict.get(str(sys_port))
 
 
 def usage():
@@ -31,81 +30,80 @@ def usage():
     sys.exit(1)
 
 
-def kill_port(port):
-    pid = get_pid(port)
+def kill_port(sys_port):
+    pid = get_pid(sys_port)
     if pid:
         cmd = 'kill -9 %s' % pid
         print 'killing process ...'
-        status, output = commands.getstatusoutput(cmd)
-        # time.sleep(2)
-        print 'process %s for port %s is killed' % (pid, port)
+        commands.getstatusoutput(cmd)
+        print 'process %s for port %s is killed' % (pid, sys_port)
 
 
-def restart_port(port):
-    pid = get_pid(port)
+def restart_port(sys_port):
+    pid = get_pid(sys_port)
     if pid:
         cmd = 'kill -9 %s' % pid
-        status, output = commands.getstatusoutput(cmd)
+        commands.getstatusoutput(cmd)
         time.sleep(1)
     cmd = 'nohup python main.py %s >> logs/p_%s.log &' % (
-        port, port)
-    # status,output = commands.getstatusoutput(cmd)
+        sys_port, sys_port)
     os.system(cmd)
 
 
-def check_port_is_health(port):
+def check_port_is_health(sys_port):
     need_check = True
     while need_check:
         time.sleep(1)
         try:
-            response = requests.get('http://127.0.0.1:%s' % port)
+            response = requests.get('http://127.0.0.1:%s' % sys_port)
             if response.status_code == 200:
                 need_check = False
             else:
                 need_check = True
                 print 'response.status_code=', response.status_code
         except Exception, e:
-            print 'port=', port, str(e)
+            print 'port=', sys_port, str(e)
             need_check = True
         if need_check:
-            print 'port=', port
-            restart_port(port)
+            print 'port=', sys_port
+            restart_port(sys_port)
+
 
 if __name__ == '__main__':
+    port_from = None
+    process_number = None
+    sys_port = None
     try:
-        port = sys.argv[1]
-    except:
+        sys_port = sys.argv[1]
+    except Exception as e:
+        print(e)
         usage()
-
-    if port == 'all':
+    if sys_port == 'all':
         try:
             port_from = int(sys.argv[2])
-        except:
+        except Exception as e:
+            print(e)
             usage()
-
         try:
             process_number = int(sys.argv[3])
-        except:
+        except Exception as e:
+            print(e)
             usage()
-
         for port in range(port_from, port_from + process_number):
             restart_port(port)
-            # check_port_is_health(port)
-    elif port == 'kill':
+    elif sys_port == 'kill':
         try:
             port_from = int(sys.argv[2])
-        except:
+        except Exception as e:
+            print(e)
             usage()
-
         try:
             process_number = int(sys.argv[3])
-        except:
+        except Exception as e:
+            print(e)
             usage()
-
         for port in range(port_from, port_from + process_number):
             kill_port(port)
     else:
-        restart_port(port)
-        check_port_is_health(port)
-
-restart_port.py
+        restart_port(sys_port)
+        check_port_is_health(sys_port)

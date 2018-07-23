@@ -1,5 +1,6 @@
 # --coding:utf-8--
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import os
@@ -20,12 +21,12 @@ import json
 from utils.auth import sec_pass
 from utils import redis_queue_send_email
 import time
-from views.view_utils.tools import getAllProductType
-from views.view_utils.tools import getProductTypeByPid
-from views.view_utils.tools import getProductByPidFirst
-from views.view_utils.tools import getRecommendProduct
-from views.view_utils.tools import getComLast3Limit
-from views.view_utils.tools import getAllProductType_EN
+from views.view_utils.tools import get_all_product_type
+from views.view_utils.tools import get_product_type_by_pid
+from views.view_utils.tools import get_product_by_pid_first
+from views.view_utils.tools import get_recommend_product
+from views.view_utils.tools import get_com_last_3_limit
+from views.view_utils.tools import get_all_product_type_en
 from pay.alipay.main import return_order_string
 from sqlalchemy.sql import func
 import datetime
@@ -36,7 +37,7 @@ class IndexHandler(BaseHandler):
     def get(self):
         pid = self.get_argument('pid', None)
         # product_type = session.query(ProductType).all()
-        product_type = getAllProductType()
+        product_type = get_all_product_type()
         product_type_list = [x.to_json() for x in product_type]
         if pid:
             # banner上的文字
@@ -47,7 +48,7 @@ class IndexHandler(BaseHandler):
 
             # 获取品牌分类
             # pid_product_list = session.query(Product).filter(Product.ProductType == pid).all()
-            pid_product_list = getProductTypeByPid(pid)
+            pid_product_list = get_product_type_by_pid(pid)
             product_brand_list = [x.to_json() for x in pid_product_list][:5]
 
             # 排序方式
@@ -67,6 +68,7 @@ class IndexHandler(BaseHandler):
                     else:
                         col = "ProductID"
                     return s.to_json()[col]
+
                 pid_product_list = sorted(pid_product_list, key=sorted_func, reverse=True)
 
             # 获取标签、关键字
@@ -76,7 +78,7 @@ class IndexHandler(BaseHandler):
             max_price = session.query(func.max(Product.ProductMarketPrice)).first()[0]
 
             # 获取推荐的商品
-            hot_product_list = [x.to_json() for x in pid_product_list if x.to_json()['IsHot']==1][:4]
+            hot_product_list = [x.to_json() for x in pid_product_list if x.to_json()['IsHot'] == 1][:4]
 
             # 商品列表、分页
             data_count = len(pid_product_list)  # 数据总条数
@@ -87,12 +89,13 @@ class IndexHandler(BaseHandler):
                 max_page += 1
             start_page_num = 0
             if page_num != 0:
-                start_page_num = (page_num-1) * every_page_num
+                start_page_num = (page_num - 1) * every_page_num
                 end_page_num = (page_num) * every_page_num
             # 筛选价格区间
             filter_price = int(self.get_argument('filter_price', 0))
             if filter_price:
-                pid_product_list = [x for x in pid_product_list if x.ProductMarketPrice < filter_price][start_page_num:end_page_num]
+                pid_product_list = [x for x in pid_product_list if x.ProductMarketPrice < filter_price][
+                                   start_page_num:end_page_num]
 
             # 筛选商品品牌
             brand = self.get_argument('brand', "")
@@ -106,10 +109,12 @@ class IndexHandler(BaseHandler):
             label = json.loads('"' + "".join([(i and "\\" + i) for i in label.split('%')]) + '"')
             print "label", label
             if label:
-                pid_product_list = [x for x in pid_product_list if x.ProductKeywords == label][start_page_num:end_page_num]
+                pid_product_list = [x for x in pid_product_list if x.ProductKeywords == label][
+                                   start_page_num:end_page_num]
             pid_product_list = [x.to_json() for x in pid_product_list][start_page_num:end_page_num]
-            page_data_count = len(pid_product_list) # 返回前台的数据总条数
-            page_info = {"pid": pid, "max_page": max_page, "data_count": data_count, "page_data_count": page_data_count, "page_num": page_num}
+            page_data_count = len(pid_product_list)  # 返回前台的数据总条数
+            page_info = {"pid": pid, "max_page": max_page, "data_count": data_count, "page_data_count": page_data_count,
+                         "page_num": page_num}
             self.render(
                 'index_shop_list.html',
                 name=name,
@@ -129,12 +134,12 @@ class IndexHandler(BaseHandler):
 
             # 获取评论的商品，取最新三条
             # comment_product_limit_3 = session.query(Comment).filter_by(Status=True).all()[-4:-1]
-            comment_product_limit_3 = getComLast3Limit()
+            comment_product_limit_3 = get_com_last_3_limit()
             comment_product_limit_3_list = []
             for com in comment_product_limit_3:
                 rmp_com_dict = com.to_json()
                 product_id = rmp_com_dict['ProductID']
-                product = getProductByPidFirst(product_id).to_json()
+                product = get_product_by_pid_first(product_id).to_json()
                 rmp_com_dict['product'] = product
                 comment_product_limit_3_list.append(rmp_com_dict)
             self.render(
@@ -144,6 +149,7 @@ class IndexHandler(BaseHandler):
                 info_3=info_3,
                 comment_product_limit_3_list=comment_product_limit_3_list
             )
+
 
 # 登录页
 class IndexLoginHandler(BaseHandler):
@@ -165,7 +171,8 @@ class IndexLoginHandler(BaseHandler):
             return
 
         # 验证帐号密码，帐号状态
-        ret = session.query(Users).filter(Users.UserEmail ==data.get('Email'), Users.UserPwd == sec_pass(data.get('Pass'))).first()
+        ret = session.query(Users).filter(Users.UserEmail == data.get('Email'),
+                                          Users.UserPwd == sec_pass(data.get('Pass'))).first()
         if not ret:
             code = 2
             msg = u"帐号密码错误"
@@ -180,7 +187,8 @@ class IndexLoginHandler(BaseHandler):
         else:
             code = 1
             msg = u"登录成功"
-            session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime":datetime.datetime.now(),"UserLastVisitIP":self.request.remote_ip})
+            session.query(Users).filter(Users.UserID == ret.UserID).update(
+                {"UserLastVisitTime": datetime.datetime.now(), "UserLastVisitIP": self.request.remote_ip})
             self.session['index_user'] = ret
             session.commit()
             self.write_json(msg, code=code)
@@ -188,6 +196,7 @@ class IndexLoginHandler(BaseHandler):
     def patch(self):
         self.session['index_user'] = ""
         self.write_json(u"注销成功", code=1)
+
 
 # 注册页
 class IndexRegisterHandler(BaseHandler):
@@ -219,11 +228,11 @@ class IndexRegisterHandler(BaseHandler):
             data['UserHashCode'] = active_hash_code
             session.add(Users(**data))
             session.commit()
-            active_url = '<a href='+'http://'+settings.WEB_DOMAIN_NAME+\
-                         '/active_email/?address='+data['UserEmail']+\
-                         '&hash_code='+active_hash_code+'>http://'+settings.WEB_DOMAIN_NAME+\
-                         '/active_email/?address='+data['UserEmail']+\
-                         '&hash_code='+active_hash_code+'</a>'
+            active_url = '<a href=' + 'http://' + settings.WEB_DOMAIN_NAME + \
+                         '/active_email/?address=' + data['UserEmail'] + \
+                         '&hash_code=' + active_hash_code + '>http://' + settings.WEB_DOMAIN_NAME + \
+                         '/active_email/?address=' + data['UserEmail'] + \
+                         '&hash_code=' + active_hash_code + '</a>'
             content = '''
 <html>
 <body>
@@ -235,7 +244,7 @@ class IndexRegisterHandler(BaseHandler):
 <pre>
  ===============激活链接===================
 
-'''+ active_url +'''
+''' + active_url + '''
 
 (如果上面不是链接形式，请将该地址手工粘贴到浏览器地址栏再访问)
 
@@ -247,22 +256,25 @@ class IndexRegisterHandler(BaseHandler):
             obj.send_email_via_queue(settings.SMTP_USER, data['UserEmail'], settings.WEB_NAME + "注册", content)
 
             self.write_json("success", code=1)
-        except Exception,e:
+        except Exception, e:
             # 事务
             session.rollback()
             self.write_json("failed", code=0)
         finally:
             session.close()
 
+
 # 模版页
 class IndexLayoutHandler(BaseHandler):
     def get(self):
         self.render('index_layout.html')
 
+
 # QQ登录页
 class IndexQQLoginPageHandler(BaseHandler):
     def get(self):
         self.render('qq.html')
+
 
 class IndexQQLoginHandler(BaseHandler):
     def get(self):
@@ -270,17 +282,17 @@ class IndexQQLoginHandler(BaseHandler):
             # 获取code
             code = self.get_argument('code')
             # 根据code获取access_token
-            url1 = 'https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id='+settings.QQ_APP_ID+'&client_secret='\
-                   +settings.QQ_APPKey+'&code='+code+'&redirect_uri='+settings.QQ_CollBackUrl
+            url1 = 'https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=' + settings.QQ_APP_ID + '&client_secret=' \
+                   + settings.QQ_APPKey + '&code=' + code + '&redirect_uri=' + settings.QQ_CollBackUrl
             req1 = requests.get(url1)
             access_token = req1.content.split('&')[0].split('=')[1]
             # 根据access_token获取openid
-            url2 = 'https://graph.qq.com/oauth2.0/me?access_token='+access_token
+            url2 = 'https://graph.qq.com/oauth2.0/me?access_token=' + access_token
             req2 = requests.get(url2)
             openid = json.loads(req2.content.split('(')[1].split(')')[0]).get('openid')
 
             # 根据openid获取用户信息
-            url3 = 'https://graph.qq.com/user/get_user_info?access_token='+access_token+'&oauth_consumer_key='+settings.QQ_APP_ID+'&openid='+openid
+            url3 = 'https://graph.qq.com/user/get_user_info?access_token=' + access_token + '&oauth_consumer_key=' + settings.QQ_APP_ID + '&openid=' + openid
             req3 = requests.get(url3)
             qq_user_info = json.loads(req3.content)
             nickname = qq_user_info.get('nickname')
@@ -301,8 +313,9 @@ class IndexQQLoginHandler(BaseHandler):
                     "UserLastVisitIP": self.request.remote_ip})
                 session.commit()
                 self.redirect('/index')
-        except Exception,e:
+        except Exception, e:
             self.redirect('/register/?status=2')  # 第三方登录出现错误
+
 
 class WeiboLoginHandler(BaseHandler):
     def get(self):
@@ -310,11 +323,11 @@ class WeiboLoginHandler(BaseHandler):
         url = 'https://api.weibo.com/oauth2/access_token'
         url1 = 'https://api.weibo.com/2/users/show.json'
         canshu = {
-            "client_id":"1816247821",
-            "client_secret":"eda276ef28ae911ba030fea6bfbbc360",
-            "grant_type":"authorization_code",
-            "code":code,
-            "redirect_uri":"http://test.com/check_weibo/"
+            "client_id": "1816247821",
+            "client_secret": "eda276ef28ae911ba030fea6bfbbc360",
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": "http://test.com/check_weibo/"
         }
         re = requests.post(url, data=canshu)
         re_json = json.loads(re.content)
@@ -330,8 +343,9 @@ class WeiboLoginHandler(BaseHandler):
             # 登录
             userid = ret.UserID
             ret = session.query(Users).filter_by(UserID=userid).first()
-            session.query(Users).filter(Users.UserID == ret.UserID).update({"UserLastVisitTime": datetime.datetime.now(),
-                                                                            "UserLastVisitIP": self.request.remote_ip})
+            session.query(Users).filter(Users.UserID == ret.UserID).update(
+                {"UserLastVisitTime": datetime.datetime.now(),
+                 "UserLastVisitIP": self.request.remote_ip})
             self.session['index_user'] = ret
             session.commit()
             self.redirect('/index')
@@ -345,11 +359,12 @@ class ActiveEmailHandler(BaseHandler):
             ret = session.query(Users).filter_by(UserEmail=email_address).first()
             if ret and hash_code == ret.UserHashCode:
                 # 激活账户
-                session.query(Users).filter(Users.UserEmail==email_address).update({"UserHashCode": ""})
+                session.query(Users).filter(Users.UserEmail == email_address).update({"UserHashCode": ""})
                 session.commit()
                 self.redirect('/login/?active_status=1')
-        except Exception, e :
+        except Exception, e:
             self.redirect('/login/?active_status=0')
+
 
 class CheckLoginHandler(BaseHandler):
     def get(self):
@@ -362,10 +377,11 @@ class CheckLoginHandler(BaseHandler):
         finally:
             self.write_json(user_info, code=code)
 
+
 class GetProductListHandler(BaseHandler):
     def get(self):
         _ = self.locale.translate
-        ret_list = getAllProductType_EN()
+        ret_list = get_all_product_type_en()
         # ret_list = ret_list = session.query(ProductType).all()
         all_list = []
         for ret in ret_list:
@@ -374,16 +390,19 @@ class GetProductListHandler(BaseHandler):
             all_list.append(tmp_json)
         self.write_json(all_list, code=1)
 
+
 class BaiduMapHandler(BaseHandler):
     def get(self):
         self.render('baidu_map.html')
+
 
 class CollectionProductHandler(BaseHandler):
     def post(self, argument):
         # 收藏商品
         try:
             user_info = self.session['index_user'].to_json()
-            ret = session.query(Collection).filter(Collection.UserID == user_info.get('UserID'), Collection.ProductID == argument).first()
+            ret = session.query(Collection).filter(Collection.UserID == user_info.get('UserID'),
+                                                   Collection.ProductID == argument).first()
             if ret:
                 code = 0
                 msg = u"该商品已经收藏了"
@@ -420,7 +439,7 @@ class AddShopCartHandler(BaseHandler):
             user_info = self.session['index_user'].to_json()
             buy_num = 1
             arg_data = self.get_argument('data')
-            if arg_data and arg_data!="":
+            if arg_data and arg_data != "":
                 argument_data = json.loads(self.get_argument('data'))
                 buy_num = argument_data.get('buy_num')
 
@@ -429,10 +448,11 @@ class AddShopCartHandler(BaseHandler):
                                                  ShopCart.ProductID == argument).first()
             if ret:
                 session.query(ShopCart).filter(ShopCart.UserID == user_info.get('UserID'),
-                                               ShopCart.ProductID == argument).update({"BuyNum": int(buy_num)+int(ret.BuyNum)})
+                                               ShopCart.ProductID == argument).update(
+                    {"BuyNum": int(buy_num) + int(ret.BuyNum)})
             else:
                 if buy_num:
-                    data = {"UserID": user_info.get('UserID'), "ProductID": argument, "BuyNum":buy_num}
+                    data = {"UserID": user_info.get('UserID'), "ProductID": argument, "BuyNum": buy_num}
                 else:
                     data = {"UserID": user_info.get('UserID'), "ProductID": argument}
                 session.add(ShopCart(**data))
@@ -441,7 +461,7 @@ class AddShopCartHandler(BaseHandler):
             msg = u"添加购物车成功"
         except Exception, e:
             code = 0
-            msg= u"添加购物车出错"
+            msg = u"添加购物车出错"
         finally:
             self.write_json(msg, code=code)
 
@@ -459,32 +479,34 @@ class AddShopCartHandler(BaseHandler):
         except Exception, e:
             self.write_json("failed", code=0)
 
+
 class DeliveryAddressHandler(BaseHandler):
     def get(self):
         try:
             result_list = []
             user_info = self.session['index_user'].to_json()
             ret = session.query(DeliveryAddress).filter_by(UserID=user_info.get('UserID')).all()
-            code =1
+            code = 1
             for x in ret:
                 result_list.append(x.to_json())
             data = result_list
-        except Exception,e:
+        except Exception, e:
             code = 0
             data = u"收货地址获取失败"
         finally:
             self.write_json(data, code=1)
 
+
 class AlipayHandler(BaseHandler):
     def get(self):
         user_info = self.session['index_user'].to_json()
         data = json.loads(self.get_argument('data'))
-        trade_no = sec_pass(str(int(time.time()))) # 交易号
+        trade_no = sec_pass(str(int(time.time())))  # 交易号
         # 加入订单
         save_data = {"TRADE_NO": trade_no, "UserID": user_info.get('UserID'),
                      "OrderTotalPrice": data.get('totalprice'),
                      "OrderPayType": 1,
-                     "OrderStatus":False,
+                     "OrderStatus": False,
                      "OrderSendAddress": data.get('address')}
         try:
             product_list = []
@@ -492,7 +514,8 @@ class AlipayHandler(BaseHandler):
                 # 删除购物车信息
                 session.query(ShopCart).filter(ShopCart.ShopCartID == x['shopcartid']).delete()
                 # 修改商品信息
-                session.query(Product).filter(Product.ProductID == x['productid']).update({"ProductBuyNum": Product.ProductBuyNum + int(x['num'])})
+                session.query(Product).filter(Product.ProductID == x['productid']).update(
+                    {"ProductBuyNum": Product.ProductBuyNum + int(x['num'])})
                 product_list.append(str(x['productid']))
             save_data['ProductID'] = ','.join(product_list)
             session.add(Order(**save_data))
@@ -500,7 +523,8 @@ class AlipayHandler(BaseHandler):
         except Exception, e:
             session.rollback()
         # 接受支付参数,整理支付宝接口所需参数
-        order_string = return_order_string(u'春色撩人支付测试', trade_no, int(data.get('totalprice')),settings.ALIPAY_RETURN_URL)
+        order_string = return_order_string(u'春色撩人支付测试', trade_no, int(data.get('totalprice')),
+                                           settings.ALIPAY_RETURN_URL)
         self.redirect(settings.ALIPAY_GETWAY + "?" + order_string)
 
     def post(self):
@@ -523,7 +547,7 @@ class AlipaySusscessHandler(BaseHandler):
 <body>
 <p>亲爱的用户：</p>
 <pre>
-您已经成功购买商品。我们已经收到您的订单 <a>'''+out_trade_no+'''</a> 的购买请求，商品正在发货中,请等待！
+您已经成功购买商品。我们已经收到您的订单 <a>''' + out_trade_no + '''</a> 的购买请求，商品正在发货中,请等待！
 如果您并没有访问过 有缘婚恋网，或没有进行上述操作，请忽 略这封邮件。您不需要退订或进行其他进一步的操作。
 </pre>
 <pre>
@@ -533,7 +557,8 @@ class AlipaySusscessHandler(BaseHandler):
 </html>
 '''
                 obj = redis_queue_send_email.REDIS_QUEUE()
-                obj.send_email_via_queue(settings.SMTP_USER, user_info.get('UserEmail'), settings.WEB_NAME + "订单信息", content)
+                obj.send_email_via_queue(settings.SMTP_USER, user_info.get('UserEmail'), settings.WEB_NAME + "订单信息",
+                                         content)
         order_list = session.query(Order).filter_by(UserID=user_info.get('UserID')).all()
         all_data = []
         for i, x in enumerate(order_list):
@@ -562,6 +587,7 @@ class ErrorHandler(BaseHandler):
         else:
             self.write('error:' + str(status_code))
 
+
 class ShopProductDetailHandler(BaseHandler):
     def get(self):
         pid = self.get_argument('pid', None)
@@ -570,20 +596,21 @@ class ShopProductDetailHandler(BaseHandler):
         comment_msg = ""
         comment_count = 0
         if pid:
-            ProductInfo = getProductByPidFirst(pid).to_json()
+            ProductInfo = get_product_by_pid_first(pid).to_json()
             try:
                 suer_info = self.session['index_user'].to_json()
-                order_info = session.query(Order).filter(Order.UserID == suer_info['UserID'], Order.ProductID == pid).first()
+                order_info = session.query(Order).filter(Order.UserID == suer_info['UserID'],
+                                                         Order.ProductID == pid).first()
                 if not order_info:
                     comment_msg = u'未购买过该商品，不能进行评论'
             except Exception, e:
                 comment_msg = u'未登录、登录后才能进行相关操作'
-            comment = session.query(Comment).filter(Comment.ProductID == pid, Comment.Status==True).all()
+            comment = session.query(Comment).filter(Comment.ProductID == pid, Comment.Status == True).all()
             for com in comment:
                 com_dict = com.to_json()
                 UserID = int(com_dict['UserID'])
                 try:
-                    UserName= session.query(Users).filter_by(UserID=UserID).first().to_json()['UserName']
+                    UserName = session.query(Users).filter_by(UserID=UserID).first().to_json()['UserName']
                     com_dict['UserName'] = UserName
                 except:
                     com_dict['UserName'] = u"有缘网用户"
@@ -592,7 +619,7 @@ class ShopProductDetailHandler(BaseHandler):
 
             # 商品详情下的推荐
             # recommend_product = session.query(Users).all()[-8:-1]
-            recommend_product = getRecommendProduct()
+            recommend_product = get_recommend_product()
         self.render('index_shop_detail.html', ProductInfo=ProductInfo, comment_list=comment_list,
                     comment_msg=comment_msg, comment_count=comment_count, recommend_product=recommend_product)
 
@@ -601,11 +628,13 @@ class ProductCommentHandler(BaseHandler):
     def post(self):
         arg_data = json.loads(self.get_argument('data'))
         user_info = self.session['index_user'].to_json()
-        data = {"UserID":user_info['UserID'], "ProductID":arg_data['pid'], "Content":arg_data['user_comment_content'], "Status":False}
+        data = {"UserID": user_info['UserID'], "ProductID": arg_data['pid'],
+                "Content": arg_data['user_comment_content'], "Status": False}
         obj = Comment(**data)
         session.add(obj)
         session.commit()
         self.write_json(u"新增成功、审核成功后即可显示！", code=1)
+
 
 class UserCenterHandler(BaseHandler):
     def get(self):
@@ -634,6 +663,7 @@ class ProductHistoryHandler(BaseHandler):
         history_list = session.query(Order).filter_by(UserID=user_info['UserID']).all()
         self.render('index_product_history_list.html', history_list=history_list)
 
+
 class WishListHandler(BaseHandler):
     def get(self):
         user_info = self.session['index_user'].to_json()
@@ -642,10 +672,10 @@ class WishListHandler(BaseHandler):
             wish_all = session.query(Collection).filter_by(UserID=user_info['UserID']).all()
             for wish in wish_all:
                 wish_dict = wish.to_json()
-                Product = getProductByPidFirst(wish_dict['ProductID'])
+                Product = get_product_by_pid_first(wish_dict['ProductID'])
                 wish_dict['product'] = Product.to_json()
                 wish_list.append(wish_dict)
-        except Exception,e:
+        except Exception, e:
             print e
             pass
 
@@ -654,7 +684,7 @@ class WishListHandler(BaseHandler):
     def post(self):
         user_info = self.session['index_user'].to_json()
         pid = self.get_argument('pid')
-        session.query(Collection).filter(Collection.ProductID == pid, Collection.UserID==user_info['UserID']).delete()
+        session.query(Collection).filter(Collection.ProductID == pid, Collection.UserID == user_info['UserID']).delete()
         session.commit()
         self.write_json(u"移除成功", code=1)
 
@@ -676,7 +706,8 @@ class MyAddressHandler(BaseHandler):
 
     def delete(self, argument):
         try:
-            noautoflushsession.query(DeliveryAddress).filter(DeliveryAddress.DeliveryAddressID == int(argument)).delete()
+            noautoflushsession.query(DeliveryAddress).filter(
+                DeliveryAddress.DeliveryAddressID == int(argument)).delete()
             noautoflushsession.commit()
             noautoflushsession.close()
             self.write_json("success", code=1)
@@ -688,7 +719,7 @@ class MyAddressHandler(BaseHandler):
 class SearchHandler(BaseHandler):
     def get(self):
         search_info = self.get_argument('info')
-        words = [u'%'+x+'%' for x in search_info.split('-')]
+        words = [u'%' + x + '%' for x in search_info.split('-')]
         product_search_result = []
         rule = or_(*[Product.ProductName.like(w) for w in words])
         product_search_result.extend(session.query(Product).filter(rule).all())
