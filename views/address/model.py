@@ -1,6 +1,5 @@
 # --*--coding:utf8--*--
-from Base import *
-import datetime
+from models.Base import *
 
 
 # 创建单表
@@ -15,6 +14,9 @@ class DeliveryAddress(Base):
     UserMobile = Column(String(100))
     ConsigneeName = Column(String(100))
     DetaileAddress = Column(String(100))
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     def __repr__(self):
         return "%s-%s" % (self.DeliveryAddressID, self.DetaileAddress)
@@ -52,4 +54,3 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
     main(1)
-

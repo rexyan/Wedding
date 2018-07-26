@@ -1,5 +1,5 @@
 # --*--coding:utf8--*--
-from Base import *
+from models.Base import *
 import datetime
 
 
@@ -12,6 +12,9 @@ class Comment(Base):
     CerateTime = Column(DateTime, default=datetime.datetime.now())
     Content = Column(String(5000))
     Status = Column(Boolean, default=False)
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     def __repr__(self):
         return "%s-%s" % (self.CommentID, self.UserID)
@@ -45,4 +48,3 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
     main(1)
-

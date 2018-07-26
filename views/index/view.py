@@ -624,114 +624,22 @@ class ShopProductDetailHandler(BaseHandler):
                     comment_msg=comment_msg, comment_count=comment_count, recommend_product=recommend_product)
 
 
-class ProductCommentHandler(BaseHandler):
-    def post(self):
-        arg_data = json.loads(self.get_argument('data'))
-        user_info = self.session['index_user'].to_json()
-        data = {"UserID": user_info['UserID'], "ProductID": arg_data['pid'],
-                "Content": arg_data['user_comment_content'], "Status": False}
-        obj = Comment(**data)
-        session.add(obj)
-        session.commit()
-        self.write_json(u"新增成功、审核成功后即可显示！", code=1)
 
 
-class UserCenterHandler(BaseHandler):
-    def get(self):
-        user_info = self.session['index_user'].to_json()
-        self.render('index_user_center.html', user_info=user_info)
-
-    def post(self):
-        try:
-            data = json.loads(self.get_argument('data'))
-            if data.keys()[0] == "UserSex":
-                data['UserSex'] = 1 if data['UserSex'] == u"男" else 0
-            user_info = self.session['index_user'].to_json()
-            session.query(Users).filter(Users.UserID == user_info['UserID']).update(data)
-            user_info = session.query(Users).filter_by(UserID=user_info['UserID']).first()
-            self.session['index_user'] = user_info
-            self.write_json(u"修改成功", code=1)
-            session.commit()
-        except Exception, e:
-            print e
-            self.write_json(u"修改失败", code=0)
 
 
-class ProductHistoryHandler(BaseHandler):
-    def get(self):
-        user_info = self.session['index_user'].to_json()
-        history_list = session.query(Order).filter_by(UserID=user_info['UserID']).all()
-        self.render('index_product_history_list.html', history_list=history_list)
 
 
-class WishListHandler(BaseHandler):
-    def get(self):
-        user_info = self.session['index_user'].to_json()
-        wish_list = []
-        try:
-            wish_all = session.query(Collection).filter_by(UserID=user_info['UserID']).all()
-            for wish in wish_all:
-                wish_dict = wish.to_json()
-                Product = get_product_by_pid_first(wish_dict['ProductID'])
-                wish_dict['product'] = Product.to_json()
-                wish_list.append(wish_dict)
-        except Exception, e:
-            print e
-            pass
-
-        self.render('index_wish_list.html', wish_list=wish_list)
-
-    def post(self):
-        user_info = self.session['index_user'].to_json()
-        pid = self.get_argument('pid')
-        session.query(Collection).filter(Collection.ProductID == pid, Collection.UserID == user_info['UserID']).delete()
-        session.commit()
-        self.write_json(u"移除成功", code=1)
 
 
-class MyAddressHandler(BaseHandler):
-    def get(self):
-        user_info = self.session['index_user'].to_json()
-        my_address = session.query(DeliveryAddress).filter_by(UserID=user_info['UserID']).all()
-        self.render('my_address.html', my_address=my_address)
-
-    def post(self):
-        data = json.loads(self.get_argument('data'))
-        user_id = self.session['index_user'].to_json()['UserID']
-        data["UserID"] = user_id
-        obj = DeliveryAddress(**data)
-        session.add(obj)
-        session.commit()
-        self.write_json(u"新增成功", code=1)
-
-    def delete(self, argument):
-        try:
-            noautoflushsession.query(DeliveryAddress).filter(
-                DeliveryAddress.DeliveryAddressID == int(argument)).delete()
-            noautoflushsession.commit()
-            noautoflushsession.close()
-            self.write_json("success", code=1)
-        except Exception, e:
-            print e
-            self.write_json("failed", code=0)
 
 
-class SearchHandler(BaseHandler):
-    def get(self):
-        search_info = self.get_argument('info')
-        words = [u'%' + x + '%' for x in search_info.split('-')]
-        product_search_result = []
-        rule = or_(*[Product.ProductName.like(w) for w in words])
-        product_search_result.extend(session.query(Product).filter(rule).all())
-        rule = or_(*[Product.ProductBrand.like(w) for w in words])
-        product_search_result.extend(session.query(Product).filter(rule).all())
-        product_search_result = [x.to_json() for x in product_search_result]
-        self.render('search_list.html', product_search_result=product_search_result)
-
-    def post(self):
-        pass
 
 
-class AddressPageHandler(BaseHandler):
-    def get(self):
-        self.render('address.html')
+
+
+
+
+
+
+

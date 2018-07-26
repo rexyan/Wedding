@@ -1,6 +1,5 @@
 # --*--coding:utf8--*--
-from Base import *
-import datetime
+from models.Base import *
 
 ALIPAY = 1
 WECHAT = 2
@@ -10,6 +9,7 @@ PAY_TYPE = {
     (WECHAT, u"微信"),
     (OTHER, u"其他集成支付")
 }
+
 
 # 创建单表
 class Order(Base):
@@ -22,6 +22,9 @@ class Order(Base):
     OrderStatus = Column(Boolean, default=False)
     OrderSendAddress = Column(String(1000))
     TRADE_NO = Column(String(100))
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     def __repr__(self):
         return "%s-%s" % (self.OrderID, self.UserID)
@@ -58,4 +61,3 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
     main(1)
-

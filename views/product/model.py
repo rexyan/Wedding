@@ -1,5 +1,5 @@
 # --*--coding:utf8--*--
-from Base import *
+from models.Base import *
 import datetime
 
 LOCAL = 1
@@ -11,13 +11,14 @@ UPLOAD_TYPE = {
     (UPYUN, u"又拍云"),
 }
 
+
 # 创建单表
 class Product(Base):
     __tablename__ = 'product'  # 表名
-    ProductID = Column(Integer, primary_key=True, autoincrement=True) # 商品 ID
+    ProductID = Column(Integer, primary_key=True, autoincrement=True)  # 商品 ID
     ProductType = Column(Integer)  # 商品类型
     ProductName = Column(String(100))  # 商品名称
-    ProductBrand = Column(String(100), nullable=True) # 商品品牌
+    ProductBrand = Column(String(100), nullable=True)  # 商品品牌
     ProductKeywords = Column(String(100), nullable=True)  # 商品关键词
     ProductIntroduce = Column(String(2000), nullable=True)  # 商品简介
     ProductDescribe = Column(String(5000), nullable=True)  # 商品完整描述
@@ -28,14 +29,17 @@ class Product(Base):
     ProductCount = Column(Integer)  # 商品库存
     IsHot = Column(Boolean, default=False)  # 是否是热门商品
     IsNew = Column(Boolean, default=False)  # 是否是新品
-    SmallPictureUpType = Column(Integer)  #1为本地，2为七牛云，3为又拍云
-    BigPictureUpType = Column(Integer)  #1为本地，2为七牛云，3为又拍云
+    SmallPictureUpType = Column(Integer)  # 1为本地，2为七牛云，3为又拍云
+    BigPictureUpType = Column(Integer)  # 1为本地，2为七牛云，3为又拍云
     ProductSmallPicture = Column(String(100), nullable=True)
     ProductBigPictureProductBigPicture = Column(String(100), nullable=True)
-    ProductOnTime = Column(String,  nullable=True)
-    ProductCreatTime = Column(DateTime,  nullable=True, default=datetime.datetime.now())
+    ProductOnTime = Column(String, nullable=True)
+    ProductCreatTime = Column(DateTime, nullable=True, default=datetime.datetime.now())
     ProductBuyNum = Column(Integer, nullable=True, default=0)
     ProductCollectNum = Column(Integer, nullable=True, default=0)
+
+    def __init__(self):
+        pass
 
     def __repr__(self):
         return "%s-%s" % (self.ProductName, self.ProductID)
@@ -86,4 +90,3 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
     main(1)
-

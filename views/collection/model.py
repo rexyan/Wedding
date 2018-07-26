@@ -1,5 +1,5 @@
 # --*--coding:utf8--*--
-from Base import *
+from models.Base import *
 import datetime
 
 
@@ -10,6 +10,9 @@ class Collection(Base):
     UserID = Column(Integer, index=True)
     ProductID = Column(Integer, index=True)
     CollectTime = Column(DateTime, default=datetime.datetime.now())
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     def __repr__(self):
         return "%s-%s" % (self.ProductID, self.UserID)
@@ -42,4 +45,3 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
     main(1)
-
