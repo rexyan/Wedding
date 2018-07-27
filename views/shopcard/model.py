@@ -1,6 +1,5 @@
 # --*--coding:utf8--*--
-from Base import *
-import datetime
+from models.Base import *
 
 
 # 创建单表
@@ -10,7 +9,6 @@ class ShopCart(Base):
     UserID = Column(Integer, index=True)
     ProductID = Column(Integer, index=True)
     BuyNum = Column(Integer, default=1)
-
 
     def __repr__(self):
         return "%s-%s" % (self.ShopCartID, self.UserID)
@@ -43,4 +41,3 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
     main(1)
-

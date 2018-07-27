@@ -35,3 +35,23 @@ class MyAddressHandler(BaseHandler):
 class AddressPageHandler(BaseHandler):
     def get(self):
         self.render('address.html')
+
+
+class DeliveryAddressHandler(BaseHandler):
+    def get(self):
+        data = None
+        code = None
+        try:
+            result_list = []
+            user_info = self.session['index_user'].to_json()
+            ret = session.query(DeliveryAddress).filter_by(UserID=user_info.get('UserID')).all()
+            code = 1
+            for x in ret:
+                result_list.append(x.to_json())
+            data = result_list
+        except Exception, e:
+            print(e)
+            code = 0
+            data = u"收货地址获取失败"
+        finally:
+            self.write_json(data, code=code)

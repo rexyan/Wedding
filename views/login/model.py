@@ -1,6 +1,5 @@
 # --*--coding:utf8--*--
-from Base import *
-import datetime
+from models.Base import *
 
 
 # 创建单表
@@ -40,4 +39,3 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
     main(1)
-

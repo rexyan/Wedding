@@ -1,13 +1,18 @@
 # --*-- coding:utf-8--*--
 from views.admin import view as admin_view
-from views.index import view as index_view
 from views.address import handler as address_handler
 from views.search import handler as search_handler
 from views.comment import handler as comment_handler
 from views.user import handler as user_handler
 from views.wishlist import handler as wishlist_handler
 from views.product import handler as product_handler
-
+from views.index import handler as index_handler
+from views.login import handler as login_handler
+from views.register import handler as register_handler
+from views.shopcard import handler as shopcard_handler
+from views.alipay import handler as alipay_handler
+from views.collection import handler as collection_handler
+from views.error import handler as error_handler
 
 url = [
     # 登录页
@@ -69,26 +74,26 @@ url = [
     # (r"/admin/goods/image/add/", admin_view.AdminGoodsImgesAddHandler),
 
     # 网站前台路由
-    (r"/layout/", index_view.IndexLayoutHandler),  # 模版页
-    (r"/", index_view.IndexHandler),  # 首页
-    (r"/login/", index_view.IndexLoginHandler),  # 登录
-    (r"/register/", index_view.IndexRegisterHandler),  # 注册
-    (r"/check_login/", index_view.CheckLoginHandler),  # 注册
-    (r"/active_email/", index_view.ActiveEmailHandler),  # 用户激活
-    (r"/get_product_list/", index_view.GetProductListHandler),  # 获取所有导航类型（商品类型）
-    (r"/index", index_view.IndexHandler),
-    (r"/qq_login_page/", index_view.IndexQQLoginPageHandler),  # QQ登录页面
-    (r"/check_qq", index_view.IndexQQLoginHandler),  # QQ登录页面
-    (r"/check_weibo/", index_view.WeiboLoginHandler),  # QQ登录页面
-    (r"/baidu_map_page/", index_view.BaiduMapHandler),  # 百度地图页面
-    (r"/collection_product/(\w+)/", index_view.CollectionProductHandler),  # 百度地图页面
-    (r"/shopcart/", index_view.ShopCartHandler),  # 购物车页面
-    (r"/add_shop_cart/(\w+)/", index_view.AddShopCartHandler),  # 添加商品到购物车
-    (r"/get_delivery_address/", index_view.DeliveryAddressHandler),  # 获得收货地址
-    (r"/alipay/", index_view.AlipayHandler),  # 支付宝支付
-    (r"/alipay_success/", index_view.AlipaySusscessHandler),  # 支付支付成功
-    (r"/index_logout/", index_view.IndexLoginHandler),  # 注销
-    (r"/shop_product_detail", index_view.ShopProductDetailHandler),  # 商品详情
+    (r"/layout/", index_handler.IndexLayoutHandler),  # 模版页
+    (r"/", index_handler.IndexHandler),  # 首页
+    (r"/login/", login_handler.IndexLoginHandler),  # 登录
+    (r"/register/", register_handler.IndexRegisterHandler),  # 注册
+    (r"/check_login/", login_handler.CheckLoginHandler),  # 注册
+    (r"/active_email/", login_handler.ActiveEmailHandler),  # 用户激活
+    (r"/get_product_list/", product_handler.GetProductListHandler),  # 获取所有导航类型（商品类型）
+    (r"/index", index_handler.IndexHandler),
+    (r"/qq_login_page/", login_handler.IndexQQLoginPageHandler),  # QQ登录页面
+    (r"/check_qq", login_handler.IndexQQLoginHandler),  # QQ登录页面
+    (r"/check_weibo/", login_handler.WeiboLoginHandler),  # QQ登录页面
+    (r"/baidu_map_page/", index_handler.BaiduMapHandler),  # 百度地图页面
+    (r"/collection_product/(\w+)/", collection_handler.CollectionProductHandler),  # 百度地图页面
+    (r"/shopcart/", shopcard_handler.ShopCartHandler),  # 购物车页面
+    (r"/add_shop_cart/(\w+)/", shopcard_handler.AddShopCartHandler),  # 添加商品到购物车
+    (r"/get_delivery_address/", address_handler.DeliveryAddressHandler),  # 获得收货地址
+    (r"/alipay/", alipay_handler.AlipayHandler),  # 支付宝支付
+    (r"/alipay_success/", alipay_handler.AlipaySusscessHandler),  # 支付支付成功
+    (r"/index_logout/", login_handler.IndexLoginHandler),  # 注销
+    (r"/shop_product_detail", shopcard_handler.ShopProductDetailHandler),  # 商品详情
     (r"/add_product_comment/", comment_handler.ProductCommentHandler),  # 添加商品评论
     (r"/user_center/", user_handler.UserCenterHandler),  # 用户中心
     (r"/modify_user_info/", user_handler.UserCenterHandler),  # 修改用户信息
@@ -99,5 +104,5 @@ url = [
     (r"/search", search_handler.SearchHandler),  # 查询商品
     (r"/address_page", address_handler.AddressPageHandler),  # 查询商品
 
-    (r".*", index_view.ErrorHandler),  # 在所有的路由后面捕获错误
+    (r".*", error_handler.ErrorHandler),  # 在所有的路由后面捕获错误
 ]
